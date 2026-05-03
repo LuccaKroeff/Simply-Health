@@ -1,7 +1,20 @@
-import type { SimplifyResponse, QuestionsResponse } from './types'
+import type { SimplifyResponse, QuestionsResponse, ChatMessage, ChatResponse } from './types'
 
-async function post(path: string, body: FormData): Promise<Response> {
+async function postForm(path: string, body: FormData): Promise<Response> {
   const res = await fetch(path, { method: 'POST', body })
+  if (!res.ok) {
+    const err = (await res.json().catch(() => ({}))) as { message?: string }
+    throw new Error(err.message ?? `Erro ${res.status}`)
+  }
+  return res
+}
+
+async function postJson(path: string, body: unknown): Promise<Response> {
+  const res = await fetch(path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
   if (!res.ok) {
     const err = (await res.json().catch(() => ({}))) as { message?: string }
     throw new Error(err.message ?? `Erro ${res.status}`)
@@ -24,12 +37,21 @@ export async function simplifyText(
   } else {
     body.append('text', input.text)
   }
-  return (await post('/api/simplify', body)).json()
+  return (await postForm('/api/simplify', body)).json()
 }
 
-export async function generateQuestions(text: string, patientId: string): Promise<QuestionsResponse> {
+export async function generateQuestions(originalText: string, patientId: string): Promise<QuestionsResponse> {
   const body = new FormData()
   body.append('patientId', patientId)
-  body.append('text', text)
-  return (await post('/api/simplify/questions', body)).json()
+  body.append('text', originalText)
+  return (await postForm('/api/simplify/questions', body)).json()
+}
+
+export async function chatQuestion(
+  question: string,
+  originalText: string,
+  patientId: string,
+  history: ChatMessage[],
+): Promise<ChatResponse> {
+  return (await postJson('/api/simplify/chat', { question, originalText, patientId, history })).json()
 }

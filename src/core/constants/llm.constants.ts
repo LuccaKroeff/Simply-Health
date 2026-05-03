@@ -1,3 +1,4 @@
 export const LLM_PROVIDER = Symbol('LLM_PROVIDER')
+export const LLM_GUARDRAIL_PROVIDER = Symbol('LLM_GUARDRAIL_PROVIDER')
 
 export const GLOSSARY_SEPARATOR = '---GLOSSÁRIO---'

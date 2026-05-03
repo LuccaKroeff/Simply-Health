@@ -33,9 +33,7 @@ export default function ChatSection({ status, simplify, questions, error }: Prop
                   : null}
             </span>
           </div>
-          <div className="bubble-text">
-            {renderTextWithImages(simplify.simplifiedText, simplify.images ?? [])}
-          </div>
+          <div className="bubble-text">{renderTextWithImages(simplify.simplifiedText, simplify.images ?? [])}</div>
 
           {simplify.glossary && simplify.glossary.length > 0 && (
             <div className="glossary">
@@ -78,9 +76,7 @@ export default function ChatSection({ status, simplify, questions, error }: Prop
 function renderTextWithImages(text: string, images: ExtractedImage[]) {
   let processed = text
   images.forEach(img => {
-    processed = processed.split(`[${img.id}]`).join(
-      `![${img.id}](data:${img.mimeType};base64,${img.data})`,
-    )
+    processed = processed.split(`[${img.id}]`).join(`![${img.id}](data:${img.mimeType};base64,${img.data})`)
   })
 
   return (

@@ -1,5 +1,25 @@
 import { Injectable } from '@nestjs/common'
+import { CHAT_OUTPUT_GUARDRAIL_MARKER, GUARDRAIL_SYSTEM_PROMPT_MARKER } from '@src/prompts/guardrail-prompt'
+import { INPUT_GUARDRAIL_MARKER } from '@src/prompts/input-guardrail-prompt'
+import { CHAT_SYSTEM_PROMPT_MARKER } from '@src/prompts/chat-prompt'
 import { LLMInput, LLMProvider } from './llm-provider.interface'
+
+const MOCK_GUARDRAIL_APPROVED_JSON = JSON.stringify({
+  verdict: 'approved',
+  confidence: 1.0,
+  summary: 'O texto simplificado preserva fielmente o significado do original.',
+  unsupportedClaims: [],
+  alteredCriticalInformation: [],
+  omittedCriticalInformation: [],
+  suggestedFixes: [],
+})
+
+const MOCK_INPUT_GUARDRAIL_JSON = JSON.stringify({
+  classification: 'allowed',
+  confidence: 1.0,
+  reason: 'Mock: pergunta permitida.',
+  safeResponse: null,
+})
 
 const MOCK_QUESTIONS_JSON = JSON.stringify([
   {
@@ -23,8 +43,20 @@ const MOCK_QUESTIONS_JSON = JSON.stringify([
 export class MockProvider implements LLMProvider {
   readonly name = 'mock'
 
-  async complete({ text, file }: LLMInput, systemPrompt: string): Promise<string> {
+  async complete({ text, file }: LLMInput, systemPrompt: string, _temperature?: number): Promise<string> {
     await new Promise(resolve => setTimeout(resolve, 500))
+
+    if (systemPrompt.includes(GUARDRAIL_SYSTEM_PROMPT_MARKER) || systemPrompt.includes(CHAT_OUTPUT_GUARDRAIL_MARKER)) {
+      return MOCK_GUARDRAIL_APPROVED_JSON
+    }
+
+    if (systemPrompt.includes(INPUT_GUARDRAIL_MARKER)) {
+      return MOCK_INPUT_GUARDRAIL_JSON
+    }
+
+    if (systemPrompt.includes(CHAT_SYSTEM_PROMPT_MARKER)) {
+      return 'Com base no material fornecido, posso te ajudar a entender melhor o conteúdo. [Mock de resposta do assistente de chat]'
+    }
 
     if (systemPrompt.includes('gere exatamente 3 perguntas')) {
       return MOCK_QUESTIONS_JSON

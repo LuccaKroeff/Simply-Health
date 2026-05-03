@@ -17,5 +17,5 @@ export interface LLMInput {
 
 export interface LLMProvider {
   readonly name: string
-  complete(input: LLMInput, systemPrompt: string): Promise<string>
+  complete(input: LLMInput, systemPrompt: string, temperature?: number): Promise<string>
 }

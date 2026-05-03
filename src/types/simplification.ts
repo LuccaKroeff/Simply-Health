@@ -15,6 +15,7 @@ export interface ExtractedImage {
 
 export interface SimplifyResponse {
   simplifiedText: string
+  originalText: string
   glossary?: GlossaryEntry[]
   images?: ExtractedImage[]
   metadata: {

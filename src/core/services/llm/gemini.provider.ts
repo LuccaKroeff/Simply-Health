@@ -5,24 +5,29 @@ import { LLMInput, LLMProvider } from './llm-provider.interface'
 
 @Injectable()
 export class GeminiProvider implements LLMProvider {
-  readonly name = 'gemini-2.5-flash-lite'
+  readonly name: string
   private client: GoogleGenerativeAI | null = null
 
-  constructor(private readonly config: ConfigService) {
+  constructor(
+    private readonly config: ConfigService,
+    private readonly modelName = 'gemini-2.5-flash-lite',
+  ) {
+    this.name = modelName
     const apiKey = this.config.get<string>('GEMINI_API_KEY')
     if (apiKey) {
       this.client = new GoogleGenerativeAI(apiKey)
     }
   }
 
-  async complete({ text, file, labeledImages }: LLMInput, systemPrompt: string): Promise<string> {
+  async complete({ text, file, labeledImages }: LLMInput, systemPrompt: string, temperature = 1.0): Promise<string> {
     if (!this.client) {
       throw new Error('GEMINI_API_KEY não configurada. Defina no .env.')
     }
 
     const model = this.client.getGenerativeModel({
-      model: 'gemini-2.5-flash-lite',
+      model: this.modelName,
       systemInstruction: systemPrompt,
+      generationConfig: { temperature },
     })
 
     const parts: Array<string | Part> = []

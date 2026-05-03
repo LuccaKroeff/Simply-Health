@@ -15,7 +15,7 @@ export class ClaudeProvider implements LLMProvider {
     }
   }
 
-  async complete({ text, file, labeledImages }: LLMInput, systemPrompt: string): Promise<string> {
+  async complete({ text, file, labeledImages }: LLMInput, systemPrompt: string, temperature = 1.0): Promise<string> {
     if (!this.client) {
       throw new Error('ANTHROPIC_API_KEY não configurada. Defina no .env.')
     }
@@ -25,6 +25,7 @@ export class ClaudeProvider implements LLMProvider {
     const response = await this.client.messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 4096,
+      temperature,
       system: systemPrompt,
       messages: [{ role: 'user', content: userContent }],
     })

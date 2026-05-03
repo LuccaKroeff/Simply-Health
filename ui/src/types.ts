@@ -28,6 +28,7 @@ export interface ExtractedImage {
 
 export interface SimplifyResponse {
   simplifiedText: string
+  originalText: string
   glossary?: GlossaryEntry[]
   images?: ExtractedImage[]
   metadata: {
@@ -36,10 +37,28 @@ export interface SimplifyResponse {
     patientProfile: Patient
     imagesFound: number
   }
+}
+
+export interface QuestionsResponse {
   questions: Question[]
   metadata: {
     model: string
     processingTimeMs: number
     patientProfile: Patient
+  }
+}
+
+export interface ChatMessage {
+  role: 'user' | 'assistant'
+  content: string
+}
+
+export interface ChatResponse {
+  answer: string
+  blocked: boolean
+  blockReason?: string
+  metadata: {
+    model: string
+    processingTimeMs: number
   }
 }

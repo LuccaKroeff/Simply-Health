@@ -13,7 +13,9 @@ import { FileInput } from '@src/core/services/llm/llm-provider.interface'
 import { TextExtractorService } from '@src/core/services/text-extractor/text-extractor.service'
 import { findPatientById } from '@src/mock/patients'
 import { PatientProfile } from '@src/types/patient'
+import { validateChatRequest } from './requests/chat-request.dto'
 import { validateSimplifyRequest } from './requests/simplify-request.dto'
+import { ChatAnswerUseCase } from './use-cases/chat-answer.use-case'
 import { GenerateQuestionsUseCase } from './use-cases/generate-questions.use-case'
 import { SimplifyTextUseCase } from './use-cases/simplify-text.use-case'
 
@@ -24,6 +26,7 @@ export class SimplifyController {
   constructor(
     private readonly simplifyTextUseCase: SimplifyTextUseCase,
     private readonly generateQuestionsUseCase: GenerateQuestionsUseCase,
+    private readonly chatAnswerUseCase: ChatAnswerUseCase,
     private readonly textExtractorService: TextExtractorService,
   ) {}
 
@@ -36,13 +39,11 @@ export class SimplifyController {
   )
   async simplify(@Body() body: Record<string, unknown>, @UploadedFile() file?: Express.Multer.File) {
     const dto = validateSimplifyRequest(body)
-    const { patient, text, file: fileInput } = await this.resolveInput(
-      dto.patientId,
-      dto.patientProfile,
-      file,
-      dto.text,
-      dto.includeImages,
-    )
+    const {
+      patient,
+      text,
+      file: fileInput,
+    } = await this.resolveInput(dto.patientId, dto.patientProfile, file, dto.text, dto.includeImages)
 
     return this.simplifyTextUseCase.exec({
       text,
@@ -62,15 +63,31 @@ export class SimplifyController {
   )
   async questions(@Body() body: Record<string, unknown>, @UploadedFile() file?: Express.Multer.File) {
     const dto = validateSimplifyRequest(body)
-    const { patient, text, file: fileInput } = await this.resolveInput(
-      dto.patientId,
-      dto.patientProfile,
-      file,
-      dto.text,
-      false,
-    )
+    const {
+      patient,
+      text,
+      file: fileInput,
+    } = await this.resolveInput(dto.patientId, dto.patientProfile, file, dto.text, false)
 
     return this.generateQuestionsUseCase.exec({ text, file: fileInput, patient })
+  }
+
+  @Post('chat')
+  async chat(@Body() body: Record<string, unknown>) {
+    const dto = validateChatRequest(body)
+    const patient = dto.patientProfile ?? (dto.patientId ? findPatientById(dto.patientId) : undefined)
+
+    if (!patient) {
+      if (dto.patientId) throw new NotFoundException(`Paciente não encontrado: ${dto.patientId}`)
+      throw new BadRequestException('Informe patientId ou patientProfile.')
+    }
+
+    return this.chatAnswerUseCase.exec({
+      question: dto.question,
+      originalText: dto.originalText,
+      patient,
+      history: dto.history,
+    })
   }
 
   private async resolveInput(
