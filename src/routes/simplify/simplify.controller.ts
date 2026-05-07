@@ -11,6 +11,7 @@ import { FileInterceptor } from '@nestjs/platform-express'
 import { memoryStorage } from 'multer'
 import { FileInput } from '@src/core/services/llm/llm-provider.interface'
 import { TextExtractorService } from '@src/core/services/text-extractor/text-extractor.service'
+import { TtsService } from '@src/core/services/tts/tts.service'
 import { findPatientById } from '@src/mock/patients'
 import { PatientProfile } from '@src/types/patient'
 import { validateChatRequest } from './requests/chat-request.dto'
@@ -28,6 +29,7 @@ export class SimplifyController {
     private readonly generateQuestionsUseCase: GenerateQuestionsUseCase,
     private readonly chatAnswerUseCase: ChatAnswerUseCase,
     private readonly textExtractorService: TextExtractorService,
+    private readonly ttsService: TtsService,
   ) {}
 
   @Post()
@@ -70,6 +72,19 @@ export class SimplifyController {
     } = await this.resolveInput(dto.patientId, dto.patientProfile, file, dto.text, false)
 
     return this.generateQuestionsUseCase.exec({ text, file: fileInput, patient })
+  }
+
+  @Post('tts')
+  async tts(@Body() body: Record<string, unknown>): Promise<{ audio: string }> {
+    const text = body.text
+    if (typeof text !== 'string' || text.trim().length === 0) {
+      throw new BadRequestException('O campo "text" é obrigatório.')
+    }
+    if (text.length > 5000) {
+      throw new BadRequestException('O campo "text" deve ter no máximo 5000 caracteres.')
+    }
+    const buffer = await this.ttsService.synthesize(text.trim())
+    return { audio: buffer.toString('base64') }
   }
 
   @Post('chat')

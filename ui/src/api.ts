@@ -55,3 +55,8 @@ export async function chatQuestion(
 ): Promise<ChatResponse> {
   return (await postJson('/api/simplify/chat', { question, originalText, patientId, history })).json()
 }
+
+export async function synthesizeSpeech(text: string): Promise<string> {
+  const data = (await postJson('/api/simplify/tts', { text })).json() as Promise<{ audio: string }>
+  return (await data).audio
+}

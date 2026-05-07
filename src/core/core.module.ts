@@ -5,13 +5,14 @@ import { InputGuardrailService } from './services/guardrail/input-guardrail.serv
 import { LlmModule } from './services/llm/llm.module'
 import { PdfImageExtractorService } from './services/pdf-image-extractor/pdf-image-extractor.service'
 import { TextExtractorService } from './services/text-extractor/text-extractor.service'
+import { TtsService } from './services/tts/tts.service'
 
 const guardrailServices = [FidelityGuardrailService, InputGuardrailService, ChatOutputGuardrailService]
 
 @Global()
 @Module({
   imports: [LlmModule],
-  providers: [TextExtractorService, PdfImageExtractorService, ...guardrailServices],
-  exports: [LlmModule, TextExtractorService, PdfImageExtractorService, ...guardrailServices],
+  providers: [TextExtractorService, PdfImageExtractorService, TtsService, ...guardrailServices],
+  exports: [LlmModule, TextExtractorService, PdfImageExtractorService, TtsService, ...guardrailServices],
 })
 export class CoreModule {}

@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
+import { useTtsPlayer } from '../hooks/useTtsPlayer'
 import type { SimplifyResponse, ExtractedImage } from '../types'
+import PlayButton from './PlayButton'
 
 interface Props {
   result: SimplifyResponse
@@ -8,6 +10,7 @@ interface Props {
 
 export default function SummaryCard({ result }: Props) {
   const [glossaryOpen, setGlossaryOpen] = useState(false)
+  const { play, playingKey, loadingKey } = useTtsPlayer()
 
   return (
     <div className="chat-bubble">
@@ -24,6 +27,16 @@ export default function SummaryCard({ result }: Props) {
       </div>
 
       <div className="bubble-text">{renderTextWithImages(result.simplifiedText, result.images ?? [])}</div>
+
+      <div className="summary-actions">
+        <PlayButton
+          ttsKey="summary"
+          text={result.simplifiedText}
+          playingKey={playingKey}
+          loadingKey={loadingKey}
+          onPlay={play}
+        />
+      </div>
 
       {result.glossary && result.glossary.length > 0 && (
         <div className="glossary">
