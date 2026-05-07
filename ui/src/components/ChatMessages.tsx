@@ -10,7 +10,7 @@ export default function ChatMessages({ messages, loading }: Props) {
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    bottomRef.current?.scrollIntoView({ behavior: 'auto' })
   }, [messages, loading])
 
   if (messages.length === 0 && !loading) return null

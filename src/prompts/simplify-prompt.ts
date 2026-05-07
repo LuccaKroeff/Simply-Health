@@ -51,8 +51,12 @@ const RULES_SECTION = [
 
 const GLOSSARY_SECTION = [
   '## Glossário',
-  "Ao final do texto simplificado, inclua uma seção chamada '---GLOSSÁRIO---' com os termos técnicos encontrados no texto original e suas definições simples.",
-  "Formato: cada entrada em uma linha, no formato 'TERMO: definição simples'.",
+  "Ao final do texto simplificado, inclua uma seção chamada '---GLOSSÁRIO---' APENAS com termos que atendam a TODOS estes critérios:",
+  '- O termo aparece no texto simplificado (não apenas no original).',
+  '- O termo é genuinamente clínico ou especializado — palavras do cotidiano como "infecção", "ferida", "diabetes" ou "inchaço" NÃO devem entrar.',
+  '- O termo NÃO foi explicado entre parênteses dentro do próprio texto simplificado.',
+  '- Máximo de 4 entradas. Se não houver termos que atendam aos critérios, omita a seção inteiramente.',
+  "Formato: cada entrada em uma linha, no formato 'TERMO: definição simples em até 15 palavras'.",
 ]
 
 const RESPONSE_FORMAT_SECTION = [

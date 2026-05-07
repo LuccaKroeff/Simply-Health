@@ -6,7 +6,8 @@
       "Bash(npm run *)",
       "Bash(npx jest *)",
       "Bash(node -e \"require\\('pdfjs-dist/legacy/build/pdf.js'\\); console.log\\('ok'\\)\")",
-      "Bash(node -e \"const path = require.resolve\\('pdfjs-dist/legacy/build/pdf.worker.js'\\); console.log\\(path\\)\")"
+      "Bash(node -e \"const path = require.resolve\\('pdfjs-dist/legacy/build/pdf.worker.js'\\); console.log\\(path\\)\")",
+      "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\('react:', p.dependencies.react, 'react-dom:', p.dependencies['react-dom']\\)\")"
     ]
   }
 }
