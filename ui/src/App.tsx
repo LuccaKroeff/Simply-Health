@@ -81,8 +81,13 @@ export default function App() {
     <div className="app">
       <header className="app-header">
         <div className="container">
-          <span className="app-title">SimplyHealth</span>
-          <span className="app-subtitle">Simplificação de textos médicos</span>
+          <div className="app-brand">
+            <span className="app-icon">🏥</span>
+            <div>
+              <div className="app-title">SimplyHealth</div>
+              <div className="app-subtitle">Simplificação de textos médicos</div>
+            </div>
+          </div>
         </div>
       </header>
 
