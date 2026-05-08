@@ -7,7 +7,6 @@ export interface Patient {
   age: number
   educationLevel: EducationLevel
   healthLiteracyLevel: LiteracyLevel
-  medicalCondition?: string
 }
 
 export interface GlossaryEntry {

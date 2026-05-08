@@ -4,7 +4,6 @@ export interface PatientProfile {
   age: number
   educationLevel: EducationLevel
   healthLiteracyLevel: HealthLiteracyLevel
-  medicalCondition?: string
 }
 
 export type EducationLevel = 'fundamental' | 'medio' | 'superior'

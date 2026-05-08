@@ -1,5 +1,9 @@
 import { useRef, useState } from 'react'
 import { synthesizeSpeech } from '../api'
+import { stripMarkdown } from '../utils/stripMarkdown'
+
+// Cache de sessão: o áudio já sintetizado fica aqui até a página fechar
+const audioCache = new Map<string, string>()
 
 export function useTtsPlayer() {
   const audioRef = useRef<HTMLAudioElement | null>(null)
@@ -17,11 +21,17 @@ export function useTtsPlayer() {
     audioRef.current?.pause()
     audioRef.current = null
     setPlayingKey(null)
-    setLoadingKey(key)
+
+    const cleanText = stripMarkdown(text)
+    const cached = audioCache.get(cleanText)
+
+    if (!cached) setLoadingKey(key)
 
     try {
-      const base64 = await synthesizeSpeech(text)
-      const audio = new Audio(`data:audio/mp3;base64,${base64}`)
+      const base64 = cached ?? await synthesizeSpeech(cleanText)
+      if (!cached) audioCache.set(cleanText, base64)
+
+      const audio = new Audio(`data:audio/wav;base64,${base64}`)
       audioRef.current = audio
       setLoadingKey(null)
       setPlayingKey(key)

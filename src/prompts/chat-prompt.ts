@@ -41,7 +41,6 @@ Você é um assistente de compreensão do plano de cuidado. Você ajuda o pacien
 ## Perfil do paciente
 
 Nome: ${patient.name}, ${patient.age} anos.
-${patient.medicalCondition ? `Condição: ${patient.medicalCondition}.` : ''}
 Escolaridade: ${educationDesc}
 Letramento em saúde: ${literacyDesc}
 Orientação de tom: ${ageDesc}

@@ -33,7 +33,6 @@ const buildPatientSection = (patient: PatientProfile): string[] => [
   `- ${EDUCATION_DESCRIPTIONS[patient.educationLevel]}`,
   `- ${LITERACY_DESCRIPTIONS[patient.healthLiteracyLevel]}`,
   `- ${getAgeGuidance(patient.age)}`,
-  ...(patient.medicalCondition ? [`- Condição: ${patient.medicalCondition}`] : []),
 ]
 
 const RULES_SECTION = [

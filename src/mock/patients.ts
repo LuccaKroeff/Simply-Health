@@ -7,7 +7,6 @@ export const mockPatients: readonly PatientProfile[] = [
     age: 68,
     educationLevel: 'fundamental',
     healthLiteracyLevel: 'low',
-    medicalCondition: 'colostomia',
   },
   {
     id: 'patient-2',
@@ -15,7 +14,6 @@ export const mockPatients: readonly PatientProfile[] = [
     age: 45,
     educationLevel: 'medio',
     healthLiteracyLevel: 'medium',
-    medicalCondition: 'ileostomia',
   },
   {
     id: 'patient-3',
@@ -23,7 +21,6 @@ export const mockPatients: readonly PatientProfile[] = [
     age: 30,
     educationLevel: 'superior',
     healthLiteracyLevel: 'high',
-    medicalCondition: 'urostomia',
   },
 ]
 
