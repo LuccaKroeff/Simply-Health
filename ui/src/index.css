@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap');
 
 *,
 *::before,
@@ -68,7 +69,6 @@
 .app-brand {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
 }
 
 .app-icon {
@@ -79,18 +79,20 @@
 }
 
 .app-title {
-  font-size: 1.2rem;
-  font-weight: 800;
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 0.8;
   color: var(--text);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
 }
 
 .app-subtitle {
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   font-weight: 400;
   color: var(--text-muted);
   letter-spacing: 0.01em;
-  margin-top: 0.05rem;
+  margin-top: 0.2rem;
 }
 
 .container {
