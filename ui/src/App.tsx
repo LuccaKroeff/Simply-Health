@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { SimplifyResponse, Question, ChatMessage } from './types'
 import { simplifyText, generateQuestions, chatQuestion } from './api'
+import { findPatient } from './data/patients'
 import PatientSelector from './components/PatientSelector'
 import InputSection from './components/InputSection'
 import SummaryCard from './components/SummaryCard'
@@ -82,7 +83,7 @@ export default function App() {
       <header className="app-header">
         <div className="container">
           <div className="app-brand">
-            <span className="app-icon">🏥</span>
+            <img src="/logo.png" alt="SimplyHealth" className="app-icon" />
             <div>
               <div className="app-title">SimplyHealth</div>
               <div className="app-subtitle">Simplificação de textos médicos</div>
@@ -115,20 +116,40 @@ export default function App() {
               <button type="button" className="reset-btn" onClick={handleReset}>
                 ← Novo texto
               </button>
-              <span className="chat-phase-label">Assistente de compreensão do tratamento</span>
+              {(() => {
+                const p = findPatient(patientId)
+                return p ? (
+                  <div className="chat-patient-pill">
+                    <div className="chat-patient-avatar">
+                      <img src={p.avatar} alt={p.name} />
+                    </div>
+                    <div className="chat-patient-info">
+                      <span className="chat-patient-name">{p.name}</span>
+                      <span className="chat-patient-meta">{p.age} anos · {p.educationLabel}</span>
+                    </div>
+                  </div>
+                ) : null
+              })()}
             </div>
 
             <SummaryCard result={simplifyResult} />
 
             <SuggestedQuestions questions={questions} onSelect={handleSuggestedQuestion} disabled={chatLoading} />
 
-            <ChatMessages messages={chatMessages} loading={chatLoading} />
-
-            <ChatInput onSend={handleSendQuestion} disabled={chatLoading} />
-
-            <p className="disclaimer">
-              As respostas são baseadas apenas no material informado e não substituem orientação profissional de saúde.
-            </p>
+            <div className="chat-card">
+              <ChatMessages
+                messages={chatMessages}
+                loading={chatLoading}
+                patientAvatar={findPatient(patientId)?.avatar ?? ''}
+                patientName={findPatient(patientId)?.name ?? ''}
+              />
+              <div className="chat-card-footer">
+                <ChatInput onSend={handleSendQuestion} disabled={chatLoading} />
+                <p className="disclaimer">
+                  As respostas são baseadas apenas no material informado e não substituem orientação profissional de saúde.
+                </p>
+              </div>
+            </div>
           </>
         )}
       </main>

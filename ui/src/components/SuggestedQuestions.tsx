@@ -7,6 +7,8 @@ interface Props {
 }
 
 export default function SuggestedQuestions({ questions, onSelect, disabled }: Props) {
+  if (questions !== null && questions.length === 0) return null
+
   return (
     <div>
       <p className="section-label">Perguntas sugeridas</p>

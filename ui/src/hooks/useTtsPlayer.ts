@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { synthesizeSpeech } from '../api'
 import { stripMarkdown } from '../utils/stripMarkdown'
 
@@ -44,6 +44,13 @@ export function useTtsPlayer() {
       setLoadingKey(null)
     }
   }
+
+  useEffect(() => {
+    return () => {
+      audioRef.current?.pause()
+      audioRef.current = null
+    }
+  }, [])
 
   return { play, playingKey, loadingKey }
 }

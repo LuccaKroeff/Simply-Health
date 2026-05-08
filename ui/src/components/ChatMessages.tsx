@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import ReactMarkdown from 'react-markdown'
 import { useTtsPlayer } from '../hooks/useTtsPlayer'
 import type { ChatMessage } from '../types'
 import PlayButton from './PlayButton'
@@ -6,9 +7,11 @@ import PlayButton from './PlayButton'
 interface Props {
   messages: ChatMessage[]
   loading: boolean
+  patientAvatar: string
+  patientName: string
 }
 
-export default function ChatMessages({ messages, loading }: Props) {
+export default function ChatMessages({ messages, loading, patientAvatar, patientName }: Props) {
   const bottomRef = useRef<HTMLDivElement>(null)
   const { play, playingKey, loadingKey } = useTtsPlayer()
 
@@ -24,30 +27,45 @@ export default function ChatMessages({ messages, loading }: Props) {
         const key = String(i)
         return (
           <div key={i} className={`chat-msg chat-msg-${msg.role}`}>
-            <div className="chat-msg-col">
-              <div className="chat-msg-bubble">{msg.content}</div>
-              {msg.role === 'assistant' && (
-                <div className="chat-msg-actions">
-                  <PlayButton
-                    ttsKey={key}
-                    text={msg.content}
-                    playingKey={playingKey}
-                    loadingKey={loadingKey}
-                    onPlay={play}
-                    disabled={loadingKey !== null && loadingKey !== key}
-                  />
+            {msg.role === 'assistant' && (
+              <div className="msg-side-col">
+                <div className="msg-avatar msg-avatar-assistant">
+                  <img src="/logo.png" alt="SimplyHealth" />
                 </div>
-              )}
+                <PlayButton
+                  ttsKey={key}
+                  text={msg.content}
+                  playingKey={playingKey}
+                  loadingKey={loadingKey}
+                  onPlay={play}
+                  disabled={loadingKey !== null && loadingKey !== key}
+                />
+              </div>
+            )}
+            <div className="chat-msg-col">
+              <div className="chat-msg-bubble">
+                {msg.role === 'assistant'
+                  ? <ReactMarkdown>{msg.content}</ReactMarkdown>
+                  : msg.content}
+              </div>
             </div>
+            {msg.role === 'user' && (
+              <div className="msg-avatar msg-avatar-user">
+                <img src={patientAvatar} alt={patientName} />
+              </div>
+            )}
           </div>
         )
       })}
       {loading && (
         <div className="chat-msg chat-msg-assistant">
+          <div className="msg-side-col">
+            <div className="msg-avatar msg-avatar-assistant">
+              <img src="/logo.png" alt="SimplyHealth" />
+            </div>
+          </div>
           <div className="chat-msg-bubble typing-indicator">
-            <span />
-            <span />
-            <span />
+            <span /><span /><span />
           </div>
         </div>
       )}
