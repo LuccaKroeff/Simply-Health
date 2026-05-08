@@ -1,3 +1,4 @@
+import type { ComplexityComparison } from './complexity'
 import type { PatientProfile } from './patient'
 
 export interface SimplifyRequest {
@@ -18,6 +19,7 @@ export interface SimplifyResponse {
   originalText: string
   glossary?: GlossaryEntry[]
   images?: ExtractedImage[]
+  complexity?: ComplexityComparison
   metadata: {
     model: string
     processingTimeMs: number

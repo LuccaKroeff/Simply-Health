@@ -2,6 +2,7 @@ import { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { useTtsPlayer } from '../hooks/useTtsPlayer'
 import type { SimplifyResponse, ExtractedImage } from '../types'
+import ComplexityPanel from './ComplexityPanel'
 import PlayButton from './PlayButton'
 
 interface Props {
@@ -37,6 +38,8 @@ export default function SummaryCard({ result }: Props) {
           onPlay={play}
         />
       </div>
+
+      {result.complexity && <ComplexityPanel complexity={result.complexity} />}
 
       {result.glossary && result.glossary.length > 0 && (
         <div className="glossary">

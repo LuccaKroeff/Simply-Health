@@ -1,6 +1,7 @@
-import { Inject, Injectable, Logger } from '@nestjs/common'
+import { Inject, Injectable, Logger, Optional } from '@nestjs/common'
 import { LLM_PROVIDER } from '@src/core/constants/llm.constants'
 import { parseResponse } from '@src/core/helpers/glossary-parser.helper'
+import { TEXT_COMPLEXITY_ANALYZER, TextComplexityAnalyzer } from '@src/core/services/complexity/text-complexity-analyzer.interface'
 import { FidelityGuardrailService } from '@src/core/services/guardrail/fidelity-guardrail.service'
 import { FileInput, LLMProvider } from '@src/core/services/llm/llm-provider.interface'
 import { PdfImageExtractorService } from '@src/core/services/pdf-image-extractor/pdf-image-extractor.service'
@@ -31,6 +32,7 @@ export class SimplifyTextUseCase {
     private readonly pdfImageExtractor: PdfImageExtractorService,
     private readonly textExtractor: TextExtractorService,
     private readonly guardrail: FidelityGuardrailService,
+    @Optional() @Inject(TEXT_COMPLEXITY_ANALYZER) private readonly complexityAnalyzer: TextComplexityAnalyzer | null,
   ) {}
 
   async exec({ text, file, patient, includeGlossary, includeImages }: SimplifyTextParams): Promise<SimplifyResponse> {
@@ -101,11 +103,16 @@ export class SimplifyTextUseCase {
           `Aprovado na tentativa ${attempt} em ${Date.now() - startTime}ms — ${referencedImages.length}/${images.length} imagem(ns) referenciada(s)`,
         )
 
+        const complexity = this.complexityAnalyzer
+          ? await this.complexityAnalyzer.compare(originalText, simplified).catch(() => undefined)
+          : undefined
+
         return {
           simplifiedText: simplified,
           originalText,
           glossary: includeGlossary ? glossary : undefined,
           images: referencedImages.length > 0 ? referencedImages : undefined,
+          complexity,
           metadata: {
             model: this.llmProvider.name,
             processingTimeMs: Date.now() - startTime,

@@ -25,11 +25,28 @@ export interface ExtractedImage {
   mimeType: 'image/png'
 }
 
+export interface ReadabilityMetrics {
+  fleschScore: number
+  fleschLabel: string
+  avgWordsPerSentence: number
+  wordCount: number
+  sentenceCount: number
+}
+
+export interface ComplexityComparison {
+  original: ReadabilityMetrics
+  simplified: ReadabilityMetrics
+  fleschGain: number
+  wordsPerSentenceReduction: number
+  analyzer: string
+}
+
 export interface SimplifyResponse {
   simplifiedText: string
   originalText: string
   glossary?: GlossaryEntry[]
   images?: ExtractedImage[]
+  complexity?: ComplexityComparison
   metadata: {
     model: string
     processingTimeMs: number
