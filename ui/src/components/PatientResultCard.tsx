@@ -12,6 +12,7 @@ interface Props {
   showChatButton: boolean
   onSelectQuestion: (q: Question) => void
   onActivateChat: () => void
+  onRetry: () => void
 }
 
 export default function PatientResultCard({
@@ -22,6 +23,7 @@ export default function PatientResultCard({
   showChatButton,
   onSelectQuestion,
   onActivateChat,
+  onRetry,
 }: Props) {
   const patient = findPatient(patientId)
   if (!patient) return null
@@ -44,7 +46,12 @@ export default function PatientResultCard({
         {result.status === 'processing' && <AssistantThinkingMessage />}
 
         {result.status === 'error' && (
-          <div className="error-banner" style={{ margin: '1rem' }}>{result.error}</div>
+          <div className="patient-error-block">
+            <div className="error-banner">{result.error}</div>
+            <button type="button" className="retry-btn" onClick={onRetry}>
+              ↺ Tentar novamente
+            </button>
+          </div>
         )}
 
         {result.status === 'approved' && result.simplifyResult && (

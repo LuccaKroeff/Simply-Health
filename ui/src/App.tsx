@@ -25,6 +25,7 @@ export default function App() {
 
   const [fileError, setFileError] = useState<string | null>(null)
   const [originalPdfUrl, setOriginalPdfUrl] = useState<string | null>(null)
+  const [lastInput, setLastInput] = useState<{ text: string } | { file: File } | null>(null)
 
   const genRef = useRef(0)
 
@@ -36,6 +37,7 @@ export default function App() {
   async function handleUnderstand(input: { text: string } | { file: File }) {
     const genId = ++genRef.current
     setFileError(null)
+    setLastInput(input)
 
     if ('file' in input) {
       setOriginalPdfUrl(prev => {
@@ -110,6 +112,16 @@ export default function App() {
         }))
       }
     }
+  }
+
+  async function handleRetry(patientId: string) {
+    if (!lastInput) return
+    const genId = genRef.current
+    setPatientResults(prev => ({
+      ...prev,
+      [patientId]: { status: 'processing', simplifyResult: null, questions: null, error: null },
+    }))
+    await processOnePatient(patientId, lastInput, genId)
   }
 
   // ── Chat ──────────────────────────────────────────────────────────────────
@@ -277,6 +289,7 @@ export default function App() {
                       showChatButton={multiPatient}
                       onSelectQuestion={q => handleSuggestedQuestion(id, q)}
                       onActivateChat={() => setActiveChatPatientId(id)}
+                      onRetry={() => handleRetry(id)}
                     />
                   ))}
                 </div>

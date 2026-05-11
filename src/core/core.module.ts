@@ -1,5 +1,7 @@
 import { Global, Module } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { BasicReadabilityAnalyzer } from './services/complexity/basic-readability-analyzer'
+import { NilcMetrixAdapter } from './services/complexity/nilc-metrix.adapter'
 import { TEXT_COMPLEXITY_ANALYZER } from './services/complexity/text-complexity-analyzer.interface'
 import { ChatOutputGuardrailService } from './services/guardrail/chat-output-guardrail.service'
 import { FidelityGuardrailService } from './services/guardrail/fidelity-guardrail.service'
@@ -13,13 +15,26 @@ const guardrailServices = [FidelityGuardrailService, InputGuardrailService, Chat
 
 const complexityProvider = {
   provide: TEXT_COMPLEXITY_ANALYZER,
-  useClass: BasicReadabilityAnalyzer,
+  useFactory: (config: ConfigService) => {
+    const url = config.get<string>('NILC_METRIX_URL', '')
+    if (url) return new NilcMetrixAdapter(config)
+    return new BasicReadabilityAnalyzer()
+  },
+  inject: [ConfigService],
 }
 
 @Global()
 @Module({
   imports: [LlmModule],
-  providers: [TextExtractorService, PdfImageExtractorService, TtsService, BasicReadabilityAnalyzer, complexityProvider, ...guardrailServices],
+  providers: [
+    TextExtractorService,
+    PdfImageExtractorService,
+    TtsService,
+    BasicReadabilityAnalyzer,
+    NilcMetrixAdapter,
+    complexityProvider,
+    ...guardrailServices,
+  ],
   exports: [LlmModule, TextExtractorService, PdfImageExtractorService, TtsService, complexityProvider, ...guardrailServices],
 })
 export class CoreModule {}

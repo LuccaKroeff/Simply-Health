@@ -4,6 +4,9 @@ export interface ReadabilityMetrics {
   avgWordsPerSentence: number
   wordCount: number
   sentenceCount: number
+  syllablesPerContentWord?: number
+  contentDensity?: number
+  lexicalDiversity?: number
 }
 
 export interface ComplexityComparison {
@@ -12,4 +15,6 @@ export interface ComplexityComparison {
   fleschGain: number
   wordsPerSentenceReduction: number
   analyzer: string
+  delta?: import('./nilc-metrics').MetricsDelta
+  shortText?: boolean
 }

@@ -40,6 +40,35 @@ export interface ReadabilityMetrics {
   avgWordsPerSentence: number
   wordCount: number
   sentenceCount: number
+  syllablesPerContentWord?: number
+  contentDensity?: number
+  lexicalDiversity?: number
+}
+
+export interface SimplificationMetrics extends ReadabilityMetrics {
+  syllablesPerContentWord: number
+  contentDensity: number
+  lexicalDiversity: number
+}
+
+export interface MetricsDelta {
+  fleschScore: number
+  avgWordsPerSentence: number
+  wordCount: number
+  sentenceCount: number
+  syllablesPerContentWord: number
+  contentDensity: number
+  lexicalDiversity: number
+}
+
+export interface MetricsComparison {
+  original: SimplificationMetrics
+  simplified: SimplificationMetrics
+  delta: MetricsDelta
+  fleschGain: number
+  wordsPerSentenceReduction: number
+  analyzer: string
+  shortText: boolean
 }
 
 export interface ComplexityComparison {
@@ -48,6 +77,8 @@ export interface ComplexityComparison {
   fleschGain: number
   wordsPerSentenceReduction: number
   analyzer: string
+  delta?: MetricsDelta
+  shortText?: boolean
 }
 
 export interface SimplifyResponse {
