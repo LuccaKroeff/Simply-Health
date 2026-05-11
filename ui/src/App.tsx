@@ -1,82 +1,182 @@
-import { useState } from 'react'
-import type { SimplifyResponse, Question, ChatMessage } from './types'
+import { useRef, useState } from 'react'
+import type { PatientResult, Question, ChatMessage } from './types'
 import { simplifyText, generateQuestions, chatQuestion } from './api'
 import { findPatient } from './data/patients'
 import PatientSelector from './components/PatientSelector'
 import InputSection from './components/InputSection'
-import SummaryCard from './components/SummaryCard'
-import SuggestedQuestions from './components/SuggestedQuestions'
+import PatientResultCard from './components/PatientResultCard'
 import ChatMessages from './components/ChatMessages'
 import ChatInput from './components/ChatInput'
 import './index.css'
 
 type Phase = 'initial' | 'chat'
+type Tab = 'chat' | 'original'
 
 export default function App() {
   const [phase, setPhase] = useState<Phase>('initial')
-  const [patientId, setPatientId] = useState('patient-1')
+  const [selectedPatientIds, setSelectedPatientIds] = useState<string[]>(['patient-1'])
   const [withImages, setWithImages] = useState(false)
+  const [activeTab, setActiveTab] = useState<Tab>('chat')
 
-  const [simplifyLoading, setSimplifyLoading] = useState(false)
-  const [simplifyError, setSimplifyError] = useState<string | null>(null)
-
-  const [simplifyResult, setSimplifyResult] = useState<SimplifyResponse | null>(null)
-  const [questions, setQuestions] = useState<Question[] | null>(null)
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
+  const [patientResults, setPatientResults] = useState<Record<string, PatientResult>>({})
+  const [patientChats, setPatientChats] = useState<Record<string, ChatMessage[]>>({})
+  const [activeChatPatientId, setActiveChatPatientId] = useState<string | null>(null)
   const [chatLoading, setChatLoading] = useState(false)
 
-  async function handleUnderstand(input: { text: string } | { file: File }) {
-    setSimplifyLoading(true)
-    setSimplifyError(null)
+  const [fileError, setFileError] = useState<string | null>(null)
+  const [originalPdfUrl, setOriginalPdfUrl] = useState<string | null>(null)
 
+  const genRef = useRef(0)
+
+  // ── Computed ──────────────────────────────────────────────────────────────
+  const isProcessing = Object.values(patientResults).some(r => r.status === 'processing')
+  const anyResult = Object.values(patientResults).find(r => r.simplifyResult)?.simplifyResult ?? null
+
+  // ── Processing ────────────────────────────────────────────────────────────
+  async function handleUnderstand(input: { text: string } | { file: File }) {
+    const genId = ++genRef.current
+    setFileError(null)
+
+    if ('file' in input) {
+      setOriginalPdfUrl(prev => {
+        if (prev) URL.revokeObjectURL(prev)
+        return input.file.type === 'application/pdf' ? URL.createObjectURL(input.file) : null
+      })
+    } else {
+      setOriginalPdfUrl(prev => { if (prev) URL.revokeObjectURL(prev); return null })
+    }
+
+    const initial: Record<string, PatientResult> = {}
+    for (const id of selectedPatientIds) {
+      initial[id] = { status: 'processing', simplifyResult: null, questions: null, error: null }
+    }
+    setPatientResults(initial)
+    setPatientChats({})
+    setActiveChatPatientId(selectedPatientIds[0])
+    setActiveTab('chat')
+    setPhase('chat')
+
+    await Promise.all(selectedPatientIds.map(id => processOnePatient(id, input, genId)))
+  }
+
+  async function processOnePatient(
+    patientId: string,
+    input: { text: string } | { file: File },
+    genId: number,
+  ) {
     try {
       const result = await simplifyText(input, patientId, true, withImages)
-      setSimplifyResult(result)
-      setQuestions(null)
-      setChatMessages([])
-      setPhase('chat')
+      if (genRef.current !== genId) return
+
+      setPatientResults(prev => ({
+        ...prev,
+        [patientId]: { status: 'approved', simplifyResult: result, questions: null, error: null },
+      }))
 
       generateQuestions(result.originalText, patientId)
-        .then(qRes => setQuestions(qRes.questions))
-        .catch(() => setQuestions([]))
+        .then(qRes => {
+          if (genRef.current !== genId) return
+          setPatientResults(prev => ({
+            ...prev,
+            [patientId]: { ...prev[patientId], questions: qRes.questions },
+          }))
+        })
+        .catch(() => {
+          if (genRef.current !== genId) return
+          setPatientResults(prev => ({
+            ...prev,
+            [patientId]: { ...prev[patientId], questions: [] },
+          }))
+        })
     } catch (e) {
-      setSimplifyError(e instanceof Error ? e.message : 'Erro inesperado')
-    } finally {
-      setSimplifyLoading(false)
+      if (genRef.current !== genId) return
+      const msg = e instanceof Error ? e.message : ''
+      const isFileError = /ler|pdf|txt|arquivo|file/i.test(msg)
+      if (isFileError) {
+        setFileError('Não foi possível ler este arquivo. Tente enviar um PDF ou TXT válido.')
+        setPatientResults(prev => ({
+          ...prev,
+          [patientId]: { status: 'error', simplifyResult: null, questions: null, error: null },
+        }))
+      } else {
+        setPatientResults(prev => ({
+          ...prev,
+          [patientId]: {
+            status: 'error',
+            simplifyResult: null,
+            questions: null,
+            error: 'Não foi possível gerar uma explicação com base no conteúdo informado.',
+          },
+        }))
+      }
     }
   }
 
-  function handleSuggestedQuestion(q: Question) {
-    setQuestions(prev => prev?.filter(item => item.question !== q.question) ?? prev)
-    setChatMessages(prev => [...prev, { role: 'user', content: q.question }, { role: 'assistant', content: q.answer }])
+  // ── Chat ──────────────────────────────────────────────────────────────────
+  function handleSuggestedQuestion(patientId: string, q: Question) {
+    setPatientResults(prev => ({
+      ...prev,
+      [patientId]: {
+        ...prev[patientId],
+        questions: prev[patientId].questions?.filter(item => item.question !== q.question) ?? null,
+      },
+    }))
+    setPatientChats(prev => ({
+      ...prev,
+      [patientId]: [
+        ...(prev[patientId] ?? []),
+        { role: 'user', content: q.question },
+        { role: 'assistant', content: q.answer },
+      ],
+    }))
+    setActiveChatPatientId(patientId)
   }
 
   async function handleSendQuestion(question: string) {
-    const userMsg: ChatMessage = { role: 'user', content: question }
-    setChatMessages(prev => [...prev, userMsg])
+    if (!activeChatPatientId) return
+    const activeResult = patientResults[activeChatPatientId]
+    if (!activeResult?.simplifyResult) return
+
+    setPatientChats(prev => ({
+      ...prev,
+      [activeChatPatientId]: [...(prev[activeChatPatientId] ?? []), { role: 'user', content: question }],
+    }))
     setChatLoading(true)
 
     try {
-      const res = await chatQuestion(question, simplifyResult!.originalText, patientId, chatMessages)
-      setChatMessages(prev => [...prev, { role: 'assistant', content: res.answer }])
-    } catch {
-      setChatMessages(prev => [
+      const history = patientChats[activeChatPatientId] ?? []
+      const res = await chatQuestion(question, activeResult.simplifyResult.originalText, activeChatPatientId, history)
+      setPatientChats(prev => ({
         ...prev,
-        { role: 'assistant', content: 'Não foi possível processar sua pergunta. Tente novamente.' },
-      ])
+        [activeChatPatientId]: [...(prev[activeChatPatientId] ?? []), { role: 'assistant', content: res.answer }],
+      }))
+    } catch {
+      setPatientChats(prev => ({
+        ...prev,
+        [activeChatPatientId]: [
+          ...(prev[activeChatPatientId] ?? []),
+          { role: 'assistant', content: 'Não foi possível processar sua pergunta. Tente novamente.' },
+        ],
+      }))
     } finally {
       setChatLoading(false)
     }
   }
 
   function handleReset() {
+    genRef.current++
     setPhase('initial')
-    setSimplifyResult(null)
-    setQuestions(null)
-    setChatMessages([])
+    setPatientResults({})
+    setPatientChats({})
+    setActiveChatPatientId(null)
     setChatLoading(false)
-    setSimplifyError(null)
+    setFileError(null)
+    setActiveTab('chat')
+    setOriginalPdfUrl(prev => { if (prev) URL.revokeObjectURL(prev); return null })
   }
+
+  // ── Render ────────────────────────────────────────────────────────────────
+  const multiPatient = selectedPatientIds.length > 1
 
   return (
     <div className="app">
@@ -95,61 +195,151 @@ export default function App() {
       <main className="container app-main">
         {phase === 'initial' && (
           <div className="panel">
-            <PatientSelector value={patientId} onChange={setPatientId} disabled={simplifyLoading} />
+            <PatientSelector
+              value={selectedPatientIds}
+              onChange={setSelectedPatientIds}
+              disabled={isProcessing}
+            />
             <InputSection
               withImages={withImages}
               onImagesChange={setWithImages}
               onSubmit={handleUnderstand}
-              disabled={simplifyLoading}
+              onFileAutoSubmit={file => handleUnderstand({ file })}
+              disabled={isProcessing || selectedPatientIds.length === 0}
             />
-            {simplifyError && (
-              <div className="error-banner">
-                <strong>Erro:</strong> {simplifyError}
-              </div>
+            {fileError && (
+              <div className="error-banner"><strong>Erro:</strong> {fileError}</div>
             )}
           </div>
         )}
 
-        {phase === 'chat' && simplifyResult && (
+        {phase === 'chat' && (
           <>
+            {/* ── Header ─────────────────────────────────────────────── */}
             <div className="chat-phase-header">
               <button type="button" className="reset-btn" onClick={handleReset}>
                 ← Novo texto
               </button>
-              {(() => {
-                const p = findPatient(patientId)
-                return p ? (
-                  <div className="chat-patient-pill">
-                    <div className="chat-patient-avatar">
-                      <img src={p.avatar} alt={p.name} />
+              <div className="chat-header-patients">
+                {selectedPatientIds.map(id => {
+                  const p = findPatient(id)
+                  if (!p) return null
+                  return (
+                    <div key={id} className="chat-patient-pill">
+                      <div className="chat-patient-avatar">
+                        <img src={p.avatar} alt={p.name} />
+                      </div>
+                      <div className="chat-patient-info">
+                        <span className="chat-patient-name">{p.name}</span>
+                        <span className="chat-patient-meta">{p.age} anos · {p.educationLabel}</span>
+                      </div>
                     </div>
-                    <div className="chat-patient-info">
-                      <span className="chat-patient-name">{p.name}</span>
-                      <span className="chat-patient-meta">{p.age} anos · {p.educationLabel}</span>
-                    </div>
-                  </div>
-                ) : null
-              })()}
-            </div>
-
-            <SummaryCard result={simplifyResult} />
-
-            <SuggestedQuestions questions={questions} onSelect={handleSuggestedQuestion} disabled={chatLoading} />
-
-            <div className="chat-card">
-              <ChatMessages
-                messages={chatMessages}
-                loading={chatLoading}
-                patientAvatar={findPatient(patientId)?.avatar ?? ''}
-                patientName={findPatient(patientId)?.name ?? ''}
-              />
-              <div className="chat-card-footer">
-                <ChatInput onSend={handleSendQuestion} disabled={chatLoading} />
-                <p className="disclaimer">
-                  As respostas são baseadas apenas no material informado e não substituem orientação profissional de saúde.
-                </p>
+                  )
+                })}
               </div>
             </div>
+
+            {fileError && (
+              <div className="error-banner"><strong>Erro:</strong> {fileError}</div>
+            )}
+
+            {/* ── Tabs ───────────────────────────────────────────────── */}
+            <div className="chat-tabs">
+              <button
+                type="button"
+                className={`chat-tab${activeTab === 'chat' ? ' active' : ''}`}
+                onClick={() => setActiveTab('chat')}
+              >
+                Conversa
+              </button>
+              <button
+                type="button"
+                className={`chat-tab${activeTab === 'original' ? ' active' : ''}`}
+                onClick={() => setActiveTab('original')}
+                disabled={!anyResult}
+              >
+                Material original
+              </button>
+            </div>
+
+            {/* ── Conversa tab ───────────────────────────────────────── */}
+            {activeTab === 'chat' && (
+              <>
+                {/* Comparison grid */}
+                <div className={`comparison-grid grid-${selectedPatientIds.length}`}>
+                  {selectedPatientIds.map(id => (
+                    <PatientResultCard
+                      key={id}
+                      patientId={id}
+                      result={patientResults[id] ?? { status: 'processing', simplifyResult: null, questions: null, error: null }}
+                      chatActive={activeChatPatientId === id}
+                      chatLoading={chatLoading}
+                      showChatButton={multiPatient}
+                      onSelectQuestion={q => handleSuggestedQuestion(id, q)}
+                      onActivateChat={() => setActiveChatPatientId(id)}
+                    />
+                  ))}
+                </div>
+
+                {/* Chat section */}
+                {activeChatPatientId && patientResults[activeChatPatientId]?.status === 'approved' && (
+                  <>
+                    {multiPatient && (
+                      <div className="chat-patient-switcher">
+                        {selectedPatientIds
+                          .filter(id => patientResults[id]?.status === 'approved')
+                          .map(id => {
+                            const p = findPatient(id)!
+                            return (
+                              <button
+                                key={id}
+                                type="button"
+                                className={`chat-switch-btn${activeChatPatientId === id ? ' active' : ''}`}
+                                onClick={() => setActiveChatPatientId(id)}
+                              >
+                                <img src={p.avatar} alt={p.name} />
+                                <span>{p.name}</span>
+                              </button>
+                            )
+                          })}
+                      </div>
+                    )}
+
+                    <div className="chat-card">
+                      <ChatMessages
+                        messages={patientChats[activeChatPatientId] ?? []}
+                        loading={chatLoading}
+                        patientAvatar={findPatient(activeChatPatientId)?.avatar ?? ''}
+                        patientName={findPatient(activeChatPatientId)?.name ?? ''}
+                      />
+                      <div className="chat-card-footer">
+                        <ChatInput onSend={handleSendQuestion} disabled={chatLoading} />
+                        <p className="disclaimer">
+                          As respostas são baseadas apenas no material informado e não substituem orientação profissional de saúde.
+                        </p>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+
+            {/* ── Material original tab ──────────────────────────────── */}
+            {activeTab === 'original' && anyResult && (
+              <div className="original-material-card">
+                <div className="original-material-header">Material de referência</div>
+                {originalPdfUrl ? (
+                  <embed src={originalPdfUrl} type="application/pdf" className="original-pdf-embed" />
+                ) : (
+                  <div className="original-material-text">
+                    {anyResult.originalText
+                      .split(/\n{2,}/)
+                      .filter(p => p.trim().length > 0)
+                      .map((p, i) => <p key={i}>{p.trim()}</p>)}
+                  </div>
+                )}
+              </div>
+            )}
           </>
         )}
       </main>

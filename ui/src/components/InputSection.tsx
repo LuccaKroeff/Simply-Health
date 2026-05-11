@@ -6,10 +6,11 @@ interface Props {
   withImages: boolean
   onImagesChange: (v: boolean) => void
   onSubmit: (input: { text: string } | { file: File }) => void
+  onFileAutoSubmit: (file: File) => void
   disabled: boolean
 }
 
-export default function InputSection({ withImages, onImagesChange, onSubmit, disabled }: Props) {
+export default function InputSection({ withImages, onImagesChange, onSubmit, onFileAutoSubmit, disabled }: Props) {
   const [mode, setMode] = useState<Mode>('text')
   const [text, setText] = useState('')
   const [file, setFile] = useState<File | null>(null)
@@ -25,7 +26,9 @@ export default function InputSection({ withImages, onImagesChange, onSubmit, dis
   }
 
   function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
-    setFile(e.target.files?.[0] ?? null)
+    const selected = e.target.files?.[0] ?? null
+    setFile(selected)
+    if (selected) onFileAutoSubmit(selected)
   }
 
   return (

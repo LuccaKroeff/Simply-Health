@@ -150,6 +150,7 @@
   cursor: pointer;
   text-align: center;
   flex: 1;
+  position: relative;
   transition: border-color 0.18s, background 0.18s, box-shadow 0.18s, transform 0.18s;
 }
 
@@ -632,6 +633,86 @@
   padding: 0.875rem 1.125rem;
   font-size: 0.875rem;
   color: var(--red);
+}
+
+/* ─── Chat tabs ──────────────────────────────────────── */
+
+.chat-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: -0.25rem;
+}
+
+.chat-tab {
+  padding: 0.5rem 1.125rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.chat-tab:hover { color: var(--text); }
+.chat-tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+
+/* ─── Original material panel ─────────────────────────── */
+
+.original-material-card {
+  background: var(--surface);
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+}
+
+.original-material-header {
+  padding: 0.875rem 1.25rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  border-bottom: 1px solid var(--border);
+}
+
+.original-pdf-embed {
+  display: block;
+  width: 100%;
+  height: 72vh;
+  border: none;
+}
+
+.original-material-text {
+  padding: 1.25rem 1.5rem 1.5rem;
+  font-size: 0.88rem;
+  font-family: inherit;
+  line-height: 1.8;
+  color: var(--text-muted);
+  word-break: break-word;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.original-material-text p {
+  margin-bottom: 0.875rem;
+}
+
+.original-material-text p:last-child {
+  margin-bottom: 0;
+}
+
+/* ─── Thinking message ────────────────────────────────── */
+
+.thinking-status {
+  font-size: 0.78rem;
+  color: var(--text-faint);
+  font-style: italic;
+  margin-bottom: 0.35rem;
 }
 
 /* ─── Chat phase header ───────────────────────────────── */
@@ -1247,4 +1328,283 @@
   border-top-color: var(--text-muted);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
+}
+
+/* ─── Multi-patient layout ────────────────────────────── */
+
+.app-main {
+  max-width: 1300px;
+}
+
+/* ─── Patient selector (multi-select) ────────────────── */
+
+.patient-selector-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.patient-selector-header .section-label {
+  margin-bottom: 0;
+}
+
+.patient-selection-hint {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--blue);
+  background: var(--blue-light);
+  border: 1px solid var(--blue-border);
+  border-radius: 20px;
+  padding: 0.2rem 0.625rem;
+}
+
+.patient-check {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.4);
+}
+
+/* ─── Chat header — multiple patient pills ────────────── */
+
+.chat-header-patients {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.chat-header-patients .chat-patient-pill {
+  margin-left: 0;
+}
+
+/* ─── Comparison grid ─────────────────────────────────── */
+
+.comparison-grid {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+}
+
+/* ─── Patient result card ─────────────────────────────── */
+
+.patient-result-card {
+  flex: 1;
+  min-width: 0;
+  background: var(--surface);
+  border-radius: 16px;
+  border: 1.5px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.patient-result-card.chat-active {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1), var(--shadow-sm);
+}
+
+.patient-result-header {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  flex-shrink: 0;
+}
+
+.patient-result-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.patient-result-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.patient-result-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.patient-result-info strong {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.patient-result-info > span:not(.patient-badge) {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.patient-result-body {
+  flex: 1;
+  min-height: 0;
+}
+
+.grid-2 .patient-result-body,
+.grid-3 .patient-result-body {
+  max-height: 680px;
+  overflow-y: auto;
+}
+
+.patient-result-questions {
+  padding: 0.875rem 1rem 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.patient-result-footer {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--border);
+  background: var(--surface-2);
+  flex-shrink: 0;
+}
+
+/* Scoped overrides: chat-bubble inside a result card */
+.patient-result-card .chat-bubble {
+  border-radius: 0;
+  box-shadow: none;
+  border: none;
+  padding: 1rem 1.125rem;
+}
+
+.patient-result-card .chat-bubble::before {
+  display: none;
+}
+
+/* ─── Status badges ───────────────────────────────────── */
+
+.status-badge {
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.status-processing {
+  background: var(--blue-light);
+  color: var(--blue);
+  border: 1px solid var(--blue-border);
+}
+
+.status-approved {
+  background: var(--green-light);
+  color: var(--green);
+  border: 1px solid #a7f3d0;
+}
+
+.status-error {
+  background: var(--red-light);
+  color: var(--red);
+  border: 1px solid #fecaca;
+}
+
+/* ─── Patient chat button ─────────────────────────────── */
+
+.patient-chat-btn {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  text-align: center;
+}
+
+.patient-chat-btn:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+  background: var(--blue-light);
+}
+
+.patient-chat-btn.active {
+  border-color: var(--blue);
+  background: var(--blue-light);
+  color: var(--blue);
+  font-weight: 600;
+}
+
+/* ─── Chat patient switcher ───────────────────────────── */
+
+.chat-patient-switcher {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.chat-switch-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.875rem 0.4rem 0.45rem;
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: border-color 0.15s, color 0.15s, background 0.15s, box-shadow 0.15s;
+  box-shadow: var(--shadow-xs);
+}
+
+.chat-switch-btn img {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top;
+  flex-shrink: 0;
+}
+
+.chat-switch-btn:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+  background: var(--blue-light);
+}
+
+.chat-switch-btn.active {
+  border-color: var(--blue);
+  background: var(--blue-light);
+  color: var(--blue);
+  font-weight: 600;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }

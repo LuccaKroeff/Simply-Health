@@ -1,3 +1,12 @@
+export type PatientResultStatus = 'processing' | 'approved' | 'error'
+
+export interface PatientResult {
+  status: PatientResultStatus
+  simplifyResult: SimplifyResponse | null
+  questions: Question[] | null
+  error: string | null
+}
+
 export type EducationLevel = 'fundamental' | 'medio' | 'superior'
 export type LiteracyLevel = 'low' | 'medium' | 'high'
 
