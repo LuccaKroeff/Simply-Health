@@ -38,7 +38,7 @@ const buildPatientSection = (patient: PatientProfile): string[] => [
 const RULES_SECTION = [
   '## Regras obrigatórias',
   '1. PRESERVE alertas de segurança, instruções práticas essenciais e orientações sobre quando buscar atendimento médico.',
-  '2. Seja muito conciso. O texto final deve ter no máximo 150 palavras. Selecione apenas as 3 a 5 informações mais importantes e úteis para o paciente no dia a dia. Descarte detalhes técnicos secundários.',
+  '2. Seja muito conciso. O texto final deve ter no máximo 400 palavras. Selecione apenas as 3 a 5 informações mais importantes e úteis para o paciente no dia a dia. Descarte detalhes técnicos secundários.',
   '3. Substitua termos técnicos por equivalentes simples, seguidos da explicação entre parênteses quando necessário.',
   '4. Use frases curtas e diretas.',
   '5. Mantenha a estrutura lógica do texto original (listas, passos, seções).',

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import type { PatientResult, Question, ChatMessage } from './types'
 import { simplifyText, generateQuestions, chatQuestion } from './api'
 import { findPatient } from './data/patients'
@@ -30,8 +30,14 @@ export default function App() {
   const genRef = useRef(0)
 
   // ── Computed ──────────────────────────────────────────────────────────────
-  const isProcessing = Object.values(patientResults).some(r => r.status === 'processing')
-  const anyResult = Object.values(patientResults).find(r => r.simplifyResult)?.simplifyResult ?? null
+  const isProcessing = useMemo(
+    () => Object.values(patientResults).some(r => r.status === 'processing'),
+    [patientResults],
+  )
+  const anyResult = useMemo(
+    () => Object.values(patientResults).find(r => r.simplifyResult)?.simplifyResult ?? null,
+    [patientResults],
+  )
 
   // ── Processing ────────────────────────────────────────────────────────────
   async function handleUnderstand(input: { text: string } | { file: File }) {
@@ -175,7 +181,7 @@ export default function App() {
     }
   }
 
-  function handleReset() {
+  const handleReset = useCallback(function handleReset() {
     genRef.current++
     setPhase('initial')
     setPatientResults({})
@@ -185,7 +191,7 @@ export default function App() {
     setFileError(null)
     setActiveTab('chat')
     setOriginalPdfUrl(prev => { if (prev) URL.revokeObjectURL(prev); return null })
-  }
+  }, [])
 
   // ── Render ────────────────────────────────────────────────────────────────
   const multiPatient = selectedPatientIds.length > 1

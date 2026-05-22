@@ -185,7 +185,7 @@ Edite o `.env`:
 
 ```env
 ANTHROPIC_API_KEY=your-api-key-here   # Obrigatório apenas para o provider Claude
-PORT=3000                              # Porta do servidor (padrão: 3000)
+PORT=5172                              # Porta do servidor (padrão: 5172)
 LLM_PROVIDER=mock                      # "mock" ou "claude"
 ```
 

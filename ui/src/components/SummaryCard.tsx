@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { memo, useMemo, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { useTtsPlayer } from '../hooks/useTtsPlayer'
 import type { SimplifyResponse, ExtractedImage } from '../types'
@@ -9,9 +9,14 @@ interface Props {
   result: SimplifyResponse
 }
 
-export default function SummaryCard({ result }: Props) {
+export default memo(function SummaryCard({ result }: Props) {
   const [glossaryOpen, setGlossaryOpen] = useState(false)
   const { play, playingKey, loadingKey } = useTtsPlayer()
+
+  const renderedText = useMemo(
+    () => renderTextWithImages(result.simplifiedText, result.images ?? []),
+    [result.simplifiedText, result.images],
+  )
 
   return (
     <div className="chat-bubble">
@@ -27,7 +32,7 @@ export default function SummaryCard({ result }: Props) {
         </span>
       </div>
 
-      <div className="bubble-text">{renderTextWithImages(result.simplifiedText, result.images ?? [])}</div>
+      <div className="bubble-text">{renderedText}</div>
 
       <div className="summary-actions">
         <PlayButton
@@ -60,7 +65,7 @@ export default function SummaryCard({ result }: Props) {
       )}
     </div>
   )
-}
+})
 
 function renderTextWithImages(text: string, images: ExtractedImage[]) {
   let processed = text
