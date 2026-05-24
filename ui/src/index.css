@@ -231,9 +231,39 @@
   border: 1px solid var(--border);
 }
 
-.patient-badge.literacy-low    { background: #fff7ed; color: #c2410c; border-color: #fed7aa; }
-.patient-badge.literacy-medium { background: #fefce8; color: #a16207; border-color: #fde68a; }
-.patient-badge.literacy-high   { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
+.patient-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.3rem;
+  margin-top: 0.5rem;
+}
+
+.patient-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  overflow: hidden;
+  font-size: 0.7rem;
+}
+
+.patient-chip-label {
+  padding: 0.18rem 0.45rem;
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: #edf0f4;
+  border-right: 1px solid var(--border);
+}
+
+.patient-chip-value {
+  padding: 0.18rem 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--text);
+}
 
 /* ─── Input section ───────────────────────────────────── */
 
@@ -341,6 +371,47 @@
 .input-options {
   display: flex;
   gap: 1rem;
+  align-items: center;
+}
+
+.detail-level-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+
+.detail-level-tabs {
+  display: flex;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--surface-2);
+}
+
+.detail-level-tab {
+  padding: 0.3rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.detail-level-tab + .detail-level-tab {
+  border-left: 1.5px solid var(--border);
+}
+
+.detail-level-tab.active {
+  background: var(--blue);
+  color: white;
+}
+
+.detail-level-tab:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .glossary-toggle {
@@ -1514,6 +1585,7 @@
 }
 
 .modal {
+  position: relative;
   background: var(--surface);
   border-radius: 20px;
   padding: 2rem 2rem 1.5rem;
@@ -1531,6 +1603,29 @@
 @keyframes modal-in {
   from { opacity: 0; transform: translateY(12px) scale(0.97); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+}
+
+.modal-close:hover {
+  background: var(--surface-2);
+  color: var(--text);
 }
 
 .modal-icon {

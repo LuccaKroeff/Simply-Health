@@ -53,6 +53,7 @@ export class SimplifyController {
       patient,
       includeGlossary: dto.glossary,
       includeImages: dto.includeImages,
+      detailLevel: dto.detailLevel,
     })
   }
 

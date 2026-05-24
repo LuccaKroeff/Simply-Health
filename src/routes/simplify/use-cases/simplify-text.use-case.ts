@@ -6,7 +6,7 @@ import { FidelityGuardrailService } from '@src/core/services/guardrail/fidelity-
 import { FileInput, LLMProvider } from '@src/core/services/llm/llm-provider.interface'
 import { PdfImageExtractorService } from '@src/core/services/pdf-image-extractor/pdf-image-extractor.service'
 import { TextExtractorService } from '@src/core/services/text-extractor/text-extractor.service'
-import { buildSimplifyPrompt } from '@src/prompts/simplify-prompt'
+import { buildSimplifyPrompt, DetailLevel } from '@src/prompts/simplify-prompt'
 import { PatientProfile } from '@src/types/patient'
 import { GuardrailResult } from '@src/types/guardrail'
 import { SimplifyResponse } from '@src/types/simplification'
@@ -21,6 +21,7 @@ interface SimplifyTextParams {
   patient: PatientProfile
   includeGlossary: boolean
   includeImages: boolean
+  detailLevel: DetailLevel
 }
 
 @Injectable()
@@ -35,8 +36,8 @@ export class SimplifyTextUseCase {
     @Optional() @Inject(TEXT_COMPLEXITY_ANALYZER) private readonly complexityAnalyzer: TextComplexityAnalyzer | null,
   ) {}
 
-  async exec({ text, file, patient, includeGlossary, includeImages }: SimplifyTextParams): Promise<SimplifyResponse> {
-    const systemPrompt = buildSimplifyPrompt(patient, includeGlossary)
+  async exec({ text, file, patient, includeGlossary, includeImages, detailLevel }: SimplifyTextParams): Promise<SimplifyResponse> {
+    const systemPrompt = buildSimplifyPrompt(patient, includeGlossary, detailLevel)
     const startTime = Date.now()
 
     this.logger.log(`Simplificando para paciente "${patient.name}" via ${this.llmProvider.name}`)

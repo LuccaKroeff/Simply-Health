@@ -1,4 +1,7 @@
 import type { PatientProfile } from '@src/types/patient'
+import { inferLiteracyDescription } from '@src/types/patient'
+
+export type DetailLevel = 'short' | 'medium' | 'detailed'
 
 const EDUCATION_DESCRIPTIONS: Record<PatientProfile['educationLevel'], string> = {
   fundamental:
@@ -9,11 +12,13 @@ const EDUCATION_DESCRIPTIONS: Record<PatientProfile['educationLevel'], string> =
     'O paciente possui ensino superior. Pode usar linguagem mais elaborada, mas ainda simplifique jargão médico muito especializado.',
 }
 
-const LITERACY_DESCRIPTIONS: Record<PatientProfile['healthLiteracyLevel'], string> = {
-  low: 'O paciente tem baixa literacia em saúde. Não conhece terminologia médica. Cada termo técnico deve ser explicado com analogias do cotidiano.',
-  medium:
-    "O paciente tem literacia média em saúde. Conhece termos básicos como 'inflamação', 'infecção', mas não termos especializados.",
-  high: 'O paciente tem boa literacia em saúde. Entende a maioria dos termos médicos comuns, mas prefere linguagem direta.',
+const COMORBIDITY_EMPHASIS: Record<NonNullable<PatientProfile['comorbidities']>[number], string> = {
+  cardiovascular:
+    'O paciente tem comorbidade cardiovascular (ex: hipertensão, insuficiência cardíaca). Se o texto contiver recomendações, riscos ou cuidados específicos para esse grupo, dê ênfase especial a essas informações.',
+  respiratory:
+    'O paciente tem comorbidade respiratória (ex: asma, DPOC). Se o texto contiver recomendações ou alertas específicos para esse grupo, destaque-os claramente.',
+  diabetes:
+    'O paciente tem diabetes. Se o texto mencionar recomendações sobre glicemia, dieta, medicação ou pé diabético, dê ênfase especial a essas orientações.',
 }
 
 const getAgeGuidance = (age: number): string => {
@@ -25,20 +30,35 @@ const getAgeGuidance = (age: number): string => {
   return 'O paciente é menor de idade. Use um tom amigável e simples, como se falasse com um adolescente ou criança. Pode usar analogias.'
 }
 
-const buildPatientSection = (patient: PatientProfile): string[] => [
-  '## Perfil do paciente',
-  `- Nome: ${patient.name}`,
-  `- Idade: ${patient.age} anos`,
-  `- Escolaridade: ${patient.educationLevel}`,
-  `- ${EDUCATION_DESCRIPTIONS[patient.educationLevel]}`,
-  `- ${LITERACY_DESCRIPTIONS[patient.healthLiteracyLevel]}`,
-  `- ${getAgeGuidance(patient.age)}`,
-]
+const buildPatientSection = (patient: PatientProfile): string[] => {
+  const lines = [
+    '## Perfil do paciente',
+    `- Nome: ${patient.name.split(' ')[0]}`,
+    `- Idade: ${patient.age} anos`,
+    `- Escolaridade: ${patient.educationLevel}`,
+    `- ${EDUCATION_DESCRIPTIONS[patient.educationLevel]}`,
+    `- ${inferLiteracyDescription(patient.educationLevel, patient.educationArea)}`,
+    `- ${getAgeGuidance(patient.age)}`,
+  ]
 
-const RULES_SECTION = [
+  patient.comorbidities?.forEach(c => lines.push(`- ${COMORBIDITY_EMPHASIS[c]}`))
+
+  return lines
+}
+
+const CONCISENESS_RULE: Record<DetailLevel, string> = {
+  short:
+    '2. Seja extremamente conciso. O texto final deve ter no máximo 150 palavras. Selecione apenas as 2 a 3 informações mais críticas para o paciente. Descarte tudo que não for absolutamente essencial para o dia a dia.',
+  medium:
+    '2. Seja conciso. O texto final deve ter no máximo 400 palavras. Selecione apenas as 3 a 5 informações mais importantes e úteis para o paciente no dia a dia. Descarte detalhes técnicos secundários.',
+  detailed:
+    '2. Faça um resumo completo e estruturado do texto, sem limite de palavras. Preserve todas as informações clinicamente relevantes: dosagens, instruções de uso, contraindicações, efeitos adversos e orientações de acompanhamento. Organize o conteúdo em seções claras quando o texto original tiver múltiplos tópicos.',
+}
+
+const buildRulesSection = (detailLevel: DetailLevel): string[] => [
   '## Regras obrigatórias',
   '1. PRESERVE alertas de segurança, instruções práticas essenciais e orientações sobre quando buscar atendimento médico.',
-  '2. Seja muito conciso. O texto final deve ter no máximo 400 palavras. Selecione apenas as 3 a 5 informações mais importantes e úteis para o paciente no dia a dia. Descarte detalhes técnicos secundários.',
+  CONCISENESS_RULE[detailLevel],
   '3. Substitua termos técnicos por equivalentes simples, seguidos da explicação entre parênteses quando necessário.',
   '4. Use frases curtas e diretas.',
   '5. Mantenha a estrutura lógica do texto original (listas, passos, seções).',
@@ -63,11 +83,15 @@ const RESPONSE_FORMAT_SECTION = [
   'Responda APENAS com o texto simplificado (e o glossário se solicitado). Não inclua comentários, explicações sobre o processo ou metadados.',
 ]
 
-export const buildSimplifyPrompt = (patient: PatientProfile, includeGlossary: boolean): string =>
+export const buildSimplifyPrompt = (
+  patient: PatientProfile,
+  includeGlossary: boolean,
+  detailLevel: DetailLevel = 'medium',
+): string =>
   [
     'Você é um especialista em comunicação em saúde. Sua tarefa é reescrever textos médicos para torná-los mais acessíveis ao paciente descrito abaixo, SEM alterar o significado médico ou omitir informações importantes.',
     ...buildPatientSection(patient),
-    ...RULES_SECTION,
+    ...buildRulesSection(detailLevel),
     ...(includeGlossary ? ['', ...GLOSSARY_SECTION] : []),
     ...RESPONSE_FORMAT_SECTION,
   ].join('\n')

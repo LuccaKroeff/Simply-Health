@@ -1,5 +1,6 @@
 import { BadRequestException } from '@nestjs/common'
 import { PatientProfile } from '@src/types/patient'
+import { DetailLevel } from '@src/prompts/simplify-prompt'
 
 export interface SimplifyRequestDto {
   text?: string
@@ -7,10 +8,13 @@ export interface SimplifyRequestDto {
   patientProfile?: PatientProfile
   glossary: boolean
   includeImages: boolean
+  detailLevel: DetailLevel
 }
 
 const VALID_EDUCATION_LEVELS = ['fundamental', 'medio', 'superior']
-const VALID_LITERACY_LEVELS = ['low', 'medium', 'high']
+const VALID_COMORBIDITIES = ['cardiovascular', 'respiratory', 'diabetes']
+const VALID_EDUCATION_AREAS = ['health', 'technology', 'humanities', 'business', 'education', 'other']
+const VALID_DETAIL_LEVELS: DetailLevel[] = ['short', 'medium', 'detailed']
 
 function validatePatientProfile(profile: unknown): asserts profile is PatientProfile {
   if (typeof profile !== 'object' || profile === null) {
@@ -31,13 +35,18 @@ function validatePatientProfile(profile: unknown): asserts profile is PatientPro
   if (!VALID_EDUCATION_LEVELS.includes(p.educationLevel as string)) {
     throw new BadRequestException('patientProfile.educationLevel deve ser: fundamental, medio ou superior.')
   }
-  if (!VALID_LITERACY_LEVELS.includes(p.healthLiteracyLevel as string)) {
-    throw new BadRequestException('patientProfile.healthLiteracyLevel deve ser: low, medium ou high.')
+  if (p.comorbidities !== undefined) {
+    if (!Array.isArray(p.comorbidities) || !p.comorbidities.every(c => VALID_COMORBIDITIES.includes(c as string))) {
+      throw new BadRequestException('patientProfile.comorbidities deve ser um array com: cardiovascular, respiratory, diabetes.')
+    }
+  }
+  if (p.educationArea !== undefined && !VALID_EDUCATION_AREAS.includes(p.educationArea as string)) {
+    throw new BadRequestException('patientProfile.educationArea deve ser: health, technology, humanities, business, education ou other.')
   }
 }
 
 export function validateSimplifyRequest(body: Record<string, unknown>): SimplifyRequestDto {
-  const { text, patientId, patientProfile, glossary, includeImages } = body
+  const { text, patientId, patientProfile, glossary, includeImages, detailLevel } = body
 
   if (text !== undefined && (typeof text !== 'string' || text.length === 0)) {
     throw new BadRequestException('Campo "text" deve ser uma string não vazia.')
@@ -55,11 +64,15 @@ export function validateSimplifyRequest(body: Record<string, unknown>): Simplify
     throw new BadRequestException('Informe patientId ou patientProfile.')
   }
 
+  const resolvedDetailLevel: DetailLevel =
+    VALID_DETAIL_LEVELS.includes(detailLevel as DetailLevel) ? (detailLevel as DetailLevel) : 'medium'
+
   return {
     text: text as string | undefined,
     patientId: patientId as string | undefined,
     patientProfile: patientProfile as PatientProfile | undefined,
     glossary: glossary === true || glossary === 'true',
     includeImages: includeImages === true || includeImages === 'true',
+    detailLevel: resolvedDetailLevel,
   }
 }

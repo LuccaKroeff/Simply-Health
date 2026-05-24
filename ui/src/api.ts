@@ -1,4 +1,4 @@
-import type { SimplifyResponse, QuestionsResponse, ChatMessage, ChatResponse } from './types'
+import type { SimplifyResponse, QuestionsResponse, ChatMessage, ChatResponse, DetailLevel } from './types'
 
 async function postForm(path: string, body: FormData): Promise<Response> {
   const res = await fetch(path, { method: 'POST', body })
@@ -27,11 +27,13 @@ export async function simplifyText(
   patientId: string,
   withGlossary: boolean,
   withImages: boolean,
+  detailLevel: DetailLevel = 'medium',
 ): Promise<SimplifyResponse> {
   const body = new FormData()
   body.append('patientId', patientId)
   body.append('glossary', String(withGlossary))
   body.append('includeImages', String(withImages))
+  body.append('detailLevel', detailLevel)
   if ('file' in input) {
     body.append('file', input.file)
   } else {

@@ -6,21 +6,23 @@ export const mockPatients: readonly PatientProfile[] = [
     name: 'Maria Silva',
     age: 68,
     educationLevel: 'fundamental',
-    healthLiteracyLevel: 'low',
+    comorbidities: ['cardiovascular'],
+    educationArea: 'other',
   },
   {
     id: 'patient-2',
     name: 'Carlos Oliveira',
     age: 45,
     educationLevel: 'medio',
-    healthLiteracyLevel: 'medium',
+    comorbidities: ['diabetes'],
+    educationArea: 'business',
   },
   {
     id: 'patient-3',
     name: 'Ana Souza',
     age: 30,
     educationLevel: 'superior',
-    healthLiteracyLevel: 'high',
+    educationArea: 'health',
   },
 ]
 

@@ -8,14 +8,23 @@ export interface PatientResult {
 }
 
 export type EducationLevel = 'fundamental' | 'medio' | 'superior'
-export type LiteracyLevel = 'low' | 'medium' | 'high'
+export type DetailLevel = 'short' | 'medium' | 'detailed'
+export type Comorbidity = 'cardiovascular' | 'respiratory' | 'diabetes'
+export type EducationArea =
+  | 'health'
+  | 'technology'
+  | 'humanities'
+  | 'business'
+  | 'education'
+  | 'other'
 
 export interface Patient {
   id: string
   name: string
   age: number
   educationLevel: EducationLevel
-  healthLiteracyLevel: LiteracyLevel
+  comorbidities?: Comorbidity[]
+  educationArea?: EducationArea
 }
 
 export interface GlossaryEntry {

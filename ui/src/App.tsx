@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
-import type { PatientResult, Question, ChatMessage } from './types'
+import type { PatientResult, Question, ChatMessage, DetailLevel } from './types'
 import { simplifyText, generateQuestions, chatQuestion } from './api'
 import { findPatient } from './data/patients'
 import PatientSelector from './components/PatientSelector'
@@ -16,6 +16,7 @@ export default function App() {
   const [phase, setPhase] = useState<Phase>('initial')
   const [selectedPatientIds, setSelectedPatientIds] = useState<string[]>(['patient-1'])
   const [withImages, setWithImages] = useState(false)
+  const [detailLevel, setDetailLevel] = useState<DetailLevel>('medium')
   const [activeTab, setActiveTab] = useState<Tab>('chat')
 
   const [patientResults, setPatientResults] = useState<Record<string, PatientResult>>({})
@@ -40,7 +41,7 @@ export default function App() {
   )
 
   // ── Processing ────────────────────────────────────────────────────────────
-  async function handleUnderstand(input: { text: string } | { file: File }) {
+  async function handleUnderstand(input: { text: string } | { file: File }, includeImagesOverride?: boolean) {
     const genId = ++genRef.current
     setFileError(null)
     setLastInput(input)
@@ -64,16 +65,18 @@ export default function App() {
     setActiveTab('chat')
     setPhase('chat')
 
-    await Promise.all(selectedPatientIds.map(id => processOnePatient(id, input, genId)))
+    const effectiveIncludeImages = includeImagesOverride ?? withImages
+    await Promise.all(selectedPatientIds.map(id => processOnePatient(id, input, genId, effectiveIncludeImages)))
   }
 
   async function processOnePatient(
     patientId: string,
     input: { text: string } | { file: File },
     genId: number,
+    includeImages: boolean,
   ) {
     try {
-      const result = await simplifyText(input, patientId, true, withImages)
+      const result = await simplifyText(input, patientId, true, includeImages, detailLevel)
       if (genRef.current !== genId) return
 
       setPatientResults(prev => ({
@@ -127,7 +130,7 @@ export default function App() {
       ...prev,
       [patientId]: { status: 'processing', simplifyResult: null, questions: null, error: null },
     }))
-    await processOnePatient(patientId, lastInput, genId)
+    await processOnePatient(patientId, lastInput, genId, withImages)
   }
 
   // ── Chat ──────────────────────────────────────────────────────────────────
@@ -221,8 +224,10 @@ export default function App() {
             <InputSection
               withImages={withImages}
               onImagesChange={setWithImages}
+              detailLevel={detailLevel}
+              onDetailLevelChange={setDetailLevel}
               onSubmit={handleUnderstand}
-              onFileAutoSubmit={file => handleUnderstand({ file })}
+              onFileAutoSubmit={(file, includeImages) => handleUnderstand({ file }, includeImages)}
               disabled={isProcessing || selectedPatientIds.length === 0}
             />
             {fileError && (

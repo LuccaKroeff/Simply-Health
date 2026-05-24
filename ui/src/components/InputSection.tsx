@@ -1,16 +1,25 @@
 import { useState, useRef, type ChangeEvent, type FormEvent } from 'react'
+import type { DetailLevel } from '../types'
 
 type Mode = 'text' | 'file'
 
 interface Props {
   withImages: boolean
   onImagesChange: (v: boolean) => void
+  detailLevel: DetailLevel
+  onDetailLevelChange: (v: DetailLevel) => void
   onSubmit: (input: { text: string } | { file: File }) => void
-  onFileAutoSubmit: (file: File) => void
+  onFileAutoSubmit: (file: File, includeImages: boolean) => void
   disabled: boolean
 }
 
-export default function InputSection({ onImagesChange, onSubmit, onFileAutoSubmit, disabled }: Props) {
+const DETAIL_LEVEL_OPTIONS: { value: DetailLevel; label: string }[] = [
+  { value: 'short', label: 'Curto' },
+  { value: 'medium', label: 'Médio' },
+  { value: 'detailed', label: 'Completo' },
+]
+
+export default function InputSection({ onImagesChange, detailLevel, onDetailLevelChange, onSubmit, onFileAutoSubmit, disabled }: Props) {
   const [mode, setMode] = useState<Mode>('text')
   const [text, setText] = useState('')
   const [file, setFile] = useState<File | null>(null)
@@ -22,7 +31,13 @@ export default function InputSection({ onImagesChange, onSubmit, onFileAutoSubmi
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
     if (mode === 'text' && text.trim()) onSubmit({ text: text.trim() })
-    else if (mode === 'file' && file) onSubmit({ file })
+    else if (mode === 'file' && file) {
+      if (file.type === 'application/pdf') {
+        setPendingPdf(file)
+      } else {
+        onSubmit({ file })
+      }
+    }
   }
 
   function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
@@ -32,13 +47,13 @@ export default function InputSection({ onImagesChange, onSubmit, onFileAutoSubmi
     if (selected.type === 'application/pdf') {
       setPendingPdf(selected)
     } else {
-      onFileAutoSubmit(selected)
+      onFileAutoSubmit(selected, false)
     }
   }
 
   function confirmPdf(includeImages: boolean) {
     onImagesChange(includeImages)
-    if (pendingPdf) onFileAutoSubmit(pendingPdf)
+    if (pendingPdf) onFileAutoSubmit(pendingPdf, includeImages)
     setPendingPdf(null)
   }
 
@@ -94,7 +109,24 @@ export default function InputSection({ onImagesChange, onSubmit, onFileAutoSubmi
         )}
 
         <div className="input-footer">
-          <div className="input-options" />
+          <div className="input-options">
+            <div className="detail-level-selector">
+              <span className="section-label">Detalhamento</span>
+              <div className="detail-level-tabs">
+                {DETAIL_LEVEL_OPTIONS.map(opt => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    className={`detail-level-tab${detailLevel === opt.value ? ' active' : ''}`}
+                    onClick={() => onDetailLevelChange(opt.value)}
+                    disabled={disabled}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
           <button type="submit" className="submit-btn" disabled={disabled || !canSubmit}>
             {disabled ? 'Processando...' : 'Simplificar'}
           </button>
@@ -104,6 +136,7 @@ export default function InputSection({ onImagesChange, onSubmit, onFileAutoSubmi
       {pendingPdf && (
         <div className="modal-overlay" onClick={() => setPendingPdf(null)}>
           <div className="modal" onClick={e => e.stopPropagation()}>
+            <button type="button" className="modal-close" onClick={() => setPendingPdf(null)} aria-label="Fechar">✕</button>
             <div className="modal-icon">🖼️</div>
             <h3 className="modal-title">Incluir imagens do PDF?</h3>
             <p className="modal-body">

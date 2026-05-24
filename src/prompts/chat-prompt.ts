@@ -1,4 +1,5 @@
 import { PatientProfile } from '@src/types/patient'
+import { inferLiteracyDescription } from '@src/types/patient'
 
 export const CHAT_SYSTEM_PROMPT_MARKER = 'ASSISTENTE DE COMPREENSÃO DO PLANO DE CUIDADO'
 
@@ -9,11 +10,7 @@ export function buildChatSystemPrompt(patient: PatientProfile, originalText: str
     superior: 'Pode usar linguagem mais elaborada. Explique termos específicos quando necessário.',
   }[patient.educationLevel]
 
-  const literacyDesc = {
-    low: 'Explique cada termo técnico com uma analogia simples. Evite jargões.',
-    medium: 'Termos básicos como "inflamação" são conhecidos. Explique os mais especializados.',
-    high: 'O paciente entende a maioria dos termos médicos. Prefira respostas diretas.',
-  }[patient.healthLiteracyLevel]
+  const literacyDesc = inferLiteracyDescription(patient.educationLevel, patient.educationArea)
 
   const ageDesc =
     patient.age >= 60
@@ -40,9 +37,9 @@ Você é um assistente de compreensão do plano de cuidado. Você ajuda o pacien
 
 ## Perfil do paciente
 
-Nome: ${patient.name}, ${patient.age} anos.
+Nome: ${patient.name.split(' ')[0]}, ${patient.age} anos.
 Escolaridade: ${educationDesc}
-Letramento em saúde: ${literacyDesc}
+Contexto de literacia: ${literacyDesc}
 Orientação de tom: ${ageDesc}
 
 ## Texto de referência

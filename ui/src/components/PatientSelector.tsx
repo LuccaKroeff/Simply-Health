@@ -39,9 +39,23 @@ export default function PatientSelector({ value, onChange, disabled }: Props) {
               <div className="patient-info">
                 <strong className="patient-name">{p.name}</strong>
                 <span className="patient-age">{p.age} anos</span>
-                <div className="patient-badges">
-                  <span className="patient-badge">{p.educationLabel}</span>
-                  <span className={`patient-badge literacy-${p.literacyLevel}`}>{p.literacyLabel}</span>
+                <div className="patient-chips">
+                  <div className="patient-chip">
+                    <span className="patient-chip-label">Escolaridade</span>
+                    <span className="patient-chip-value">{p.educationLabel}</span>
+                  </div>
+                  {p.educationAreaLabel && (
+                    <div className="patient-chip">
+                      <span className="patient-chip-label">Área</span>
+                      <span className="patient-chip-value">{p.educationAreaLabel}</span>
+                    </div>
+                  )}
+                  {p.comorbiditiesLabels?.map(label => (
+                    <div key={label} className="patient-chip">
+                      <span className="patient-chip-label">Comorbidade</span>
+                      <span className="patient-chip-value">{label}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </button>

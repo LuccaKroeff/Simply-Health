@@ -13,7 +13,8 @@ const PATIENT: PatientProfile = {
   name: 'Maria',
   age: 50,
   educationLevel: 'medio',
-  healthLiteracyLevel: 'medium',
+  conditionGroup: 'general',
+  educationArea: 'other',
 }
 
 const ORIGINAL_TEXT = 'Tome 1 comprimido de metformina 500mg ao dia com refeição. Não interrompa sem orientação médica.'
