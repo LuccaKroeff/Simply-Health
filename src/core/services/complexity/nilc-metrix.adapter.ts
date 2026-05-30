@@ -21,10 +21,7 @@ export class NilcMetrixAdapter implements TextComplexityAnalyzer {
   }
 
   async compare(original: string, simplified: string): Promise<ComplexityComparison> {
-    const [origMetrics, simpMetrics] = await Promise.all([
-      this.callApi(original),
-      this.callApi(simplified),
-    ])
+    const [origMetrics, simpMetrics] = await Promise.all([this.callApi(original), this.callApi(simplified)])
     return computeMetricsComparison(origMetrics, simpMetrics, this.name) satisfies MetricsComparison
   }
 

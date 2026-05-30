@@ -52,7 +52,10 @@ export default function App() {
         return input.file.type === 'application/pdf' ? URL.createObjectURL(input.file) : null
       })
     } else {
-      setOriginalPdfUrl(prev => { if (prev) URL.revokeObjectURL(prev); return null })
+      setOriginalPdfUrl(prev => {
+        if (prev) URL.revokeObjectURL(prev)
+        return null
+      })
     }
 
     const initial: Record<string, PatientResult> = {}
@@ -193,7 +196,10 @@ export default function App() {
     setChatLoading(false)
     setFileError(null)
     setActiveTab('chat')
-    setOriginalPdfUrl(prev => { if (prev) URL.revokeObjectURL(prev); return null })
+    setOriginalPdfUrl(prev => {
+      if (prev) URL.revokeObjectURL(prev)
+      return null
+    })
   }, [])
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -216,11 +222,7 @@ export default function App() {
       <main className="container app-main">
         {phase === 'initial' && (
           <div className="panel">
-            <PatientSelector
-              value={selectedPatientIds}
-              onChange={setSelectedPatientIds}
-              disabled={isProcessing}
-            />
+            <PatientSelector value={selectedPatientIds} onChange={setSelectedPatientIds} disabled={isProcessing} />
             <InputSection
               withImages={withImages}
               onImagesChange={setWithImages}
@@ -231,7 +233,9 @@ export default function App() {
               disabled={isProcessing || selectedPatientIds.length === 0}
             />
             {fileError && (
-              <div className="error-banner"><strong>Erro:</strong> {fileError}</div>
+              <div className="error-banner">
+                <strong>Erro:</strong> {fileError}
+              </div>
             )}
           </div>
         )}
@@ -254,7 +258,9 @@ export default function App() {
                       </div>
                       <div className="chat-patient-info">
                         <span className="chat-patient-name">{p.name}</span>
-                        <span className="chat-patient-meta">{p.age} anos · {p.educationLabel}</span>
+                        <span className="chat-patient-meta">
+                          {p.age} anos · {p.educationLabel}
+                        </span>
                       </div>
                     </div>
                   )
@@ -263,7 +269,9 @@ export default function App() {
             </div>
 
             {fileError && (
-              <div className="error-banner"><strong>Erro:</strong> {fileError}</div>
+              <div className="error-banner">
+                <strong>Erro:</strong> {fileError}
+              </div>
             )}
 
             {/* ── Tabs ───────────────────────────────────────────────── */}
@@ -294,7 +302,14 @@ export default function App() {
                     <PatientResultCard
                       key={id}
                       patientId={id}
-                      result={patientResults[id] ?? { status: 'processing', simplifyResult: null, questions: null, error: null }}
+                      result={
+                        patientResults[id] ?? {
+                          status: 'processing',
+                          simplifyResult: null,
+                          questions: null,
+                          error: null,
+                        }
+                      }
                       chatActive={activeChatPatientId === id}
                       chatLoading={chatLoading}
                       showChatButton={multiPatient}
@@ -339,7 +354,8 @@ export default function App() {
                       <div className="chat-card-footer">
                         <ChatInput onSend={handleSendQuestion} disabled={chatLoading} />
                         <p className="disclaimer">
-                          As respostas são baseadas apenas no material informado e não substituem orientação profissional de saúde.
+                          As respostas são baseadas apenas no material informado e não substituem orientação
+                          profissional de saúde.
                         </p>
                       </div>
                     </div>
@@ -359,7 +375,9 @@ export default function App() {
                     {anyResult.originalText
                       .split(/\n{2,}/)
                       .filter(p => p.trim().length > 0)
-                      .map((p, i) => <p key={i}>{p.trim()}</p>)}
+                      .map((p, i) => (
+                        <p key={i}>{p.trim()}</p>
+                      ))}
                   </div>
                 )}
               </div>

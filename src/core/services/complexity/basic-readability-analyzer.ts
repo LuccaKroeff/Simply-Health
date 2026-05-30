@@ -69,7 +69,7 @@ export class BasicReadabilityAnalyzer implements TextComplexityAnalyzer {
   private fleschLabel(score: number): string {
     if (score >= 75) return 'Muito fácil'
     if (score >= 50) return 'Fácil'
-    if (score >= 25) return 'Difícil'
+    if (score >= 25) return 'Pouco difícil'
     return 'Muito difícil'
   }
 }

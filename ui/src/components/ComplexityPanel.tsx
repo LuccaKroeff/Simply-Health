@@ -19,13 +19,20 @@ export default function ComplexityPanel({ complexity }: Props) {
       {open && (
         <div className="complexity-body">
           <div className="complexity-disclaimer">
-            Estas métricas avaliam aspectos linguísticos do texto (comprimento de frases, sílabas) e não substituem avaliação de precisão médica.
+            Estas métricas avaliam aspectos linguísticos do texto (comprimento de frases, sílabas) e não substituem
+            avaliação de precisão médica.
           </div>
 
           <div className="complexity-grid">
             <div className="complexity-col">
               <div className="complexity-col-label">Texto original</div>
-              <MetricRow label="Flesch-PT" value={original.fleschScore} suffix="" badge={original.fleschLabel} badgeKind="neutral" />
+              <MetricRow
+                label="Flesch-PT"
+                value={original.fleschScore}
+                suffix=""
+                badge={original.fleschLabel}
+                badgeKind="neutral"
+              />
               <MetricRow label="Palavras/frase" value={original.avgWordsPerSentence} suffix="" />
               <MetricRow label="Palavras" value={original.wordCount} suffix="" />
               <MetricRow label="Frases" value={original.sentenceCount} suffix="" />
@@ -35,7 +42,13 @@ export default function ComplexityPanel({ complexity }: Props) {
 
             <div className="complexity-col">
               <div className="complexity-col-label">Texto simplificado</div>
-              <MetricRow label="Flesch-PT" value={simplified.fleschScore} suffix="" badge={simplified.fleschLabel} badgeKind="positive" />
+              <MetricRow
+                label="Flesch-PT"
+                value={simplified.fleschScore}
+                suffix=""
+                badge={simplified.fleschLabel}
+                badgeKind="positive"
+              />
               <MetricRow label="Palavras/frase" value={simplified.avgWordsPerSentence} suffix="" />
               <MetricRow label="Palavras" value={simplified.wordCount} suffix="" />
               <MetricRow label="Frases" value={simplified.sentenceCount} suffix="" />
@@ -62,7 +75,13 @@ export default function ComplexityPanel({ complexity }: Props) {
   )
 }
 
-function MetricRow({ label, value, suffix, badge, badgeKind }: {
+function MetricRow({
+  label,
+  value,
+  suffix,
+  badge,
+  badgeKind,
+}: {
   label: string
   value: number
   suffix: string
@@ -73,14 +92,20 @@ function MetricRow({ label, value, suffix, badge, badgeKind }: {
     <div className="metric-row">
       <span className="metric-label">{label}</span>
       <span className="metric-value">
-        {value}{suffix}
+        {value}
+        {suffix}
         {badge && <span className={`metric-badge metric-badge-${badgeKind ?? 'neutral'}`}>{badge}</span>}
       </span>
     </div>
   )
 }
 
-function GainChip({ label, value, positive, format }: {
+function GainChip({
+  label,
+  value,
+  positive,
+  format,
+}: {
   label: string
   value: number
   positive: boolean

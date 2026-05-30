@@ -35,6 +35,13 @@ const complexityProvider = {
     complexityProvider,
     ...guardrailServices,
   ],
-  exports: [LlmModule, TextExtractorService, PdfImageExtractorService, TtsService, complexityProvider, ...guardrailServices],
+  exports: [
+    LlmModule,
+    TextExtractorService,
+    PdfImageExtractorService,
+    TtsService,
+    complexityProvider,
+    ...guardrailServices,
+  ],
 })
 export class CoreModule {}

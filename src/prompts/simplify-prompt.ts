@@ -6,10 +6,8 @@ export type DetailLevel = 'short' | 'medium' | 'detailed'
 const EDUCATION_DESCRIPTIONS: Record<PatientProfile['educationLevel'], string> = {
   fundamental:
     'Use palavras simples do dia a dia, frases curtas e evite qualquer termo técnico. Explique conceitos como se falasse com alguém que nunca estudou sobre saúde.',
-  medio:
-    'Use linguagem acessível. Pode incluir termos básicos de saúde, desde que brevemente explicados.',
-  superior:
-    'Pode usar linguagem mais elaborada, mas ainda simplifique jargão médico muito especializado.',
+  medio: 'Use linguagem acessível. Pode incluir termos básicos de saúde, desde que brevemente explicados.',
+  superior: 'Pode usar linguagem mais elaborada, mas ainda simplifique jargão médico muito especializado.',
 }
 
 const COMORBIDITY_EMPHASIS: Record<NonNullable<PatientProfile['comorbidities']>[number], string> = {

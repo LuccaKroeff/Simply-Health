@@ -44,9 +44,7 @@ export default function ChatMessages({ messages, loading, patientAvatar, patient
             )}
             <div className="chat-msg-col">
               <div className="chat-msg-bubble">
-                {msg.role === 'assistant'
-                  ? <ReactMarkdown>{msg.content}</ReactMarkdown>
-                  : msg.content}
+                {msg.role === 'assistant' ? <ReactMarkdown>{msg.content}</ReactMarkdown> : msg.content}
               </div>
             </div>
             {msg.role === 'user' && (
@@ -65,7 +63,9 @@ export default function ChatMessages({ messages, loading, patientAvatar, patient
             </div>
           </div>
           <div className="chat-msg-bubble typing-indicator">
-            <span /><span /><span />
+            <span />
+            <span />
+            <span />
           </div>
         </div>
       )}

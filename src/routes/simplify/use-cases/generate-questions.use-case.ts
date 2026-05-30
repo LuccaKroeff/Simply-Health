@@ -81,7 +81,7 @@ export class GenerateQuestionsUseCase {
         patientProfile: patient,
       },
     }
-}
+  }
 }
 
 function buildRetryFeedback(rejection: GuardrailResult): string {

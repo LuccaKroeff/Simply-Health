@@ -36,7 +36,9 @@ export default function PatientResultCard({
         </div>
         <div className="patient-result-info">
           <strong>{patient.name}</strong>
-          <span>{patient.age} anos · {patient.educationLabel}</span>
+          <span>
+            {patient.age} anos · {patient.educationLabel}
+          </span>
           <span className={`patient-badge literacy-${patient.literacyLevel}`}>{patient.literacyLabel}</span>
         </div>
         <StatusBadge status={result.status} />
@@ -58,11 +60,7 @@ export default function PatientResultCard({
           <>
             <SummaryCard result={result.simplifyResult} />
             <div className="patient-result-questions">
-              <SuggestedQuestions
-                questions={result.questions}
-                onSelect={onSelectQuestion}
-                disabled={chatLoading}
-              />
+              <SuggestedQuestions questions={result.questions} onSelect={onSelectQuestion} disabled={chatLoading} />
             </div>
           </>
         )}
@@ -70,11 +68,7 @@ export default function PatientResultCard({
 
       {showChatButton && result.status === 'approved' && (
         <div className="patient-result-footer">
-          <button
-            type="button"
-            className={`patient-chat-btn${chatActive ? ' active' : ''}`}
-            onClick={onActivateChat}
-          >
+          <button type="button" className={`patient-chat-btn${chatActive ? ' active' : ''}`} onClick={onActivateChat}>
             {chatActive ? '💬 Chat ativo' : 'Perguntar para este paciente'}
           </button>
         </div>
@@ -85,6 +79,6 @@ export default function PatientResultCard({
 
 function StatusBadge({ status }: { status: PatientResult['status'] }) {
   if (status === 'processing') return <span className="status-badge status-processing">Processando…</span>
-  if (status === 'approved')   return <span className="status-badge status-approved">✓ Validado</span>
+  if (status === 'approved') return <span className="status-badge status-approved">✓ Validado</span>
   return <span className="status-badge status-error">Erro</span>
 }

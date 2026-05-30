@@ -24,7 +24,9 @@ export default function AssistantThinkingMessage() {
       <div className="chat-msg-col">
         <div className="thinking-status">{STEPS[step]}</div>
         <div className="chat-msg-bubble typing-indicator">
-          <span /><span /><span />
+          <span />
+          <span />
+          <span />
         </div>
       </div>
     </div>

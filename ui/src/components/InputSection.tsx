@@ -19,7 +19,14 @@ const DETAIL_LEVEL_OPTIONS: { value: DetailLevel; label: string }[] = [
   { value: 'detailed', label: 'Completo' },
 ]
 
-export default function InputSection({ onImagesChange, detailLevel, onDetailLevelChange, onSubmit, onFileAutoSubmit, disabled }: Props) {
+export default function InputSection({
+  onImagesChange,
+  detailLevel,
+  onDetailLevelChange,
+  onSubmit,
+  onFileAutoSubmit,
+  disabled,
+}: Props) {
   const [mode, setMode] = useState<Mode>('text')
   const [text, setText] = useState('')
   const [file, setFile] = useState<File | null>(null)
@@ -136,12 +143,14 @@ export default function InputSection({ onImagesChange, detailLevel, onDetailLeve
       {pendingPdf && (
         <div className="modal-overlay" onClick={() => setPendingPdf(null)}>
           <div className="modal" onClick={e => e.stopPropagation()}>
-            <button type="button" className="modal-close" onClick={() => setPendingPdf(null)} aria-label="Fechar">✕</button>
+            <button type="button" className="modal-close" onClick={() => setPendingPdf(null)} aria-label="Fechar">
+              ✕
+            </button>
             <div className="modal-icon">🖼️</div>
             <h3 className="modal-title">Incluir imagens do PDF?</h3>
             <p className="modal-body">
-              As imagens encontradas serão extraídas e enviadas ao assistente junto com o texto.
-              Isso pode aumentar o tempo de processamento.
+              As imagens encontradas serão extraídas e enviadas ao assistente junto com o texto. Isso pode aumentar o
+              tempo de processamento.
             </p>
             <div className="modal-actions">
               <button type="button" className="modal-btn modal-btn-secondary" onClick={() => confirmPdf(false)}>

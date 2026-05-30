@@ -10,13 +10,7 @@ export interface PatientResult {
 export type EducationLevel = 'fundamental' | 'medio' | 'superior'
 export type DetailLevel = 'short' | 'medium' | 'detailed'
 export type Comorbidity = 'cardiovascular' | 'respiratory' | 'diabetes'
-export type EducationArea =
-  | 'health'
-  | 'technology'
-  | 'humanities'
-  | 'business'
-  | 'education'
-  | 'other'
+export type EducationArea = 'health' | 'technology' | 'humanities' | 'business' | 'education' | 'other'
 
 export interface Patient {
   id: string

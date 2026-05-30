@@ -16,9 +16,7 @@ export default function PatientSelector({ value, onChange, disabled }: Props) {
       <div className="patient-selector-header">
         <p className="section-label">Paciente</p>
         {value.length > 1 && (
-          <span className="patient-selection-hint">
-            {value.length} pacientes — versões serão comparadas
-          </span>
+          <span className="patient-selection-hint">{value.length} pacientes — versões serão comparadas</span>
         )}
       </div>
       <div className="patient-cards">

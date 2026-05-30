@@ -1,7 +1,11 @@
 import { Inject, Injectable, Logger, Optional } from '@nestjs/common'
 import { LLM_PROVIDER } from '@src/core/constants/llm.constants'
 import { parseResponse } from '@src/core/helpers/glossary-parser.helper'
-import { TEXT_COMPLEXITY_ANALYZER, TextComplexityAnalyzer } from '@src/core/services/complexity/text-complexity-analyzer.interface'
+import { detectCriticalAlterations } from '@src/core/helpers/deterministic-checker.helper'
+import {
+  TEXT_COMPLEXITY_ANALYZER,
+  TextComplexityAnalyzer,
+} from '@src/core/services/complexity/text-complexity-analyzer.interface'
 import { FidelityGuardrailService } from '@src/core/services/guardrail/fidelity-guardrail.service'
 import { FileInput, LLMProvider } from '@src/core/services/llm/llm-provider.interface'
 import { PdfImageExtractorService } from '@src/core/services/pdf-image-extractor/pdf-image-extractor.service'
@@ -36,7 +40,14 @@ export class SimplifyTextUseCase {
     @Optional() @Inject(TEXT_COMPLEXITY_ANALYZER) private readonly complexityAnalyzer: TextComplexityAnalyzer | null,
   ) {}
 
-  async exec({ text, file, patient, includeGlossary, includeImages, detailLevel }: SimplifyTextParams): Promise<SimplifyResponse> {
+  async exec({
+    text,
+    file,
+    patient,
+    includeGlossary,
+    includeImages,
+    detailLevel,
+  }: SimplifyTextParams): Promise<SimplifyResponse> {
     const systemPrompt = buildSimplifyPrompt(patient, includeGlossary, detailLevel)
     const startTime = Date.now()
 
@@ -91,6 +102,15 @@ export class SimplifyTextUseCase {
       const raw = await this.llmProvider.complete(userMessage, systemPrompt)
       const { simplified, glossary } = parseResponse(raw, includeGlossary)
 
+      const deterministicIssues = detectCriticalAlterations(originalText, simplified)
+      if (deterministicIssues.length > 0) {
+        this.logger.warn(
+          `Tentativa ${attempt} bloqueada pelo checker determinístico: ${deterministicIssues.join('; ')}`,
+        )
+        lastRejection = buildDeterministicRejection(deterministicIssues)
+        continue
+      }
+
       const guardrailResult = await this.guardrail.evaluate({
         originalText,
         generatedText: simplified,
@@ -141,6 +161,23 @@ export class SimplifyTextUseCase {
         imagesFound: images.length,
       },
     }
+  }
+}
+
+function buildDeterministicRejection(issues: string[]): GuardrailResult {
+  return {
+    verdict: 'rejected',
+    confidence: 1,
+    summary: 'Alterações críticas detectadas por verificação determinística.',
+    unsupportedClaims: [],
+    alteredCriticalInformation: issues.map(issue => ({
+      original: issue,
+      generated: '',
+      reason: 'Detectado por regex antes da avaliação LLM.',
+      severity: 'high',
+    })),
+    omittedCriticalInformation: [],
+    suggestedFixes: issues,
   }
 }
 

@@ -27,9 +27,7 @@ const EDUCATION_AREA_LABELS: Record<EducationArea, string> = {
   other: 'Outra área',
 }
 
-function makePatient(
-  p: Omit<PatientMeta, 'comorbiditiesLabels' | 'educationAreaLabel'>,
-): PatientMeta {
+function makePatient(p: Omit<PatientMeta, 'comorbiditiesLabels' | 'educationAreaLabel'>): PatientMeta {
   return {
     ...p,
     comorbiditiesLabels: p.comorbidities?.map(c => COMORBIDITY_LABELS[c]),
@@ -66,5 +64,4 @@ export const PATIENTS: PatientMeta[] = [
   }),
 ]
 
-export const findPatient = (id: string): PatientMeta | undefined =>
-  PATIENTS.find(p => p.id === id)
+export const findPatient = (id: string): PatientMeta | undefined => PATIENTS.find(p => p.id === id)

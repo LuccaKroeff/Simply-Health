@@ -1,4 +1,9 @@
-import type { NilcMetrixRawResponse, SimplificationMetrics, MetricsDelta, MetricsComparison } from '@src/types/nilc-metrics'
+import type {
+  NilcMetrixRawResponse,
+  SimplificationMetrics,
+  MetricsDelta,
+  MetricsComparison,
+} from '@src/types/nilc-metrics'
 
 const SHORT_TEXT_WORD_THRESHOLD = 30
 const SHORT_TEXT_SENTENCE_THRESHOLD = 3
@@ -36,8 +41,7 @@ export function computeMetricsComparison(
   }
 
   const shortText =
-    original.wordCount < SHORT_TEXT_WORD_THRESHOLD ||
-    original.sentenceCount < SHORT_TEXT_SENTENCE_THRESHOLD
+    original.wordCount < SHORT_TEXT_WORD_THRESHOLD || original.sentenceCount < SHORT_TEXT_SENTENCE_THRESHOLD
 
   return {
     original,

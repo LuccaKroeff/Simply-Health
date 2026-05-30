@@ -37,11 +37,15 @@ function validatePatientProfile(profile: unknown): asserts profile is PatientPro
   }
   if (p.comorbidities !== undefined) {
     if (!Array.isArray(p.comorbidities) || !p.comorbidities.every(c => VALID_COMORBIDITIES.includes(c as string))) {
-      throw new BadRequestException('patientProfile.comorbidities deve ser um array com: cardiovascular, respiratory, diabetes.')
+      throw new BadRequestException(
+        'patientProfile.comorbidities deve ser um array com: cardiovascular, respiratory, diabetes.',
+      )
     }
   }
   if (p.educationArea !== undefined && !VALID_EDUCATION_AREAS.includes(p.educationArea as string)) {
-    throw new BadRequestException('patientProfile.educationArea deve ser: health, technology, humanities, business, education ou other.')
+    throw new BadRequestException(
+      'patientProfile.educationArea deve ser: health, technology, humanities, business, education ou other.',
+    )
   }
 }
 
@@ -64,8 +68,9 @@ export function validateSimplifyRequest(body: Record<string, unknown>): Simplify
     throw new BadRequestException('Informe patientId ou patientProfile.')
   }
 
-  const resolvedDetailLevel: DetailLevel =
-    VALID_DETAIL_LEVELS.includes(detailLevel as DetailLevel) ? (detailLevel as DetailLevel) : 'medium'
+  const resolvedDetailLevel: DetailLevel = VALID_DETAIL_LEVELS.includes(detailLevel as DetailLevel)
+    ? (detailLevel as DetailLevel)
+    : 'medium'
 
   return {
     text: text as string | undefined,

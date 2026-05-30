@@ -2,13 +2,7 @@ export type EducationLevel = 'fundamental' | 'medio' | 'superior'
 
 export type Comorbidity = 'cardiovascular' | 'respiratory' | 'diabetes'
 
-export type EducationArea =
-  | 'health'
-  | 'technology'
-  | 'humanities'
-  | 'business'
-  | 'education'
-  | 'other'
+export type EducationArea = 'health' | 'technology' | 'humanities' | 'business' | 'education' | 'other'
 
 export interface PatientProfile {
   id: string
@@ -19,10 +13,7 @@ export interface PatientProfile {
   educationArea?: EducationArea
 }
 
-export function inferLiteracyDescription(
-  educationLevel: EducationLevel,
-  educationArea?: EducationArea,
-): string {
+export function inferLiteracyDescription(educationLevel: EducationLevel, educationArea?: EducationArea): string {
   if (educationArea === 'health') {
     if (educationLevel === 'superior')
       return 'Formado na área da saúde. Tem boa literacia clínica e entende a maioria dos termos médicos. Prefira linguagem direta.'

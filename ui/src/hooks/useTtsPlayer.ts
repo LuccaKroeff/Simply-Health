@@ -28,7 +28,7 @@ export function useTtsPlayer() {
     if (!cached) setLoadingKey(key)
 
     try {
-      const base64 = cached ?? await synthesizeSpeech(cleanText)
+      const base64 = cached ?? (await synthesizeSpeech(cleanText))
       if (!cached) audioCache.set(cleanText, base64)
 
       const audio = new Audio(`data:audio/wav;base64,${base64}`)

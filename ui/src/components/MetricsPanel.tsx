@@ -23,9 +23,9 @@ export default function MetricsPanel({ complexity }: Props) {
       {open && (
         <div className="metrics-body">
           <p className="metrics-disclaimer">
-            Esses indicadores ajudam a comparar a complexidade textual antes e depois da simplificação.
-            Eles avaliam aspectos linguísticos como tamanho de frases e diversidade de vocabulário —
-            não validam precisão médica nem comprovam compreensão do paciente.
+            Esses indicadores ajudam a comparar a complexidade textual antes e depois da simplificação. Eles avaliam
+            aspectos linguísticos como tamanho de frases e diversidade de vocabulário — não validam precisão médica nem
+            comprovam compreensão do paciente.
           </p>
 
           {complexity.shortText && (
@@ -104,9 +104,7 @@ export default function MetricsPanel({ complexity }: Props) {
             </table>
           </div>
 
-          <div className="metrics-analyzer-label">
-            Analisador: {complexity.analyzer}
-          </div>
+          <div className="metrics-analyzer-label">Analisador: {complexity.analyzer}</div>
         </div>
       )}
     </div>
@@ -135,14 +133,9 @@ function MetricRow({
   tooltip?: string
 }) {
   const improved =
-    delta !== undefined && higherIsBetter !== undefined
-      ? (higherIsBetter ? delta > 0 : delta < 0)
-      : undefined
+    delta !== undefined && higherIsBetter !== undefined ? (higherIsBetter ? delta > 0 : delta < 0) : undefined
 
-  const deltaStr =
-    delta !== undefined
-      ? `${delta > 0 ? '+' : ''}${delta}`
-      : undefined
+  const deltaStr = delta !== undefined ? `${delta > 0 ? '+' : ''}${delta}` : undefined
 
   return (
     <tr className="metrics-row" title={tooltip}>
@@ -156,7 +149,9 @@ function MetricRow({
         {badge && <span className="metrics-badge metrics-badge-positive">{badge.simplified}</span>}
       </td>
       {delta !== undefined && (
-        <td className={`metrics-delta ${improved === true ? 'delta-positive' : improved === false ? 'delta-negative' : 'delta-neutral'}`}>
+        <td
+          className={`metrics-delta ${improved === true ? 'delta-positive' : improved === false ? 'delta-negative' : 'delta-neutral'}`}
+        >
           {deltaStr}
         </td>
       )}

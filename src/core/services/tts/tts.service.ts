@@ -50,7 +50,7 @@ function buildWav(pcm: Buffer, sampleRate = 24000, channels = 1, bitsPerSample =
   header.write('WAVE', 8)
   header.write('fmt ', 12)
   header.writeUInt32LE(16, 16)
-  header.writeUInt16LE(1, 20)           // PCM
+  header.writeUInt16LE(1, 20) // PCM
   header.writeUInt16LE(channels, 22)
   header.writeUInt32LE(sampleRate, 24)
   header.writeUInt32LE(byteRate, 28)
