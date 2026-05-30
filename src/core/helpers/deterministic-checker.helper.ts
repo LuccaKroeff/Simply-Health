@@ -18,14 +18,24 @@ export function detectCriticalAlterations(original: string, generated: string): 
     }
   }
 
-  // Negation inversions: "não X" present in original but the same verb appears without negation in generated
+  // Negation inversions: "não X" present in original but verb appears in clearly affirmative context in generated
   const negationPattern = /não\s+(tomar|usar|interromper|consumir|beber|ingerir|aplicar|exceder|combinar|misturar)/gi
+  const negationSignals = /\b(não|evite?|evitar|proibido|contraindicado|vedado|nunca|jamais)\b/i
+
   for (const match of original.matchAll(negationPattern)) {
     const verb = match[1].toLowerCase()
-    const hasNegationInGenerated = new RegExp(`não\\s+${verb}`, 'i').test(generated)
-    const hasVerbWithoutNegationInGenerated =
-      new RegExp(`\\b${verb}\\b`, 'i').test(generated) && !hasNegationInGenerated
-    if (hasVerbWithoutNegationInGenerated) {
+    const verbRegex = new RegExp(`\\b${verb}\\b`, 'gi')
+    const verbOccurrences = [...generated.matchAll(verbRegex)]
+
+    if (verbOccurrences.length === 0) continue
+
+    const hasNegationNearVerb = verbOccurrences.some(m => {
+      const start = Math.max(0, m.index! - 60)
+      const end = Math.min(generated.length, m.index! + 60)
+      return negationSignals.test(generated.slice(start, end))
+    })
+
+    if (!hasNegationNearVerb) {
       issues.push(`Negação possivelmente invertida: "${match[0]}" do original não aparece com negação no gerado`)
     }
   }

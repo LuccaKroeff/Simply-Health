@@ -23,8 +23,8 @@ export class ClaudeProvider implements LLMProvider {
     const userContent: Anthropic.Messages.MessageParam['content'] = this.buildContent(text, file, labeledImages)
 
     const response = await this.client.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 4096,
+      model: 'claude-sonnet-4-6',
+      max_tokens: 8192,
       temperature,
       system: systemPrompt,
       messages: [{ role: 'user', content: userContent }],

@@ -25,6 +25,8 @@ export interface SimplifyResponse {
     processingTimeMs: number
     patientProfile: PatientProfile
     imagesFound: number
+    attemptCount?: number
+    usedFallback?: boolean
   }
 }
 

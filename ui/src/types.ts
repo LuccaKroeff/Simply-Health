@@ -4,6 +4,7 @@ export interface PatientResult {
   status: PatientResultStatus
   simplifyResult: SimplifyResponse | null
   questions: Question[] | null
+  questionsError: boolean
   error: string | null
 }
 
@@ -95,6 +96,8 @@ export interface SimplifyResponse {
     processingTimeMs: number
     patientProfile: Patient
     imagesFound: number
+    attemptCount?: number
+    usedFallback?: boolean
   }
 }
 

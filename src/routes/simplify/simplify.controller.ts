@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Logger,
   NotFoundException,
   Post,
   UploadedFile,
@@ -9,6 +10,7 @@ import {
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { memoryStorage } from 'multer'
+import { EvaluationExportService } from '@src/core/services/evaluation/evaluation-export.service'
 import { FileInput } from '@src/core/services/llm/llm-provider.interface'
 import { TextExtractorService } from '@src/core/services/text-extractor/text-extractor.service'
 import { TtsService } from '@src/core/services/tts/tts.service'
@@ -24,12 +26,15 @@ const SUPPORTED_FILE_TYPES = ['application/pdf', 'text/plain']
 
 @Controller('simplify')
 export class SimplifyController {
+  private readonly logger = new Logger(SimplifyController.name)
+
   constructor(
     private readonly simplifyTextUseCase: SimplifyTextUseCase,
     private readonly generateQuestionsUseCase: GenerateQuestionsUseCase,
     private readonly chatAnswerUseCase: ChatAnswerUseCase,
     private readonly textExtractorService: TextExtractorService,
     private readonly ttsService: TtsService,
+    private readonly evaluationExporter: EvaluationExportService,
   ) {}
 
   @Post()
@@ -47,7 +52,7 @@ export class SimplifyController {
       file: fileInput,
     } = await this.resolveInput(dto.patientId, dto.patientProfile, file, dto.text, dto.includeImages)
 
-    return this.simplifyTextUseCase.exec({
+    const result = await this.simplifyTextUseCase.exec({
       text,
       file: fileInput,
       patient,
@@ -55,6 +60,28 @@ export class SimplifyController {
       includeImages: dto.includeImages,
       detailLevel: dto.detailLevel,
     })
+
+    void (async () => {
+      try {
+        let questions: Array<{ question: string; answer: string }> | undefined
+        if (!result.metadata.usedFallback) {
+          const qRes = await this.generateQuestionsUseCase.exec({ text: result.originalText, patient })
+          questions = qRes.questions
+        }
+        await this.evaluationExporter.export(result, {
+          materialName: file?.originalname ?? 'Texto direto',
+          inputType: file ? 'file' : 'text',
+          glossaryRequested: dto.glossary,
+          includeImages: dto.includeImages,
+          detailLevel: dto.detailLevel,
+          questions,
+        })
+      } catch (err) {
+        this.logger.error('Falha no export de avaliação', err)
+      }
+    })()
+
+    return result
   }
 
   @Post('questions')

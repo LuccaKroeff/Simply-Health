@@ -60,7 +60,7 @@ export default function App() {
 
     const initial: Record<string, PatientResult> = {}
     for (const id of selectedPatientIds) {
-      initial[id] = { status: 'processing', simplifyResult: null, questions: null, error: null }
+      initial[id] = { status: 'processing', simplifyResult: null, questions: null, questionsError: false, error: null }
     }
     setPatientResults(initial)
     setPatientChats({})
@@ -92,14 +92,14 @@ export default function App() {
           if (genRef.current !== genId) return
           setPatientResults(prev => ({
             ...prev,
-            [patientId]: { ...prev[patientId], questions: qRes.questions },
+            [patientId]: { ...prev[patientId], questions: qRes.questions, questionsError: false },
           }))
         })
         .catch(() => {
           if (genRef.current !== genId) return
           setPatientResults(prev => ({
             ...prev,
-            [patientId]: { ...prev[patientId], questions: [] },
+            [patientId]: { ...prev[patientId], questions: null, questionsError: true },
           }))
         })
     } catch (e) {
@@ -131,9 +131,31 @@ export default function App() {
     const genId = genRef.current
     setPatientResults(prev => ({
       ...prev,
-      [patientId]: { status: 'processing', simplifyResult: null, questions: null, error: null },
+      [patientId]: { status: 'processing', simplifyResult: null, questions: null, questionsError: false, error: null },
     }))
     await processOnePatient(patientId, lastInput, genId, withImages)
+  }
+
+  async function handleRetryQuestions(patientId: string) {
+    const result = patientResults[patientId]?.simplifyResult
+    if (!result) return
+    setPatientResults(prev => ({
+      ...prev,
+      [patientId]: { ...prev[patientId], questions: null, questionsError: false },
+    }))
+    generateQuestions(result.originalText, patientId)
+      .then(qRes =>
+        setPatientResults(prev => ({
+          ...prev,
+          [patientId]: { ...prev[patientId], questions: qRes.questions, questionsError: false },
+        })),
+      )
+      .catch(() =>
+        setPatientResults(prev => ({
+          ...prev,
+          [patientId]: { ...prev[patientId], questions: null, questionsError: true },
+        })),
+      )
   }
 
   // ── Chat ──────────────────────────────────────────────────────────────────
@@ -316,6 +338,7 @@ export default function App() {
                       onSelectQuestion={q => handleSuggestedQuestion(id, q)}
                       onActivateChat={() => setActiveChatPatientId(id)}
                       onRetry={() => handleRetry(id)}
+                      onRetryQuestions={() => handleRetryQuestions(id)}
                     />
                   ))}
                 </div>

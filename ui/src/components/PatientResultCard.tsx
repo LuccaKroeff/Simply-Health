@@ -13,6 +13,7 @@ interface Props {
   onSelectQuestion: (q: Question) => void
   onActivateChat: () => void
   onRetry: () => void
+  onRetryQuestions: () => void
 }
 
 export default function PatientResultCard({
@@ -24,6 +25,7 @@ export default function PatientResultCard({
   onSelectQuestion,
   onActivateChat,
   onRetry,
+  onRetryQuestions,
 }: Props) {
   const patient = findPatient(patientId)
   if (!patient) return null
@@ -59,9 +61,27 @@ export default function PatientResultCard({
         {result.status === 'approved' && result.simplifyResult && (
           <>
             <SummaryCard result={result.simplifyResult} />
-            <div className="patient-result-questions">
-              <SuggestedQuestions questions={result.questions} onSelect={onSelectQuestion} disabled={chatLoading} />
-            </div>
+            {result.simplifyResult.metadata.usedFallback && (
+              <div className="patient-error-block">
+                <button type="button" className="retry-btn" onClick={onRetry}>
+                  ↺ Tentar novamente
+                </button>
+              </div>
+            )}
+            {!result.simplifyResult.metadata.usedFallback && (
+              <div className="patient-result-questions">
+                {result.questionsError ? (
+                  <div className="patient-error-block">
+                    <span className="section-label">Perguntas sugeridas</span>
+                    <button type="button" className="retry-btn" onClick={onRetryQuestions}>
+                      ↺ Tentar gerar perguntas novamente
+                    </button>
+                  </div>
+                ) : (
+                  <SuggestedQuestions questions={result.questions} onSelect={onSelectQuestion} disabled={chatLoading} />
+                )}
+              </div>
+            )}
           </>
         )}
       </div>

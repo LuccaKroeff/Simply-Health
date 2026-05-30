@@ -13,7 +13,7 @@ const PATIENT: PatientProfile = {
   name: 'Maria',
   age: 50,
   educationLevel: 'medio',
-  conditionGroup: 'general',
+  comorbidities: ['diabetes'],
   educationArea: 'other',
 }
 

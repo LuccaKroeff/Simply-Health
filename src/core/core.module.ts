@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config'
 import { BasicReadabilityAnalyzer } from './services/complexity/basic-readability-analyzer'
 import { NilcMetrixAdapter } from './services/complexity/nilc-metrix.adapter'
 import { TEXT_COMPLEXITY_ANALYZER } from './services/complexity/text-complexity-analyzer.interface'
+import { EvaluationExportService } from './services/evaluation/evaluation-export.service'
 import { ChatOutputGuardrailService } from './services/guardrail/chat-output-guardrail.service'
 import { FidelityGuardrailService } from './services/guardrail/fidelity-guardrail.service'
 import { InputGuardrailService } from './services/guardrail/input-guardrail.service'
@@ -33,6 +34,7 @@ const complexityProvider = {
     BasicReadabilityAnalyzer,
     NilcMetrixAdapter,
     complexityProvider,
+    EvaluationExportService,
     ...guardrailServices,
   ],
   exports: [
@@ -41,6 +43,7 @@ const complexityProvider = {
     PdfImageExtractorService,
     TtsService,
     complexityProvider,
+    EvaluationExportService,
     ...guardrailServices,
   ],
 })

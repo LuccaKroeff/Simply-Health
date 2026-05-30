@@ -16,6 +16,7 @@ import { GuardrailResult } from '@src/types/guardrail'
 import { SimplifyResponse } from '@src/types/simplification'
 
 const MAX_ATTEMPTS = 3
+const SIMPLIFICATION_TEMPERATURE = 0.3
 const SAFE_FALLBACK_MESSAGE =
   'Não foi possível gerar uma versão simplificada com segurança suficiente a partir do conteúdo informado.'
 
@@ -99,7 +100,7 @@ export class SimplifyTextUseCase {
         `Mensagem do usuário: "${userMessage.text.slice(0, 120)}${userMessage.text.length > 120 ? '...' : ''}"`,
       )
 
-      const raw = await this.llmProvider.complete(userMessage, systemPrompt)
+      const raw = await this.llmProvider.complete(userMessage, systemPrompt, SIMPLIFICATION_TEMPERATURE)
       const { simplified, glossary } = parseResponse(raw, includeGlossary)
 
       const deterministicIssues = detectCriticalAlterations(originalText, simplified)
@@ -139,6 +140,8 @@ export class SimplifyTextUseCase {
             processingTimeMs: Date.now() - startTime,
             patientProfile: patient,
             imagesFound: images.length,
+            attemptCount: attempt,
+            usedFallback: false,
           },
         }
       }
@@ -159,6 +162,8 @@ export class SimplifyTextUseCase {
         processingTimeMs: Date.now() - startTime,
         patientProfile: patient,
         imagesFound: images.length,
+        attemptCount: MAX_ATTEMPTS,
+        usedFallback: true,
       },
     }
   }
