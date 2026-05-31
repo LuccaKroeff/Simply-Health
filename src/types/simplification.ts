@@ -1,5 +1,16 @@
+import type { ClaimSeverity, CriticalSeverity } from './guardrail'
 import type { ComplexityComparison } from './complexity'
 import type { PatientProfile } from './patient'
+
+export interface GuardrailRejection {
+  attempt: number
+  source: 'deterministic' | 'llm'
+  summary: string
+  unsupportedClaims: Array<{ claim: string; reason: string; severity: ClaimSeverity }>
+  alteredCriticalInformation: Array<{ original: string; generated: string; reason: string; severity: CriticalSeverity }>
+  omittedCriticalInformation: Array<{ missingInformation: string; reason: string; severity: CriticalSeverity }>
+  suggestedFixes: string[]
+}
 
 export interface SimplifyRequest {
   text: string
@@ -27,6 +38,7 @@ export interface SimplifyResponse {
     imagesFound: number
     attemptCount?: number
     usedFallback?: boolean
+    guardrailRejections?: GuardrailRejection[]
   }
 }
 

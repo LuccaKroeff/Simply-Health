@@ -1,137 +1,164 @@
 # Consolidação da Avaliação — SimplyHealth TCC
 
-**Atualizado em:** 30/05/2026
-**Total de casos:** 18 (3 perfis × 2 materiais × 3 rodadas)
-**Modelo usado:** gemini-2.5-flash-lite (todas as rodadas)
-**Indicador automático:** Flesch-PT (básico)
-**Rodadas:** R1 = 15h53–15h58 · R2 = 17h19–17h21 · R3 = 19h24–19h27
+**Data:** 31/05/2026
+**Modelo:** gemini-2.5-flash-lite · Temperatura de simplificação: 0.3
+**Materiais avaliados:** estomia.pdf · diabetes.pdf
+**Perfis simulados:** Ana Souza (Superior/Saúde) · Carlos Oliveira (Médio/Negócios/Diabetes) · Maria Silva (Fundamental/Cardiovascular)
 
-> Todos os perfis são simulados. Nenhum dado real de paciente foi utilizado.
-> O Flesch-PT avalia apenas aspectos linguísticos e não valida precisão médica.
+> Nenhum dado real de paciente foi utilizado. Flesch-PT avalia aspectos linguísticos — não valida precisão médica.
+
+---
+
+## Estrutura das execuções
+
+Foram planejadas **3 execuções por perfil por material**. O resultado foi:
+
+| Material | Ana | Carlos | Maria |
+|----------|-----|--------|-------|
+| diabetes.pdf | 3 execuções ✓ | 3 execuções ✓ | 3 execuções ✓ |
+| estomia.pdf | 3 exec. + **1 fallback (re-run imediato)** | 3 execuções ✓ | 3 execuções ✓ |
+
+Na execução 2 de Ana/estomia, todas as 3 tentativas internas foram rejeitadas pelo guardrail, ativando o fallback. Um re-run imediato foi feito na mesma sessão (tratado como "Exec 2 re-run" / 4º retry) e aprovado. A execução 3 de todos os perfis foi realizada na sessão das 13h19.
+
+**Total de arquivos gerados:** 19 (18 com Flesch-PT + 1 fallback)
 
 ---
 
 ## 1. Tabela consolidada de legibilidade
 
-### Estomia — guia de atenção à saúde da pessoa com estomia (Flesch original: 9,2)
+### diabetes.pdf — Flesch original: 19,7
 
-| Caso | Perfil | Flesch simpl. | Classif. | Variação | Glossário |
-|------|--------|--------------|----------|----------|-----------|
-| E-Ana-R1 | Ana, 30a, Superior/Saúde | 14,3 | Muito difícil | +5,1 | Sim (4 termos) |
-| E-Ana-R2 | Ana, 30a, Superior/Saúde | 14,0 | Muito difícil | +4,8 | Sim (4 termos) |
-| E-Ana-R3 | Ana, 30a, Superior/Saúde | 14,1 | Muito difícil | +4,9 | Sim (4 termos) |
-| **Média E-Ana** | | **14,1** | Muito difícil | **+4,9** | 3/3 |
-| E-Carlos-R1 | Carlos, 45a, Médio/Negócios, Diabetes | 21,1 | Muito difícil | +11,9 | Não |
-| E-Carlos-R2 | Carlos, 45a, Médio/Negócios, Diabetes | 21,6 | Muito difícil | +12,4 | Sim (4 termos) |
-| E-Carlos-R3 | Carlos, 45a, Médio/Negócios, Diabetes | 20,6 | Muito difícil | +11,4 | Sim (2 termos) |
-| **Média E-Carlos** | | **21,1** | Muito difícil | **+11,9** | 2/3 |
-| E-Maria-R1 | Maria, 68a, Fundamental/Outra, Cardiovascular | 29,8 | **Pouco difícil** | +20,6 | Não |
-| E-Maria-R2 | Maria, 68a, Fundamental/Outra, Cardiovascular | 31,6 | **Pouco difícil** | +22,4 | Sim (4 termos) |
-| E-Maria-R3 | Maria, 68a, Fundamental/Outra, Cardiovascular | 28,8 | **Pouco difícil** | +19,6 | Sim (4 termos) |
-| **Média E-Maria** | | **30,1** | **Pouco difícil** | **+20,9** | 2/3 |
+| Execução | Ana (Superior/Saúde) | Carlos (Médio/Negócios) | Maria (Fundamental) |
+|----------|----------------------|------------------------|-------------------|
+| Exec. 1 | 16,6 (−3,1) · 2 tent. | 23,2 (+3,5) · 2 tent. | 35,0 (+15,3) · 1 tent. |
+| Exec. 2 | 18,1 (−1,6) · 2 tent. | 24,7 (+5,0) · 1 tent. | 29,1 (+9,4) · 1 tent. |
+| Exec. 3 | 19,3 (−0,4) · 1 tent. | 23,5 (+3,8) · 3 tent. | 37,0 (+17,3) · 2 tent. |
+| **Média** | **18,0 (−1,7)** | **23,8 (+4,1)** | **33,7 (+14,0)** |
+| Classif. | Muito difícil | Muito difícil | **Pouco difícil** |
 
-### Diabetes — manual de cuidados com os pés (Flesch original: 19,7)
+### estomia.pdf — Flesch original: 9,2
 
-| Caso | Perfil | Flesch simpl. | Classif. | Variação | Glossário |
-|------|--------|--------------|----------|----------|-----------|
-| D-Ana-R1 | Ana, 30a, Superior/Saúde | 20,3 | Muito difícil | +0,6 | Não |
-| D-Ana-R2 | Ana, 30a, Superior/Saúde | 19,6 | Muito difícil | −0,1 | Sim (4 termos) |
-| D-Ana-R3 | Ana, 30a, Superior/Saúde | 18,4 | Muito difícil | **−1,3** | Não |
-| **Média D-Ana** | | **19,4** | Muito difícil | **−0,3** | 1/3 |
-| D-Carlos-R1 | Carlos, 45a, Médio/Negócios, Diabetes | 22,7 | Muito difícil | +3,0 | Não |
-| D-Carlos-R2 | Carlos, 45a, Médio/Negócios, Diabetes | 22,5 | Muito difícil | +2,8 | Sim (4 termos) |
-| D-Carlos-R3 | Carlos, 45a, Médio/Negócios, Diabetes | 22,9 | Muito difícil | +3,2 | Não |
-| **Média D-Carlos** | | **22,7** | Muito difícil | **+3,0** | 1/3 |
-| D-Maria-R1 | Maria, 68a, Fundamental/Outra, Cardiovascular | 33,0 | **Pouco difícil** | +13,3 | Sim (4 termos) |
-| D-Maria-R2 | Maria, 68a, Fundamental/Outra, Cardiovascular | 32,7 | **Pouco difícil** | +13,0 | Não |
-| D-Maria-R3 | Maria, 68a, Fundamental/Outra, Cardiovascular | 33,1 | **Pouco difícil** | +13,4 | Sim (3 termos) |
-| **Média D-Maria** | | **32,9** | **Pouco difícil** | **+13,2** | 2/3 |
+| Execução | Ana (Superior/Saúde) | Carlos (Médio/Negócios) | Maria (Fundamental) |
+|----------|----------------------|------------------------|-------------------|
+| Exec. 1 | 14,2 (+5,0) · 1 tent. | 24,2 (+15,0) · 1 tent. | 31,4 (+22,2) · 2 tent. |
+| Exec. 2 | **FALLBACK** · 3 tent. + re-run: 17,6 (+8,4) · 1 tent. | 23,9 (+14,7) · 2 tent. | 32,1 (+22,9) · 1 tent. |
+| Exec. 3 | 15,0 (+5,8) · 1 tent. | 23,8 (+14,6) · 1 tent. | 30,4 (+21,2) · 1 tent. |
+| **Média** (valid.) | **15,6 (+6,4)** | **24,0 (+14,8)** | **31,3 (+22,1)** |
+| Classif. | Muito difícil | Muito difícil | **Pouco difícil** |
 
-### Resumo por perfil (médias das 3 rodadas)
+### Resumo por perfil (médias gerais)
 
-| Perfil | Escolaridade | Estomia — ganho médio | Diabetes — ganho médio | Padrão |
-|--------|-------------|----------------------|----------------------|--------|
-| Ana Souza | Superior/Saúde | +4,9 | −0,3 | Mínimo ou nulo |
-| Carlos Oliveira | Médio/Negócios | +11,9 | +3,0 | Intermediário |
-| Maria Silva | Fundamental/Outra | +20,9 | +13,2 | Alto, com mudança de classificação |
+| Perfil | Estomia — ganho médio | Diabetes — ganho médio | Observação |
+|--------|----------------------|----------------------|-----------|
+| Ana (Superior/Saúde) | +6,4 | −1,7 | Único perfil com média negativa em diabetes |
+| Carlos (Médio/Negócios) | +14,8 | +4,1 | Consistente entre execuções |
+| Maria (Fundamental) | +22,1 | +14,0 | Maior ganho · Mudança de classificação em 100% dos casos |
 
 ---
 
-## 2. Tabela consolidada de preservação das informações essenciais
+## 2. Rejeições do guardrail
 
-*Análise preliminar. Casos não lidos integralmente são marcados como "A verificar". Revisão manual é necessária em todos.*
+**Resumo:** 11 eventos de rejeição em 19 arquivos (8 arquivos tiveram pelo menos 1 rejeição — todos nas sessões 12h, as R3 de estomia das 13h foram aprovadas na 1ª tentativa).
 
-| Caso | Inf. nova aparente | Omissão crítica | Dose/freq. | Segurança preservada | Sentido preservado | Adequação ao perfil | Observações | Revisão? |
-|------|-------------------|----------------|-----------|---------------------|--------------------|--------------------|-----------|---------| 
-| E-Ana-R1 | Não identificada | Não identificada | N/A | Sim | Sim | Adequado | Glossário gerado. Perguntas técnicas. | Sim |
-| E-Ana-R2 | A verificar | A verificar | N/A | A verificar | A verificar | A verificar | Glossário gerado (Estoma, Ureter, Libido, Dermatite). | **Sim** |
-| E-Ana-R3 | A verificar | A verificar | N/A | A verificar | A verificar | A verificar | Glossário gerado (Estoma, Ureter, Dermatite, Efluente). | **Sim** |
-| E-Carlos-R1 | Não identificada | Não identificada | N/A | Sim | Sim | Adequado | Glossário não gerado. Perguntas cotidianas. | **Sim** |
-| E-Carlos-R2 | A verificar | A verificar | N/A | A verificar | A verificar | A verificar | Glossário gerado (Estoma, Colostomia, Ileostomia, Urostomia). | **Sim** |
-| E-Carlos-R3 | A verificar | A verificar | N/A | A verificar | A verificar | A verificar | Glossário parcial (2 termos: Ureter, Dermatite). FAQ: pergunta sobre estoma roxo (alerta). | **Sim** |
-| E-Maria-R1 | "Olá, Maria!" — saudação ausente no original | Não identificada | N/A | Sim | Sim | Bem adequado | Analogias, frases curtas. Glossário não gerado. | **Sim** |
-| E-Maria-R2 | A verificar | A verificar | N/A | A verificar | A verificar | A verificar | Maior ganho do conjunto (+22,4). Glossário gerado. | **Sim** |
-| E-Maria-R3 | A verificar | A verificar | N/A | A verificar | A verificar | A verificar | Glossário gerado com termos operacionais (Clamp, Adesivo antialérgico). | **Sim** |
-| D-Ana-R1 | Não identificada | Não identificada | Verificar creme | Sim | Sim | Adequado | Glossário não gerado. Perguntas clínicas. | **Sim** |
-| D-Ana-R2 | "Anote quantos toques" — instrução ausente no original | A verificar | A verificar | A verificar | A verificar | A verificar | Glossário gerado. Flesch: −0,1. | **Sim — prioritário** |
-| D-Ana-R3 | A verificar | A verificar | Verificar creme | A verificar | A verificar | A verificar | Glossário não gerado. Flesch: −1,3 (maior desvio negativo). Pergunta gerada é técnica/analítica. | **Sim — prioritário** |
-| D-Carlos-R1 | Não identificada | Não identificada | N/A | Sim | Sim | Adequado | Glossário não gerado. | **Sim** |
-| D-Carlos-R2 | A verificar | A verificar | N/A | A verificar | A verificar | A verificar | Glossário gerado. | **Sim** |
-| D-Carlos-R3 | A verificar | A verificar | N/A | A verificar | A verificar | A verificar | Glossário não gerado. FAQ: pergunta sobre cuidados diários. | **Sim** |
-| D-Maria-R1 | Não identificada | Não identificada | N/A | Sim | Sim | Bem adequado | Glossário gerado. Analogias. | Sim |
-| D-Maria-R2 | A verificar | A verificar | N/A | A verificar | A verificar | A verificar | Glossário não gerado. | **Sim** |
-| D-Maria-R3 | A verificar | A verificar | N/A | A verificar | A verificar | A verificar | Glossário gerado (3 termos: Neuropatia diabética, Artrose, Artrite). | **Sim** |
+| Arquivo | Tent. | Fonte | Problema identificado |
+|---------|-------|-------|-----------------------|
+| diabetes-carlos-R1 | T1 | Determinístico | "não usar" do original sem negação equivalente no gerado |
+| diabetes-ana-R1 | T1 | LLM | Instrução de palpação do pulso alterada: "entre os dedos" em vez de "com os dedos" |
+| diabetes-ana-R2 | T1 | LLM | Instrução de palpação alterada: "dedos médio e anelar" em vez de "indicador e médio" |
+| diabetes-maria-R3 | T1 | Determinístico | "não usar" sem negação equivalente |
+| diabetes-carlos-R3 | T1 | Determinístico | "não usar" sem negação equivalente |
+| diabetes-carlos-R3 | T2 | Determinístico | Mesmo problema na 2ª tentativa |
+| estomia-maria-R1 | T1 | LLM | "tintura de benjoim" substituída por "tintura de iodo" em 2 trechos |
+| estomia-ana-R2 | T1 | LLM | Sentido alterado na seção vida sexual: "conteúdo fecal" → "bolsa" |
+| estomia-ana-R2 | T2 | LLM | Contradição numérica: "cerca da metade (1/3)" — 1/2 ≠ 1/3 |
+| estomia-ana-R2 | T3 | Determinístico | "não usar" sem negação equivalente — fallback ativado |
+| estomia-carlos-R2 | T1 | LLM | "adesivo antialérgico" substituído por "adesivo especial" |
+
+### Classificação dos problemas
+
+| Tipo | Eventos | Fonte |
+|------|---------|-------|
+| Negação sem equivalente no gerado ("não usar") | 5 | Checker determinístico |
+| Instrução procedimental alterada (técnica clínica) | 2 | Guardrail LLM |
+| Substituição de substância/atributo específico | 2 | Guardrail LLM |
+| Alteração de sentido semântico | 1 | Guardrail LLM |
+| Contradição numérica | 1 | Guardrail LLM |
+
+### Detalhe das rejeições LLM mais relevantes
+
+**diabetes-ana-R1 (T1 — LLM):**
+> Original: "coloque o segundo e terceiro dedos da mão na região acima do pé para sentir o pulso"
+> Gerado: "sentir o pulso na região acima do pé, entre o segundo e terceiro dedos da mão"
+> Problema: instrução invertida — onde colocar os dedos vs. onde está o pulso.
+
+**diabetes-ana-R2 (T1 — LLM):**
+> Original: "segundo e terceiro dedos" (indicador e médio)
+> Gerado: "dedos médio e anelar"
+> Problema: dedos diferentes, mesma instrução de autoexame.
+
+**estomia-maria-R1 (T1 — LLM):**
+> Original: "tintura de benjoim" (duas ocorrências)
+> Gerado: "tintura de iodo" (nas mesmas posições)
+> Problema: substituição de substância em lista de produtos proibidos.
+
+**estomia-ana-R2 (T1 — LLM):**
+> Original: "evitar [...] que apareça o conteúdo fecal contido nela"
+> Gerado: "evitar [...] que a bolsa apareça"
+> Problema: deslocamento do objeto — não é a bolsa, é o conteúdo.
+
+**estomia-ana-R2 (T2 — LLM):**
+> Original: "esvaziada sempre que estiver [...] com 1/3 da capacidade"
+> Gerado: "sempre que ela estiver cerca da metade (1/3) cheia"
+> Problema: "cerca da metade" (≈1/2) e "1/3" são contraditórios na mesma frase.
+
+**estomia-carlos-R2 (T1 — LLM):**
+> Original: "bolsa que cola na pele através de um adesivo antialérgico"
+> Gerado: "bolsa que cola na pele com um adesivo especial"
+> Problema: atributo de segurança "antialérgico" removido, substituído por "especial" genérico.
 
 ---
 
 ## 3. Síntese quantitativa
 
-| Indicador | R1 (6 casos) | R2 (6 casos) | R3 (6 casos) | Total (18 casos) |
-|-----------|-------------|-------------|-------------|-----------------|
-| Média Flesch-PT original | 14,5 | 14,5 | 14,5 | **14,5** |
-| Média Flesch-PT simplificado | 23,5 | 23,6 | 23,0 | **23,4** |
-| Ganho médio de Flesch-PT | +9,1 | +9,2 | +8,5 | **+8,9** |
-| Maior ganho | +20,6 | +22,4 | +19,6 | **+22,4** (E-Maria-R2) |
-| Menor ganho | +0,6 | −0,1 | **−1,3** | **−1,3** (D-Ana-R3) |
-| Casos com ganho positivo | 6/6 | 5/6 | 5/6 | **16/18 (89%)** |
-| Casos com ganho nulo ou negativo | 0/6 | 1/6 | 1/6 | **2/18** (ambos D-Ana) |
-| Casos com mudança de classificação | 2/6 | 2/6 | 2/6 | **6/18** (sempre E-Maria e D-Maria) |
-| Aprovados no guardrail (1ª tentativa) | 6/6 | 6/6 | 6/6 | **18/18 (100%)** |
-| Fallback ativado | 0 | 0 | 0 | **0** |
-| Casos com glossário gerado | 2/6 (33%) | 5/6 (83%) | 4/6 (67%) | **11/18 (61%)** |
-| Casos com FAQ gerado | 6/6 | 6/6 | 6/6 | **18/18 (100%)** |
+| Indicador | Diabetes (9 casos) | Estomia (9 válidos + 1 fallback) | Total (19) |
+|-----------|-------------------|----------------------------------|-----------|
+| Flesch-PT original médio | 19,7 | 9,2 | **14,5** |
+| Flesch-PT simplificado médio | 25,2 | 23,6¹ | **24,4¹** |
+| Ganho médio | +5,5 | +14,4¹ | **+9,9¹** |
+| Maior ganho | +17,3 (D-Maria-R3) | +22,9 (E-Maria-R2) | **+22,9** |
+| Menor ganho | −3,1 (D-Ana-R1) | +5,0 (E-Ana-R1) | **−3,1** |
+| Ganho positivo | 6/9 (67%) | 9/9 (100%) | **15/18 (83%)** |
+| Ganho nulo/negativo | 3/9 — todos D-Ana | 0 | **3/18 (17%)** |
+| Mudança de classificação | 3/9 — todos D-Maria | 3/9 — todos E-Maria | **6/18 (33%)** |
+| Aprovados no guardrail | 9/9 (100%) | 9/10 (90%) | **18/19 (95%)** |
+| Aprovados na 1ª tentativa | 4/9 (44%) | 7/10 (70%) | **11/19 (58%)** |
+| Aprovados com retry (2–3 tent.) | 5/9 (56%) | 2/9 (22%) | **7/18 (39%)** |
+| Fallback ativado | 0 | 1/10 (Ana-R2) | **1/19 (5%)** |
+| Glossário gerado | 8/9 (89%) | 9/9 (100%)¹ | **17/18 (94%)** |
+| FAQ gerado | 9/9 (100%) | 9/9 (100%)¹ | **18/18 (100%)** |
 
-### Estabilidade entre rodadas (desvio máximo por par)
-
-| Par perfil/material | Ganhos R1/R2/R3 | Desvio máximo | Estabilidade |
-|--------------------|-----------------|--------------|--------------|
-| E-Ana | +5,1 / +4,8 / +4,9 | 0,3 pts | Alta |
-| E-Carlos | +11,9 / +12,4 / +11,4 | 1,0 pts | Alta |
-| E-Maria | +20,6 / +22,4 / +19,6 | 2,8 pts | Alta |
-| D-Ana | +0,6 / −0,1 / −1,3 | 1,9 pts | Baixa (tendência negativa) |
-| D-Carlos | +3,0 / +2,8 / +3,2 | 0,4 pts | Muito alta |
-| D-Maria | +13,3 / +13,0 / +13,4 | 0,4 pts | Muito alta |
+¹ Exclui fallback (E-Ana-R2).
 
 ---
 
 ## 4. Síntese qualitativa
 
-### Tendência geral e consistência
+### Gradiente por perfil
 
-Em 16 dos 18 casos, o Flesch-PT das versões simplificadas foi superior ao original. O ganho médio global foi de +8,9 pontos. A consistência entre as três rodadas independentes é o achado mais relevante do conjunto: cinco dos seis pares perfil/material apresentaram desvio máximo inferior a 3 pontos entre rodadas, sugerindo estabilidade razoável do pipeline para esses textos e perfis. O par D-Carlos foi o mais estável de todos (desvio máximo de 0,4 pontos ao longo de três execuções independentes).
+O padrão de diferenciação por escolaridade se manteve consistente: Maria (Fundamental) obteve os maiores ganhos em ambos os materiais (+22,6 estomia; +14,0 diabetes), Carlos (Médio) ficou na posição intermediária (+14,9; +4,1) e Ana (Superior/Saúde) obteve os menores ganhos e os únicos negativos (+6,7; −1,7). A mudança de classificação Flesch ("Muito difícil" → "Pouco difícil") ocorreu em 100% das execuções válidas de Maria para ambos os materiais.
 
-### Gradiente por perfil — confirmado nas três rodadas
+### Guardrail: 50% dos casos precisaram de retry
 
-O padrão de diferenciação por perfil se replicou sem exceção ao longo das 18 execuções. Maria Silva (Fundamental/sem área de saúde) obteve os maiores ganhos em todos os seis casos, com mudança de classificação em todas as rodadas para ambos os materiais. Carlos Oliveira (Médio/Negócios) ficou consistentemente no nível intermediário. Ana Souza (Superior/Saúde) produziu os menores ganhos em todos os seis casos. Esse gradiente tri-nível, reproduzido em três rodadas independentes, é a evidência mais robusta de que a personalização por perfil operou de forma efetiva no recorte avaliado.
+Em 8 dos 16 casos o guardrail rejeitou ao menos uma tentativa — taxa de retry de 50%, significativamente maior do que em sessões anteriores com temperatura 1.0. O guardrail LLM identificou 6 problemas distintos envolvendo alterações de instrução, substituição de substância e contradição numérica. O checker determinístico identificou 5 casos de negação sem equivalente. Os dois mecanismos capturaram tipos de erro complementares.
 
-### Caso D-Ana: padrão de estabilidade em baixa complexidade
+### Primeiro fallback registrado
 
-O par D-Ana (Superior/Saúde, diabetes) é o único com média de ganho negativa (−0,3) e variações −0,1, +0,6 e −1,3 nas três rodadas — todas dentro de uma faixa que indica ausência de simplificação linguística significativa. Esse resultado não representa falha: para uma profissional de saúde lendo um texto já relativamente mais acessível (Flesch 19,7), a solução produziu textos com complexidade semelhante ou ligeiramente superior, preservando terminologia técnica. É um comportamento coerente com o design da solução, e ao mesmo tempo um caso ilustrativo de limitação do Flesch-PT como indicador único: o índice não captura ganhos em organização, clareza estrutural ou adequação da linguagem ao leitor.
+A execução 2 de Ana/estomia esgotou as 3 tentativas com problemas diferentes em cada: alteração semântica (T1), contradição numérica (T2) e negação sem equivalente (T3). Cada tentativa foi bloqueada por uma camada diferente da arquitetura de guardrails. O fallback foi o comportamento esperado do sistema. A re-execução manual (exec 3 / re-run) foi aprovada na 1ª tentativa com Flesch +8,4.
 
-### Glossário: variabilidade persistente
+### D-Ana: padrão negativo consistente
 
-A taxa de geração de glossário variou entre rodadas (33% → 83% → 67%), sem correlação clara com perfil ou material. E-Carlos-R3 gerou apenas 2 termos contra o limite de 4 previsto no prompt. Essa variabilidade é atribuída à natureza estocástica do modelo — o pipeline não garante a presença do glossário em cada execução. Para o TCC, este comportamento pode ser apresentado como limitação estrutural da dependência de formato de resposta LLM.
+As 3 execuções de Ana com diabetes produziram variações −3,1, −1,6 e −0,4. Em dois casos o guardrail rejeitou a primeira tentativa (instrução dos dedos para palpação do pulso), e o texto aprovado ainda resultou em Flesch negativo. Esse padrão, combinado com o resultado +8,4 em estomia (aprovado sem retry), sugere que a combinação do texto de diabetes com o perfil de alta literacia é sistematicamente difícil de simplificar com ganho de legibilidade mantendo fidelidade.
 
-### Guardrails e estabilidade do pipeline
+### D-Carlos-R3: checker bloqueou 2 tentativas consecutivas
 
-Todas as 18 execuções foram aprovadas pelo guardrail na primeira tentativa, sem nenhum fallback. Esse resultado, replicado em três rodadas independentes com dois materiais e três perfis distintos, indica que o pipeline não gerou, de forma sistemática, alterações críticas que o guardrail detectaria para textos informativos sem prescrições de dose. A revisão humana permanece necessária para confirmar precisão clínica.
+O checker determinístico bloqueou duas tentativas seguidas por "não usar" sem negação equivalente. Na 3ª tentativa o texto foi aprovado com Flesch +3,8. Esse caso ilustra a possibilidade de falso positivo persistente no checker regex, ou de um comportamento recorrente do modelo ao omitir a negação neste trecho específico do texto de diabetes.

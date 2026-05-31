@@ -1,0 +1,96 @@
+{
+  "caseId": "2026-05-31-12-56-54-estomia-ana-souza",
+  "exportedAt": "2026-05-31T12:56:54.681Z",
+  "dados": {
+    "material": "estomia.pdf",
+    "modelo": "gemini-2.5-flash-lite",
+    "processamentoMs": 99997
+  },
+  "guardrail": {
+    "aprovado": false,
+    "tentativas": 3,
+    "aprovadoNaPrimeiraTentativa": false,
+    "fallbackAtivado": true,
+    "status": "Rejeitado — fallback ativado após 3 tentativa(s)"
+  },
+  "perfilPaciente": {
+    "nome": "Ana Souza",
+    "idade": 30,
+    "escolaridade": "superior",
+    "areaFormacao": "health",
+    "comorbidades": []
+  },
+  "parametros": {
+    "nivelDetalhamento": "detailed",
+    "glossarioSolicitado": true,
+    "imagensIncluidas": false,
+    "tipoEntrada": "file"
+  },
+  "textoOriginal": "Guia de Atenção à Saúde da Pessoa com Estomia\nO que é um estoma? A estomia é um procedimento cirúrgico realizado quando é\npreciso construir um novo trajeto para eliminar a urina e as fezes. O estoma é\nvermelho vivo, úmido e não dói ao ser tocado, mas pode ocorrer um pequeno\nsangramento, devido aos vasos sanguíneos\nPor que a atenção à saúde da pessoa com estomia é importante?\nViver com estomia pode ser um desafio para a maioria das pessoas, por isso é\nnecessário cuidado e atenção para manter a saúde e a qualidade de vida,\ndesenvolvendo o autocuidado orientado por profissionais qualificados.\nTipos de estomias\nColostomia: abertura no intestino grosso para saída de fezes.\nIleostomia: abertura no intestino delgado (fino) para saída de fezes.\nUrostomia: um pedaço do intestino delgado é ligado ao ureter para saída de urina.\nColostomia úmida: estoma onde há saída de urina e fezes pela mesma abertura.\n\n-- 1 of 10 --\n\nASPECTO DAS FEZES\nColostomia ascendente (lado\ndireito): fezes semi líquidas no início e\ncom a adaptação tornam-se pastosas.\nColostomia descendente (lado\nesquerdo): fezes pastosas a sólidas.\nIleostomia: as fezes não passam pelo\nintestino grosso, portanto grande parte\nda água é eliminada. Nos primeiros\ndias, após cirurgia, as fezes são\nlíquidas e, após readaptação,\ntornam-se de semi pastosas a\npastosas.\nCuidados com o estoma\n● Observe a cor do estoma, ele deve ser vermelho vivo\n● Observe também o brilho, a umidade, tamanho, forma e a pele ao redor\n● Limpe delicadamente e depois seque a pele ao redor\n● Não utilize substâncias como álcool, benzina, removedor ou outros produtos,\nque possam agredir ou ressecar a pele;\n● Se a sua pele ficar vermelha ou irritada, ou se sua bolsa não estiver durando\no tempo esperado, fale com seu médico ou enfermeiro.\n● Use sempre o coletor (bolsa) adequado, conforme orientação do profissional\nespecializado\n● Siga as orientações dos profissionais de saúde envolvidos no tratamento\nTipos de bolsas\nHá diversos tipos de bolsas para a coleta de fezes e urina.\nO sistema é formado por uma bolsa que cola na pele através de um adesivo\nantialérgico.\nAs de urina possuem uma válvula que funciona como uma “torneira”. Na medida em\nque você se acostumar com a sua estomia, sua insegurança vai diminuir e você se\nsentirá mais confiante.\nPara isso, é muito importante que você use uma bolsa na qual você possa confiar e\nque te dê segurança.\nHá diversos tipos: Uma peça - Bolsa e adesivo\nDuas peças - Placa adesiva + bolsa que se encaixa à placa\nAbertas - Drenáveis\nFechadas - Não drenáveis (descartada após uso)\n\n-- 2 of 10 --\n\nComo trocar o coletor de uma peça:\n1. Retire, delicadamente, a bolsa. Use gaze embebido em água morna ou\ntroque durante o banho. Jogue a bolsa no lixo.\n2. Lave a pele ao redor e o estoma com água e sabão neutro. Seque bem a\npele e observe o aspecto.\n3. Verifique o tamanho correto do estoma usando a régua mensuradora que\nvocê recebeu. Desenhe o tamanho do seu estoma na parte central do papel\nprotetor da bolsa.\n4. Recorte a bolsa com tesoura. Verifique se o tamanho ficou adequado e\nremova o papel protetor. Para facilitar, você pode deixar a bolsa já recortada\nantes das trocas.\n\n-- 3 of 10 --\n\n5. Cole a bolsa de baixo para cima, fazendo movimentos circulares ao redor do\nestoma.\n6. Posicione-se em frente ao espelho, facilitando as trocas.\n7. Feche o clamp.\n8. Certifique-se que a bolsa ficou bem aderida. Se você usa o cinto, coloque-o\napós estes passos.\nComo trocar o coletor de duas peças:\n1. Retire, delicadamente, a bolsa e despreze. Use gaze embebido em água\nmorna para descolar a base ou faça isso durante o banho. Jogue a placa no\nlixo.\n2. Lave a pele ao redor e o estoma com água e sabão neutro. Seque bem a\npele e observe o aspecto.\n\n-- 4 of 10 --\n\n3. Verifique o tamanho correto do estoma usando a régua mensuradora que\nvocê recebeu. Desenhe o tamanho do seu estoma na parte central do papel\nprotetor da placa\n4. Recorte a placa com a tesoura. Verifique se o tamanho ficou adequado e\nremova o papel protetor. Para facilitar, você pode deixar a placa já recortada\nantes das trocas.\n5. Adapte a placa de baixo para cima, fazendo movimentos circulares ao redor\ndo estoma. Posicione-se em frente ao espelho, facilitando as trocas.\n6. Encaixe a bolsa coletora na placa. Feche o clamp.\n7. Certifique-se que a bolsa ficou bem encaixada.\n8. Se você usa o cinto, coloque-o após estes passos.\n\n-- 5 of 10 --\n\nCuidados com a pele ao redor do estoma\n● A pele ao redor do estoma pode ser feita com água e sabonete, sem\nesfregar, não use esponjas. Use somente a espuma do sabonete.\n● Os pelos ao redor do estoma devem ser aparados bem curtos, com tesoura.\nNão raspe para não provocar inflamação na raiz dos pelos.\n● Não utilize substâncias como álcool, benzina, colônias, tintura de benjoim,\nmercúrio, merthiolate, pomadas e cremes. Estes produtos podem ressecar a\npele, causar ferimentos e reações alérgicas, além de impedir a aderência do\ncoletor, que pode decolar e vazar.\n➔ Tenha cuidado com insetos e moscas. Não deixe que nenhum inseto\npouse no estoma ou ao redor dele.\nQuando esvaziar o coletor?\nSua bolsa de estomia deve ser esvaziada sempre que estiver um pouco cheia, com\n1/3 da capacidade.\nAtividades diárias\n1. Posso continuar usando as mesmas roupas de antes?\nSim. Você pode continuar usando suas roupas normalmente, atualmente, os\nequipamentos são tão discretos e ajustáveis ao corpo que provavelmente ninguém\nnotara que você está usando uma bolsa, a menos que você diga.\nCuidado para não usar uma roupa apertada na linha da cintura.\n2. Posso continuar fazendo exercícios físicos normalmente?\nO estoma não impede a prática de exercício físico. Recomenda-se evitar atividades\nque exijam contato físico, como futebol, basquete ou boxe. Para que se sinta mais\nseguro, você pode optar pelo uso de um cinto especial, que deve ter um recorte\npara proteger o estoma.\n3. Posso ir na praia, banheira ou sauna?\nÉ possível mergulhar sem problema algum, mas antes de entrar na piscina ou no\nmar, lembre-se de esvaziar sua bolsa.\nJá durante um banho de água quente ou do uso de sauna, o calor pode afrouxar a\nvedação da bolsa. Verifique-a com cuidado e troque-a caso esteja soltando.\n4. Posso viajar?\nSim. Ter um estoma não impede que você viaje e conheça lugares diferentes.\n5. Preciso tirar o coletor para tomar banho?\nDependendo do tipo de estomia que você tem, poderá tomar banho com ou sem\nbolsa.\n\n-- 6 of 10 --\n\nUrostomias, ileostomias e colostomias: tomam banho com o coletor. Se desejar\nproteja o coletor usando um plástico e fitas durante o banho para garantir mais\ndurabilidade e integridade durante o banho.\nFique tranquilo durante o seu banho. Sabonete e água não vão entrar no seu\nestoma e não causarão nenhum problema.\n6. E a vida sexual, segue normal?\nO estoma pode ter um impacto sobre a imagem corporal e nível de conforto sexual.\nVocê precisará realizar alguns ajustes, que não vão impedir uma vida sexual\nagradável.\nO período pós-cirúrgico pode provocar uma diminuição natural do desejo sexual,\nprincipalmente, se você estiver realizando a quimioterapia, pois entre os efeitos\ncolaterais, está a diminuição da libido. Antes das relações sexuais, é recomendável\nesvaziar a bolsa ou usar uma de tecido para evitar o atrito com a pele e que apareça\no conteúdo fecal contido nela. Para estes momentos, pode-se também recorrer a\nespartilhos (para as mulheres) e tensores abdominais (para os homens) para dar\nsegurança aos movimentos e deixá-la menos visível.\nSe você tiver uma urostomia, evite ingerir muito líquido antes das relações sexuais\npara evitar que sua bolsa fique cheia rapidamente.\nDicas importantes:\n➔ Quando sair de casa, leve um kit contendo coletores de reserva já cortados,\ntoalha de mão, sabonete neutro, recipiente de água limpa (para limpar a pele)\ne um saco plástico (para desprezar a bolsa usada).\n➔ Após a troca da bolsa, procure permanecer em repouso de 15 a 20 minutos,\nevitando se abaixar ou sentar, para ajudar que a bolsa tenha melhor\naderência e evitar que o coletor descole.\nHigiene da bolsa\nNão se preocupe com o cheiro da bolsa, elas são confeccionadas com um plástico\ncomposto por camadas que formam uma barreira anti-odor. Elas foram\ndesenvolvidas para que o odor das fezes ou urina fique dentro delas.\n➢ Alguns alimentos podem aumentar o odor da urina e das fezes e isso varia de\ncada um. Observe como seu organismo reage à ingestão de diferentes\nalimentos\n➢ Quando esvaziar sua bolsa de estomia, enxágue com água fria ou morna.\n➢ NÃO lave a bolsa com desinfetante ou água sanitária\n➢ Nunca use óleo de cozinha ou vaselina para lubrificar sua bolsa, pois estes\nprodutos podem danificar o material plástico. Você encontrará o produto para\n\n-- 7 of 10 --\n\nlubrificação em lojas de produtos médicos ou lojas especializadas em\nestomia\nQuais os cuidados necessários para limpeza da pele íntegra ao redor do estoma?\nPara a limpeza da pele em redor ao estoma é necessário(1-5):\nLavar as mãos antes e depois de cuidar do estoma; Estar consciente que a melhor\nproteção para a pele é ter a bolsa da ostomia confortável e bem ajustada, evitando\nvazamento do estoma na pele; Limpar a pele ao redor do estoma com água morna e\num pano ou toalhas de papel macias, não sendo necessário o uso de gaze ou luvas,\nlenços umedecidos, álcool, mercúrio, tintura de benjoim, benzina, pomadas,\n\n-- 8 of 10 --\n\nsabonetes e produtos de limpeza com óleos, perfumes ou desodorizantes podem\nirritar a pele e/ou impedir adesão das bolsas coletoras; Limpar a pele ao redor do\nestoma com gentileza, pois o estoma não possui terminações nervosas, evitando as\npessoas a sentirem o uso da força na limpeza; Secar bem a pele antes de colocar a\nbolsa de ostomia.\nA estomia é um procedimento cirúrgico que consiste na exteriorização de parte do\nsistema respiratório, digestório e urinário, criando orifício entre órgãos internos e o\nmeio externo.\nA complicação mais comum relacionadas aos estomas é a dermatite e irritação\ncutânea causadas pelo fluido intestinal em contato com a pele, devido a\ninadequação dos equipamentos utilizados, placas ou bolsas apropriadas. Assegurar\na troca das bolsas de ostomias de forma adequada é um dos passos mais\nimportantes para o cuidado do estoma e da pele ao seu redor. O esvaziamento do\ncoletor com regularidade evita infiltrações e vazamentos do efluente enquanto a\nremoção frequente do equipamento e o uso de adesivos não médicos para fixar o\nequipamento coletor aumenta o risco de lesões na pele ao redor do estoma(1-3).\nPara as situações de cabelo ao redor do estoma, pode-se usar um barbeador\nelétrico ou aparelho de barbear com água e sabão neutro para raspagem. Se for\nusada espuma de barbear, é importante evitar espumas que contenham hidratantes\nou perfumes que possam irritar a pele ou prejudicar a aderência da bolsa da\nostomia à pele. Importante enxaguar bem a pele com água e secá-la bem, com\ngentileza, evitando fricção, após barbear. Recomenda-se raspar ou aparar o excesso\nde cabelo ao redor do estoma na direção do crescimento do cabelo para limitar a\nirritação da pele. Raspar cuidadosamente a pele de dentro para fora do estoma para\nevitar lesão acidental(1-5).\nEducação Permanente: as mudanças na vida do paciente causadas pelo estoma\nrequerem cuidados imprescindíveis, incluindo a manipulação desse estoma, a dieta\ne a higiene do local. O conhecimento dos alimentos pode auxiliar neste processo:\nao experimentar um alimento novo, faze-lo em pequena quantidade; ter cautela, ou\nseja, consumir, de forma adequada, alimentos que produzem gases (os ovos, feijão,\nbebidas gasosas), alimentos que favorecem o amolecimento das fezes (verduras e\nfrutas cruas, lentilhas, ervilhas, bagaços de laranjas, etc), alimentos que provocam\nconstipação (batata o inhame, maçã cozida, banana prata, arroz branco) e alimentos\nque produzem cheiros fortes (cebola, alho cru, ovos cozidos, repolho, frutos do mar).\nOutros alimentos neutralizam odores tais como cenoura, chuchu, espinafre,\nmaisena(1).\n\n-- 9 of 10 --\n\nÉ importante que haja esforços por parte dos profissionais para melhoria na\nqualidade de vida das pessoas com estomas, pois elas enfrentam transformações\nem seu modo de viver, além de complicações. Cuidado, estratégias e orientações\npara o enfrentamento dessas dificuldades promovem uma melhor aceitação e\nenfrentamento da situação, incluindo a autoimagem, o convívio familiar e social, e o\nbem-estar do paciente, que terá de conviver com algo novo e diferente em seu\ncorpo.\nhttps://aps-repo.bvs.br/aps/quais-os-cuidados-necessarios-para-limpeza-da-pele-int\negra-ao-redor-do-estoma-2/\n\n-- 10 of 10 --",
+  "textoSimplificado": "Não foi possível gerar uma versão simplificada com segurança suficiente a partir do conteúdo informado.",
+  "legibilidade": null,
+  "glossario": [],
+  "perguntasFrequentes": [],
+  "rejeicoes": [
+    {
+      "tentativa": 1,
+      "origem": "llm",
+      "resumo": "O texto simplificado geralmente mantém a fidelidade ao original, com simplificações e sinônimos adequados. No entanto, há uma alteração significativa na seção 'Vida sexual' que muda o sentido de uma recomendação importante. A omissão de 'maisena' na lista de alimentos que neutralizam odores é uma omissão permitida e não causa rejeição.",
+      "alegacoesNaoSuportadas": [],
+      "informacoesCriticasAlteradas": [
+        {
+          "original": "Antes das relações sexuais, é recomendável esvaziar a bolsa ou usar uma de tecido para evitar o atrito com a pele e que apareça o conteúdo fecal contido nela.",
+          "generated": "Antes das relações sexuais, é recomendável esvaziar a bolsa ou usar uma bolsa de tecido para evitar atrito com a pele e que a bolsa apareça.",
+          "reason": "O texto original indica que o objetivo de esvaziar a bolsa ou usar uma de tecido é evitar que 'apareça o conteúdo fecal contido nela'. O texto simplificado altera isso para 'que a bolsa apareça'. Esta mudança altera o sentido da recomendação, deslocando o foco de evitar a visibilidade do conteúdo fecal para evitar a visibilidade da própria bolsa, o que é uma preocupação diferente.",
+          "severity": "high"
+        }
+      ],
+      "informacoesCriticasOmitidas": [
+        {
+          "missingInformation": "Maisena como alimento que neutraliza odores.",
+          "reason": "Omissão de um item da lista de alimentos que neutralizam odores. Omissões são permitidas e não causam rejeição.",
+          "severity": "low"
+        }
+      ],
+      "correcoesSugeridas": [
+        "Na seção 'Vida sexual', alterar a frase 'e que a bolsa apareça' para 'e que o conteúdo da bolsa apareça' ou 'e que o conteúdo fecal apareça' para refletir fielmente o significado do texto original."
+      ]
+    },
+    {
+      "tentativa": 2,
+      "origem": "llm",
+      "resumo": "O texto simplificado apresenta uma alteração na instrução sobre quando esvaziar o coletor, indicando 'cerca da metade (1/3) cheia' em vez de apenas '1/3 da capacidade'. 'Cerca da metade' (aproximadamente 1/2) não é equivalente a 1/3, o que altera uma informação crítica de uso.",
+      "alegacoesNaoSuportadas": [],
+      "informacoesCriticasAlteradas": [
+        {
+          "original": "Sua bolsa de estomia deve ser esvaziada sempre que estiver um pouco cheia, com 1/3 da capacidade.",
+          "generated": "Esvazie sua bolsa de estomia sempre que ela estiver cerca da metade (1/3) cheia.",
+          "reason": "A instrução original especifica '1/3 da capacidade'. O texto simplificado adiciona 'cerca da metade', que é uma quantidade diferente de 1/3 (1/2 vs 1/3). Embora o '1/3' esteja entre parênteses, a frase 'cerca da metade' é a principal indicação e contradiz o valor numérico.",
+          "severity": "high"
+        }
+      ],
+      "informacoesCriticasOmitidas": [],
+      "correcoesSugeridas": [
+        "Na seção 'Quando esvaziar o coletor?', alterar a frase 'Esvazie sua bolsa de estomia sempre que ela estiver cerca da metade (1/3) cheia.' para 'Esvazie sua bolsa de estomia sempre que ela estiver um pouco cheia, com 1/3 da capacidade.' ou 'Esvazie sua bolsa de estomia sempre que ela estiver com 1/3 da capacidade.'"
+      ]
+    },
+    {
+      "tentativa": 3,
+      "origem": "deterministic",
+      "resumo": "Alterações críticas detectadas por verificação determinística.",
+      "alegacoesNaoSuportadas": [],
+      "informacoesCriticasAlteradas": [
+        {
+          "original": "Negação possivelmente invertida: \"não usar\" do original não aparece com negação no gerado",
+          "generated": "",
+          "reason": "Detectado por regex antes da avaliação LLM.",
+          "severity": "high"
+        }
+      ],
+      "informacoesCriticasOmitidas": [],
+      "correcoesSugeridas": [
+        "Negação possivelmente invertida: \"não usar\" do original não aparece com negação no gerado"
+      ]
+    }
+  ]
+}

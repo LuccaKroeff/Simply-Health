@@ -13,7 +13,7 @@ import { TextExtractorService } from '@src/core/services/text-extractor/text-ext
 import { buildSimplifyPrompt, DetailLevel } from '@src/prompts/simplify-prompt'
 import { PatientProfile } from '@src/types/patient'
 import { GuardrailResult } from '@src/types/guardrail'
-import { SimplifyResponse } from '@src/types/simplification'
+import { GuardrailRejection, SimplifyResponse } from '@src/types/simplification'
 
 const MAX_ATTEMPTS = 3
 const SIMPLIFICATION_TEMPERATURE = 0.3
@@ -89,6 +89,7 @@ export class SimplifyTextUseCase {
     }
 
     let lastRejection: GuardrailResult | null = null
+    const rejections: GuardrailRejection[] = []
 
     for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
       const userMessage = lastRejection
@@ -109,6 +110,15 @@ export class SimplifyTextUseCase {
           `Tentativa ${attempt} bloqueada pelo checker determinístico: ${deterministicIssues.join('; ')}`,
         )
         lastRejection = buildDeterministicRejection(deterministicIssues)
+        rejections.push({
+          attempt,
+          source: 'deterministic',
+          summary: lastRejection.summary,
+          unsupportedClaims: lastRejection.unsupportedClaims,
+          alteredCriticalInformation: lastRejection.alteredCriticalInformation,
+          omittedCriticalInformation: lastRejection.omittedCriticalInformation,
+          suggestedFixes: lastRejection.suggestedFixes,
+        })
         continue
       }
 
@@ -142,10 +152,20 @@ export class SimplifyTextUseCase {
             imagesFound: images.length,
             attemptCount: attempt,
             usedFallback: false,
+            guardrailRejections: rejections.length > 0 ? rejections : undefined,
           },
         }
       }
 
+      rejections.push({
+        attempt,
+        source: 'llm',
+        summary: guardrailResult.summary,
+        unsupportedClaims: guardrailResult.unsupportedClaims,
+        alteredCriticalInformation: guardrailResult.alteredCriticalInformation,
+        omittedCriticalInformation: guardrailResult.omittedCriticalInformation,
+        suggestedFixes: guardrailResult.suggestedFixes,
+      })
       lastRejection = guardrailResult
       this.logger.warn(`Tentativa ${attempt} rejeitada pelo guardrail: ${guardrailResult.summary}`)
     }
@@ -164,6 +184,7 @@ export class SimplifyTextUseCase {
         imagesFound: images.length,
         attemptCount: MAX_ATTEMPTS,
         usedFallback: true,
+        guardrailRejections: rejections.length > 0 ? rejections : undefined,
       },
     }
   }

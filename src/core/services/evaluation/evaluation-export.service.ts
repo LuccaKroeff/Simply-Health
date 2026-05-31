@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import * as fs from 'fs/promises'
 import * as path from 'path'
-import { SimplifyResponse } from '@src/types/simplification'
+import { GuardrailRejection, SimplifyResponse } from '@src/types/simplification'
 import { EducationArea, EducationLevel, Comorbidity } from '@src/types/patient'
 
 export interface EvaluationExportContext {
@@ -80,9 +80,29 @@ export class EvaluationExportService {
     const { patientProfile } = metadata
     const now = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })
 
-    const guardrailStatus = metadata.usedFallback
-      ? 'Rejeitado após todas as tentativas (fallback ativado)'
-      : 'Aprovado'
+    const attempts = metadata.attemptCount ?? 1
+    const usedFallback = metadata.usedFallback ?? false
+
+    const guardrailStatus = usedFallback
+      ? `Rejeitado — fallback ativado após ${attempts} tentativa(s)`
+      : attempts > 1
+        ? `Aprovado na tentativa ${attempts} de 3 (com retry)`
+        : 'Aprovado na tentativa 1 de 3'
+
+    const guardrailCallout = usedFallback
+      ? [
+          '> [!WARNING]',
+          `> **GUARDRAIL — FALLBACK ATIVADO:** Todas as ${attempts} tentativa(s) foram rejeitadas pelo guardrail de fidelidade.`,
+          '> O texto abaixo **NAO e uma simplificacao do conteudo original** — e a mensagem de fallback padrao.',
+          '> Este caso requer nova execucao ou revisao manual.',
+        ].join('\n')
+      : attempts > 1
+        ? [
+            '> [!NOTE]',
+            `> **GUARDRAIL — APROVADO COM RETRY:** A simplificacao foi aprovada na tentativa ${attempts} de 3.`,
+            '> As tentativas anteriores foram rejeitadas e o feedback foi reinjetado no prompt.',
+          ].join('\n')
+        : ''
 
     const comorbidities =
       patientProfile.comorbidities && patientProfile.comorbidities.length > 0
@@ -111,6 +131,7 @@ export class EvaluationExportService {
     return [
       `# Caso — ${caseId}`,
       '',
+      ...(guardrailCallout ? [guardrailCallout, ''] : []),
       '## Dados do caso',
       `- ID do caso: ${caseId}`,
       `- Material: ${ctx.materialName}`,
@@ -118,8 +139,8 @@ export class EvaluationExportService {
       `- Modelo usado: ${metadata.model}`,
       `- Tempo de processamento: ${metadata.processingTimeMs}ms`,
       `- Status do guardrail: ${guardrailStatus}`,
-      `- Tentativas: ${metadata.attemptCount ?? 'N/A'}`,
-      `- Fallback usado: ${metadata.usedFallback ? 'Sim' : 'Não'}`,
+      `- Tentativas: ${attempts}`,
+      `- Fallback usado: ${usedFallback ? 'Sim' : 'Não'}`,
       '',
       '## Perfil do paciente',
       `- Nome: ${patientProfile.name}`,
@@ -157,6 +178,10 @@ export class EvaluationExportService {
       '',
       this.buildQuestionsSection(ctx.questions),
       '',
+      '## Rejeições do guardrail',
+      '',
+      this.buildRejectionsSection(metadata.guardrailRejections),
+      '',
       '## Chat contextual',
       '',
       '*(vazio — preencher durante avaliação)*',
@@ -174,6 +199,13 @@ export class EvaluationExportService {
 
   private buildJson(caseId: string, response: SimplifyResponse, ctx: EvaluationExportContext): object {
     const { metadata, originalText, simplifiedText, glossary, complexity } = response
+    const attempts = metadata.attemptCount ?? 1
+    const usedFallback = metadata.usedFallback ?? false
+    const guardrailStatus = usedFallback
+      ? `Rejeitado — fallback ativado após ${attempts} tentativa(s)`
+      : attempts > 1
+        ? `Aprovado na tentativa ${attempts} de 3 (com retry)`
+        : 'Aprovado na tentativa 1 de 3'
 
     return {
       caseId,
@@ -182,9 +214,13 @@ export class EvaluationExportService {
         material: ctx.materialName,
         modelo: metadata.model,
         processamentoMs: metadata.processingTimeMs,
-        guardrailAprovado: !metadata.usedFallback,
-        tentativas: metadata.attemptCount,
-        fallbackUsado: metadata.usedFallback,
+      },
+      guardrail: {
+        aprovado: !usedFallback,
+        tentativas: attempts,
+        aprovadoNaPrimeiraTentativa: !usedFallback && attempts === 1,
+        fallbackAtivado: usedFallback,
+        status: guardrailStatus,
       },
       perfilPaciente: {
         nome: metadata.patientProfile.name,
@@ -216,7 +252,56 @@ export class EvaluationExportService {
         : null,
       glossario: glossary ?? [],
       perguntasFrequentes: ctx.questions ?? [],
+      rejeicoes: (metadata.guardrailRejections ?? []).map(r => ({
+        tentativa: r.attempt,
+        origem: r.source,
+        resumo: r.summary,
+        alegacoesNaoSuportadas: r.unsupportedClaims,
+        informacoesCriticasAlteradas: r.alteredCriticalInformation,
+        informacoesCriticasOmitidas: r.omittedCriticalInformation,
+        correcoesSugeridas: r.suggestedFixes,
+      })),
     }
+  }
+
+  private buildRejectionsSection(rejections?: GuardrailRejection[]): string {
+    if (!rejections || rejections.length === 0) {
+      return '*(nenhuma rejeição — aprovado na primeira tentativa)*'
+    }
+
+    return rejections
+      .map(r => {
+        const lines: string[] = [
+          `### Tentativa ${r.attempt} — rejeitada (${r.source === 'deterministic' ? 'checker determinístico' : 'guardrail LLM'})`,
+          '',
+          `**Motivo:** ${r.summary}`,
+        ]
+
+        if (r.unsupportedClaims.length > 0) {
+          lines.push('', '**Alegações sem suporte no original:**')
+          r.unsupportedClaims.forEach(c => lines.push(`- [${c.severity}] ${c.claim} — ${c.reason}`))
+        }
+
+        if (r.alteredCriticalInformation.length > 0) {
+          lines.push('', '**Informações críticas alteradas:**')
+          r.alteredCriticalInformation.forEach(a =>
+            lines.push(`- [${a.severity}] Original: "${a.original}" → Gerado: "${a.generated}" — ${a.reason}`),
+          )
+        }
+
+        if (r.omittedCriticalInformation.length > 0) {
+          lines.push('', '**Informações críticas omitidas:**')
+          r.omittedCriticalInformation.forEach(o => lines.push(`- [${o.severity}] ${o.missingInformation} — ${o.reason}`))
+        }
+
+        if (r.suggestedFixes.length > 0) {
+          lines.push('', '**Correções sugeridas:**')
+          r.suggestedFixes.forEach(f => lines.push(`- ${f}`))
+        }
+
+        return lines.join('\n')
+      })
+      .join('\n\n---\n\n')
   }
 
   private buildQuestionsSection(questions?: Array<{ question: string; answer: string }>): string {
