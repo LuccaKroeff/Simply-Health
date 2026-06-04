@@ -10,6 +10,7 @@ import { InputGuardrailService } from './services/guardrail/input-guardrail.serv
 import { LlmModule } from './services/llm/llm.module'
 import { PdfImageExtractorService } from './services/pdf-image-extractor/pdf-image-extractor.service'
 import { TextExtractorService } from './services/text-extractor/text-extractor.service'
+import { SttService } from './services/stt/stt.service'
 import { TtsService } from './services/tts/tts.service'
 
 const guardrailServices = [FidelityGuardrailService, InputGuardrailService, ChatOutputGuardrailService]
@@ -31,6 +32,7 @@ const complexityProvider = {
     TextExtractorService,
     PdfImageExtractorService,
     TtsService,
+    SttService,
     BasicReadabilityAnalyzer,
     NilcMetrixAdapter,
     complexityProvider,
@@ -42,6 +44,7 @@ const complexityProvider = {
     TextExtractorService,
     PdfImageExtractorService,
     TtsService,
+    SttService,
     complexityProvider,
     EvaluationExportService,
     ...guardrailServices,

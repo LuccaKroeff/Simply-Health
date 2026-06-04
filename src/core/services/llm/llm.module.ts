@@ -33,7 +33,7 @@ function makeProvider(providerName: string, config: ConfigService, geminiModel: 
       useFactory: (config: ConfigService) => {
         const fallback = config.get<string>('LLM_PROVIDER', 'mock')
         const name = config.get<string>('GUARDRAIL_PROVIDER', fallback)
-        return makeProvider(name, config, 'gemini-2.5-flash')
+        return makeProvider(name, config, 'gemini-2.5-flash-lite')
       },
       inject: [ConfigService],
     },

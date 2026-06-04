@@ -62,3 +62,10 @@ export async function synthesizeSpeech(text: string): Promise<string> {
   const data = (await postJson('/api/simplify/tts', { text })).json() as Promise<{ audio: string }>
   return (await data).audio
 }
+
+export async function transcribeAudio(blob: Blob): Promise<string> {
+  const body = new FormData()
+  body.append('audio', blob, 'recording.webm')
+  const data = (await postForm('/api/simplify/transcribe', body)).json() as Promise<{ text: string }>
+  return (await data).text
+}

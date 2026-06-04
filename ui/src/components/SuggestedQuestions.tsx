@@ -1,4 +1,6 @@
 import type { Question } from '../types'
+import { useTtsPlayer } from '../hooks/useTtsPlayer'
+import PlayButton from './PlayButton'
 
 interface Props {
   questions: Question[] | null
@@ -7,6 +9,8 @@ interface Props {
 }
 
 export default function SuggestedQuestions({ questions, onSelect, disabled }: Props) {
+  const { play, playingKey, loadingKey } = useTtsPlayer()
+
   if (questions !== null && questions.length === 0) return null
 
   return (
@@ -16,9 +20,19 @@ export default function SuggestedQuestions({ questions, onSelect, disabled }: Pr
         {questions === null
           ? [1, 2, 3].map(i => <div key={i} className="question-pill-skeleton" />)
           : questions.map((q, i) => (
-              <button key={i} type="button" className="question-pill" onClick={() => onSelect(q)} disabled={disabled}>
-                {q.question}
-              </button>
+              <div key={i} className="question-pill-row">
+                <PlayButton
+                  ttsKey={`question-${i}`}
+                  text={q.question}
+                  playingKey={playingKey}
+                  loadingKey={loadingKey}
+                  onPlay={play}
+                  disabled={disabled}
+                />
+                <button type="button" className="question-pill" onClick={() => onSelect(q)} disabled={disabled}>
+                  {q.question}
+                </button>
+              </div>
             ))}
       </div>
     </div>

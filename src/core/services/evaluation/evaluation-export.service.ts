@@ -14,6 +14,7 @@ export interface EvaluationExportContext {
 }
 
 const OUTPUT_DIR = path.join(process.cwd(), 'evaluation-results')
+const MAX_ATTEMPTS = 5
 
 const EDUCATION_LEVEL_LABEL: Record<EducationLevel, string> = {
   fundamental: 'Fundamental',
@@ -41,6 +42,7 @@ export class EvaluationExportService {
   private readonly logger = new Logger(EvaluationExportService.name)
 
   async export(response: SimplifyResponse, context: EvaluationExportContext): Promise<void> {
+    if (process.env.EVALUATION_EXPORT === 'false') return
     try {
       await fs.mkdir(OUTPUT_DIR, { recursive: true })
 
@@ -86,8 +88,8 @@ export class EvaluationExportService {
     const guardrailStatus = usedFallback
       ? `Rejeitado — fallback ativado após ${attempts} tentativa(s)`
       : attempts > 1
-        ? `Aprovado na tentativa ${attempts} de 3 (com retry)`
-        : 'Aprovado na tentativa 1 de 3'
+        ? `Aprovado na tentativa ${attempts} de ${MAX_ATTEMPTS} (com retry)`
+        : `Aprovado na tentativa 1 de ${MAX_ATTEMPTS}`
 
     const guardrailCallout = usedFallback
       ? [
@@ -204,8 +206,8 @@ export class EvaluationExportService {
     const guardrailStatus = usedFallback
       ? `Rejeitado — fallback ativado após ${attempts} tentativa(s)`
       : attempts > 1
-        ? `Aprovado na tentativa ${attempts} de 3 (com retry)`
-        : 'Aprovado na tentativa 1 de 3'
+        ? `Aprovado na tentativa ${attempts} de ${MAX_ATTEMPTS} (com retry)`
+        : `Aprovado na tentativa 1 de ${MAX_ATTEMPTS}`
 
     return {
       caseId,

@@ -11,6 +11,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express'
 import { memoryStorage } from 'multer'
 import { EvaluationExportService } from '@src/core/services/evaluation/evaluation-export.service'
+import { SttService } from '@src/core/services/stt/stt.service'
 import { FileInput } from '@src/core/services/llm/llm-provider.interface'
 import { TextExtractorService } from '@src/core/services/text-extractor/text-extractor.service'
 import { TtsService } from '@src/core/services/tts/tts.service'
@@ -34,6 +35,7 @@ export class SimplifyController {
     private readonly chatAnswerUseCase: ChatAnswerUseCase,
     private readonly textExtractorService: TextExtractorService,
     private readonly ttsService: TtsService,
+    private readonly sttService: SttService,
     private readonly evaluationExporter: EvaluationExportService,
   ) {}
 
@@ -113,6 +115,14 @@ export class SimplifyController {
     }
     const buffer = await this.ttsService.synthesize(text.trim())
     return { audio: buffer.toString('base64') }
+  }
+
+  @Post('transcribe')
+  @UseInterceptors(FileInterceptor('audio', { storage: memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } }))
+  async transcribe(@UploadedFile() file?: Express.Multer.File): Promise<{ text: string }> {
+    if (!file) throw new BadRequestException('Envie o campo "audio".')
+    const text = await this.sttService.transcribe(file.buffer, file.mimetype)
+    return { text }
   }
 
   @Post('chat')

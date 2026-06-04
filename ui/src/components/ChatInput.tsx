@@ -1,21 +1,5 @@
 import { useRef, useState } from 'react'
-
-interface SpeechRecognitionLike {
-  lang: string
-  continuous: boolean
-  interimResults: boolean
-  onresult: ((event: { results: { [i: number]: { [i: number]: { transcript: string } } } }) => void) | null
-  onend: (() => void) | null
-  onerror: (() => void) | null
-  start(): void
-  stop(): void
-}
-
-type SpeechRecognitionCtor = new () => SpeechRecognitionLike
-
-const SR: SpeechRecognitionCtor | undefined =
-  ((window as unknown as Record<string, unknown>)['SpeechRecognition'] as SpeechRecognitionCtor | undefined) ??
-  ((window as unknown as Record<string, unknown>)['webkitSpeechRecognition'] as SpeechRecognitionCtor | undefined)
+import { transcribeAudio } from '../api'
 
 interface Props {
   onSend: (text: string) => void
@@ -25,7 +9,9 @@ interface Props {
 export default function ChatInput({ onSend, disabled }: Props) {
   const [value, setValue] = useState('')
   const [recording, setRecording] = useState(false)
-  const recognitionRef = useRef<SpeechRecognitionLike | null>(null)
+  const [transcribing, setTranscribing] = useState(false)
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
+  const chunksRef = useRef<Blob[]>([])
 
   function handleSend() {
     const trimmed = value.trim()
@@ -41,38 +27,60 @@ export default function ChatInput({ onSend, disabled }: Props) {
     }
   }
 
-  function handleMic() {
+  async function handleMic() {
     if (recording) {
-      recognitionRef.current?.stop()
+      mediaRecorderRef.current?.stop()
       return
     }
 
-    const recognition = new SR!()
-    recognition.lang = 'pt-BR'
-    recognition.continuous = false
-    recognition.interimResults = false
-    recognitionRef.current = recognition
-
-    recognition.onresult = event => {
-      setValue(event.results[0][0].transcript)
+    let stream: MediaStream
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+    } catch {
+      return
     }
-    recognition.onend = () => setRecording(false)
-    recognition.onerror = () => setRecording(false)
 
-    recognition.start()
+    const mr = new MediaRecorder(stream)
+    mediaRecorderRef.current = mr
+    chunksRef.current = []
+
+    mr.ondataavailable = e => {
+      if (e.data.size > 0) chunksRef.current.push(e.data)
+    }
+
+    mr.onstop = async () => {
+      stream.getTracks().forEach(t => t.stop())
+      setRecording(false)
+      setTranscribing(true)
+      try {
+        const blob = new Blob(chunksRef.current, { type: mr.mimeType || 'audio/webm' })
+        const text = await transcribeAudio(blob)
+        if (text) setValue(text)
+      } catch {
+        // silently ignore transcription failures
+      } finally {
+        setTranscribing(false)
+      }
+    }
+
+    mr.start()
     setRecording(true)
   }
 
+  const micBusy = recording || transcribing
+
   return (
     <div className="chat-input-row">
-      {SR && (
-        <button
-          type="button"
-          className={`mic-btn${recording ? ' recording' : ''}`}
-          onClick={handleMic}
-          disabled={disabled}
-          title={recording ? 'Parar gravação' : 'Falar pergunta'}
-        >
+      <button
+        type="button"
+        className={`mic-btn${recording ? ' recording' : transcribing ? ' transcribing' : ''}`}
+        onClick={handleMic}
+        disabled={disabled || transcribing}
+        title={recording ? 'Parar gravação' : transcribing ? 'Transcrevendo...' : 'Falar pergunta'}
+      >
+        {transcribing ? (
+          <span className="mic-spinner" />
+        ) : (
           <svg
             width="15"
             height="15"
@@ -88,8 +96,8 @@ export default function ChatInput({ onSend, disabled }: Props) {
             <line x1="12" y1="19" x2="12" y2="23" />
             <line x1="8" y1="23" x2="16" y2="23" />
           </svg>
-        </button>
-      )}
+        )}
+      </button>
       <input
         type="text"
         className="chat-input"
@@ -97,13 +105,13 @@ export default function ChatInput({ onSend, disabled }: Props) {
         value={value}
         onChange={e => setValue(e.target.value)}
         onKeyDown={handleKeyDown}
-        disabled={disabled}
+        disabled={disabled || micBusy}
       />
       <button
         type="button"
         className="chat-send-btn"
         onClick={handleSend}
-        disabled={disabled || value.trim().length === 0}
+        disabled={disabled || micBusy || value.trim().length === 0}
       >
         Enviar
       </button>

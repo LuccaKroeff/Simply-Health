@@ -1296,6 +1296,16 @@
   gap: 0.75rem;
 }
 
+.question-pill-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.question-pill-row .question-pill {
+  flex: 1;
+}
+
 .question-pill {
   display: flex;
   align-items: center;
@@ -1687,6 +1697,21 @@
   50% {
     box-shadow: 0 0 0 6px rgba(220, 38, 38, 0);
   }
+}
+
+.mic-btn.transcribing {
+  color: var(--text-faint);
+  cursor: default;
+}
+
+.mic-spinner {
+  display: block;
+  width: 0.7rem;
+  height: 0.7rem;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
 }
 
 /* ─── Play button (TTS) ───────────────────────────────── */

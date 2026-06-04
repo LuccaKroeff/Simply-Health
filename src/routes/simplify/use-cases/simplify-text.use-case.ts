@@ -15,7 +15,7 @@ import { PatientProfile } from '@src/types/patient'
 import { GuardrailResult } from '@src/types/guardrail'
 import { GuardrailRejection, SimplifyResponse } from '@src/types/simplification'
 
-const MAX_ATTEMPTS = 3
+const MAX_ATTEMPTS = 5
 const SIMPLIFICATION_TEMPERATURE = 0.3
 const SAFE_FALLBACK_MESSAGE =
   'Não foi possível gerar uma versão simplificada com segurança suficiente a partir do conteúdo informado.'
