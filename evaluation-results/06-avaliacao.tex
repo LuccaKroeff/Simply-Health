@@ -28,7 +28,7 @@ Essa variação entre perfis permitiu avaliar se a solução produzia diferentes
 \section{Procedimento de avaliação}
 \label{sec:procedimento-avaliacao}
 
-A avaliação foi planejada considerando três execuções para cada combinação entre material e perfil, resultando em 18 execuções principais: dois materiais, três perfis simulados e três execuções independentes para cada combinação. Cada execução correspondeu ao processamento de um material para um perfil específico, podendo envolver uma ou mais tentativas internas de geração quando a saída era rejeitada pelos guardrails. Todas as execuções utilizaram o modelo \texttt{gemini-2.5-flash-lite} tanto para a simplificação textual quanto para o guardrail de fidelidade, conforme a configuração descrita na Tabela~\ref{tab:modelos-llm}.
+A avaliação foi planejada considerando três execuções para cada combinação entre material e perfil, resultando em 18 execuções principais: dois materiais, três perfis simulados e três execuções independentes para cada combinação. Cada execução correspondeu ao processamento de um material para um perfil específico, podendo envolver uma ou mais tentativas internas de geração quando a saída era rejeitada pelos guardrails. A simplificação textual utilizou o modelo \texttt{gemini-2.5-flash-lite}, enquanto o guardrail de fidelidade utilizou o modelo \texttt{gemini-2.5-flash}, conforme a configuração descrita na Tabela~\ref{tab:modelos-llm}.
 
 Cada execução produziu um conjunto de saídas composto por texto simplificado, valor de Flesch-PT do texto original e do texto simplificado, glossário quando gerado e perguntas frequentes. Quando uma tentativa era rejeitada pelo guardrail, a solução podia realizar uma nova tentativa de geração dentro da mesma execução. Essas tentativas internas não foram contabilizadas como novas execuções principais, mas como parte do funcionamento do pipeline.
 
@@ -49,7 +49,7 @@ Nesta avaliação, valores maiores de Flesch-PT foram interpretados como indíci
 
 A preservação das informações essenciais foi analisada a partir de duas camadas complementares: leitura manual preliminar dos textos gerados e verificação automática realizada pelos guardrails da solução. A leitura manual buscou identificar possíveis omissões críticas, adições indevidas, alterações de sentido, mudanças em instruções de segurança e alterações de dose ou frequência, quando aplicável.
 
-Os guardrails, por sua vez, atuaram como uma camada automatizada de verificação da fidelidade entre o texto original e a versão simplificada. Essa verificação teve como objetivo identificar alterações que poderiam comprometer o sentido do conteúdo original, como troca de termos clínicos, perda de negação, alteração de instruções procedimentais ou inconsistências numéricas. Quando uma tentativa era rejeitada, a solução podia gerar uma nova versão a partir do retorno do guardrail.
+Os guardrails, por sua vez, atuaram como uma camada automatizada de verificação da fidelidade entre o texto original e a versão simplificada, operando em duas etapas sequenciais. A primeira é o checker determinístico, implementado por meio de expressões regulares aplicadas diretamente no código, sem chamada a LLM. Ele verifica padrões considerados críticos: possíveis contradições em valores numéricos, como doses que aparecem com magnitudes distintas no original e no texto gerado, e possíveis inversões de negação em instruções associadas a verbos como \textit{tomar}, \textit{usar}, \textit{interromper} e similares, buscando garantir que construções como ``não use'' não sejam simplificadas de forma a perder a negação. A segunda etapa é o guardrail baseado em LLM, que recebe o texto original e a versão simplificada e avalia a fidelidade de forma mais ampla, buscando identificar alterações semânticas, troca de substâncias, modificação de instruções procedimentais e criação de informações não presentes no material original. Quando uma tentativa era rejeitada por qualquer uma dessas etapas, a solução incorporava o feedback ao prompt e realizava uma nova tentativa de geração.
 
 Essa análise não substitui validação clínica por especialistas. Seu objetivo foi verificar indícios de preservação das informações essenciais dentro do escopo funcional da solução e identificar situações em que o guardrail contribuiu para bloquear ou corrigir saídas inadequadas.
 
@@ -93,14 +93,14 @@ A Tabela~\ref{tab:flesch-diabetes} apresenta os resultados médios obtidos para 
     \hline
     \textbf{Perfil} & \textbf{Casos} & \textbf{Original} & \textbf{Simplif.} & \textbf{Ganho} & \textbf{Classif.} \\
     \hline
-    Ana    & 3 & 51,8 & 49,5 & $-2,3$ & Pouco difícil \\
+    Ana    & 3 & 51,8 & 49,5 & -2,3 & Pouco difícil \\
     Carlos & 3 & 51,8 & 56,6 & +4,8   & Fácil \\
     Maria  & 3 & 51,8 & 68,1 & +16,3  & Fácil \\
     \hline
   \end{tabular}
 \end{table}
 
-No material sobre diabetes, o mesmo gradiente entre perfis foi observado, embora com uma particularidade no perfil de Ana. Para esse perfil, a média das execuções apresentou variação negativa de $-2,3$ pontos. O texto original do material sobre diabetes foi classificado como ``Fácil'' pelo Flesch-PT, e as versões simplificadas para esse perfil resultaram em média ligeiramente abaixo desse valor, apresentando classificação ``Pouco difícil'' em duas das três execuções. Esse resultado não deve ser interpretado diretamente como falha da solução, pois Ana representa um perfil com ensino superior e familiaridade com a área da saúde. Assim, a manutenção de terminologia técnica e de uma estrutura textual mais próxima do original é coerente com a proposta de adaptação comunicacional ao perfil.
+No material sobre diabetes, o mesmo gradiente entre perfis foi observado, embora com uma particularidade no perfil de Ana. Para esse perfil, a média das execuções apresentou variação negativa de -2,3 pontos. O texto original do material sobre diabetes foi classificado como ``Fácil'' pelo Flesch-PT, e as versões simplificadas para esse perfil resultaram em média ligeiramente abaixo desse valor, apresentando classificação ``Pouco difícil'' em duas das três execuções. Esse resultado não deve ser interpretado diretamente como falha da solução, pois Ana representa um perfil com ensino superior e familiaridade com a área da saúde. Assim, a manutenção de terminologia técnica e de uma estrutura textual mais próxima do original é coerente com a proposta de adaptação comunicacional ao perfil.
 
 Carlos apresentou ganho médio de +4,8 pontos no material sobre diabetes, sugerindo uma simplificação moderada. Maria, por sua vez, apresentou ganho médio de +16,3 pontos, permanecendo na classificação ``Fácil'', assim como o texto original. Esse comportamento reforça o padrão observado no material sobre estomia: quanto menor a escolaridade e a familiaridade esperada com linguagem técnica de saúde, maior foi a intensidade da simplificação linguística produzida pela solução.
 
@@ -121,7 +121,7 @@ A Tabela~\ref{tab:sintese-legibilidade} sintetiza os principais indicadores gera
     Flesch-PT simplificado médio & 58,1 & 58,4 & 58,2 \\
     Ganho médio & +6,3 & +16,6 & +11,4 \\
     Maior ganho observado & +20,3 & +26,5 & +26,5 \\
-    Menor ganho observado & $-3,8$ & +5,4 & $-3,8$ \\
+    Menor ganho observado & -3,8 & +5,4 & -3,8 \\
     Casos com ganho positivo & 6/9 & 9/9 & 15/18 \\
     Casos com ganho nulo ou negativo & 3/9 & 0/9 & 3/18 \\
     Casos com mudança de classificação & 2/9 & 7/9 & 9/18 \\
@@ -154,7 +154,7 @@ A Tabela~\ref{tab:preservacao-guardrails-saidas} apresenta uma síntese dos resu
     Aprovados na primeira tentativa & 10/18 \\
     Aprovados na segunda tentativa & 6/18 \\
     Aprovados na terceira tentativa & 1/18 \\
-    Aprovados na quarta tentativa\tablefootnote{Corresponde ao re-run realizado após o fallback da execução estomia-Ana-R2. As três tentativas internas dessa execução foram rejeitadas, ativando o fallback; o re-run subsequente foi aprovado na primeira tentativa, totalizando quatro tentativas no conjunto da sequência.} & 1/18 \\
+    Aprovados na quarta tentativa & 1/18 \\
     Execuções com ao menos uma rejeição & 8/18 \\
     Eventos de rejeição registrados & 11 \\
     FAQ gerado & 18/18 \\
@@ -384,7 +384,7 @@ Esse caso mostra que a simplificação de vocabulário pode, em algumas situaç�
 
 A avaliação mostrou que a aplicação aumentou a legibilidade textual em 15 dos 18 textos aprovados com Flesch-PT computado. A média dos textos originais foi de 46,8, enquanto a média das versões simplificadas foi de 58,2, resultando em ganho médio geral de +11,4 pontos. Ao separar os materiais, o ganho médio foi de +6,3 no material sobre diabetes e de +16,6 no material sobre estomia.
 
-Os resultados também mostraram diferenças entre os perfis simulados. Maria apresentou os maiores ganhos médios nos dois materiais, com +25,6 no material sobre estomia e +16,3 no material sobre diabetes. Carlos ocupou uma posição intermediária, com ganhos médios de +17,2 e +4,8, respectivamente. Ana apresentou os menores ganhos, com +7,0 no material sobre estomia e $-2,3$ no material sobre diabetes. Mudanças de classificação ocorreram em 9 dos 18 casos: no material sobre estomia, 7 versões passaram da classificação ``Pouco difícil'' para ``Fácil''; no material sobre diabetes, 2 versões do par D-Ana regrediram de ``Fácil'' para ``Pouco difícil''.
+Os resultados também mostraram diferenças entre os perfis simulados. Maria apresentou os maiores ganhos médios nos dois materiais, com +25,6 no material sobre estomia e +16,3 no material sobre diabetes. Carlos ocupou uma posição intermediária, com ganhos médios de +17,2 e +4,8, respectivamente. Ana apresentou os menores ganhos, com +7,0 no material sobre estomia e -2,3 no material sobre diabetes. Mudanças de classificação ocorreram em 9 dos 18 casos: no material sobre estomia, 7 versões passaram da classificação ``Pouco difícil'' para ``Fácil''; no material sobre diabetes, 2 versões do par D-Ana regrediram de ``Fácil'' para ``Pouco difícil''.
 
 Em relação à preservação das informações essenciais, as 18 execuções principais resultaram em textos finais aprovados pelos guardrails. Das 18 execuções, 10 foram aprovadas na primeira tentativa, 6 na segunda, 1 na terceira e 1 na quarta. Ao todo, 8 execuções tiveram ao menos uma rejeição, totalizando 11 eventos de rejeição. Esses eventos envolveram perda ou alteração de negação, alteração de instrução procedimental, substituição de substância ou atributo específico, inconsistência numérica e alteração de sentido.
 
