@@ -414,14 +414,16 @@ As mudanças na sua vida por causa da estomia precisam de cuidados especiais, co
 
 ## Indicador de legibilidade
 
-- Flesch-PT original: 9.2 — Muito difícil
-- Classificação original: Muito difícil
-- Flesch-PT simplificado: 32.1 — Pouco difícil
-- Classificação simplificada: Pouco difícil
-- Variação: +22.9 pontos
+- Flesch original: 9.2 — Muito difícil
+- Flesch-PT original: 41.8 — Pouco difícil
 
-Observação: o Flesch-PT avalia apenas aspectos linguísticos do texto e não valida precisão médica.
+- Flesch simplificado: 32.1 — Pouco difícil
+- Flesch-PT simplificado: 68.3 — Fácil
 
+- Variação Flesch: +22.9 pontos
+- Variação Flesch-PT: +26.5 pontos
+
+Observação: **Flesch** usa a fórmula original (constante 206,835) com contagem de sílabas por grupos de vogais. **Flesch-PT** usa a adaptação para português (constante 248,835) com contagem precisa de sílabas via stress-pt. Nenhum dos índices valida precisão médica.
 ## Glossário
 
 **Estoma:** A abertura criada na barriga para saída de fezes ou urina.

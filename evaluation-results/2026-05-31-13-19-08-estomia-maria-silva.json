@@ -73,5 +73,18 @@
       "answer": "Algumas comidas podem mudar o cheiro das fezes ou da urina, ou até dar mais gases. É bom ir vendo como seu corpo reage a cada comida. O médico pode te dar umas dicas do que comer para ajudar."
     }
   ],
-  "rejeicoes": []
+  "rejeicoes": [],
+  "legibilidade_pt": {
+    "formula": "248.835 - 1.015 × ASL - 84.6 × ASW",
+    "contagem_silabas": "stress-pt",
+    "original": {
+      "flesch_pt": 41.8,
+      "classificacao": "Pouco difícil"
+    },
+    "simplificado": {
+      "flesch_pt": 67,
+      "classificacao": "Fácil"
+    },
+    "variacao_pt": 25.2
+  }
 }

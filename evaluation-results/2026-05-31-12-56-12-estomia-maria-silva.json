@@ -69,5 +69,18 @@
       "answer": "Não se preocupe. As bolsas são discretas e se ajustam ao corpo. Se você não disser nada, as pessoas provavelmente não notarão que você está usando uma."
     }
   ],
-  "rejeicoes": []
+  "rejeicoes": [],
+  "legibilidade_pt": {
+    "formula": "248.835 - 1.015 × ASL - 84.6 × ASW",
+    "contagem_silabas": "stress-pt",
+    "original": {
+      "flesch_pt": 41.8,
+      "classificacao": "Pouco difícil"
+    },
+    "simplificado": {
+      "flesch_pt": 68.3,
+      "classificacao": "Fácil"
+    },
+    "variacao_pt": 26.5
+  }
 }

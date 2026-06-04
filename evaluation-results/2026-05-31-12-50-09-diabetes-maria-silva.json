@@ -56,5 +56,18 @@
       "answer": "Sentir os pés frios, mesmo usando meia, pode ser um sinal de que o sangue não está circulando muito bem por ali. É bom ficar de olho nisso."
     }
   ],
-  "rejeicoes": []
+  "rejeicoes": [],
+  "legibilidade_pt": {
+    "formula": "248.835 - 1.015 × ASL - 84.6 × ASW",
+    "contagem_silabas": "stress-pt",
+    "original": {
+      "flesch_pt": 51.8,
+      "classificacao": "Fácil"
+    },
+    "simplificado": {
+      "flesch_pt": 62.5,
+      "classificacao": "Fácil"
+    },
+    "variacao_pt": 10.7
+  }
 }

@@ -90,5 +90,18 @@
         "Na seção 'Circulação nos pés', altere a instrução para: 'Peça para um familiar sentir o pulso (batimento) na região acima do pé com os dedos indicador e médio. Faça isso nos dois pés.'"
       ]
     }
-  ]
+  ],
+  "legibilidade_pt": {
+    "formula": "248.835 - 1.015 × ASL - 84.6 × ASW",
+    "contagem_silabas": "stress-pt",
+    "original": {
+      "flesch_pt": 51.8,
+      "classificacao": "Fácil"
+    },
+    "simplificado": {
+      "flesch_pt": 49.5,
+      "classificacao": "Pouco difícil"
+    },
+    "variacao_pt": -2.3
+  }
 }

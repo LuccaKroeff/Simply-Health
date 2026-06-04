@@ -119,5 +119,18 @@
         "Corrigir 'tintura de iodo' para 'tintura de benjoim' nas seções 'Cuidados com a pele ao redor do estoma' e 'Como limpar a pele em volta do estoma'."
       ]
     }
-  ]
+  ],
+  "legibilidade_pt": {
+    "formula": "248.835 - 1.015 × ASL - 84.6 × ASW",
+    "contagem_silabas": "stress-pt",
+    "original": {
+      "flesch_pt": 41.8,
+      "classificacao": "Pouco difícil"
+    },
+    "simplificado": {
+      "flesch_pt": 67,
+      "classificacao": "Fácil"
+    },
+    "variacao_pt": 25.2
+  }
 }

@@ -73,5 +73,18 @@
       "answer": "Se você não sentir os batimentos do pulso no pé, pode ser que seus pés estejam sempre frios, mesmo com meias, ou que a cor dos dedos demora mais de 3 segundos para voltar ao normal depois de apertar. Isso pode indicar que o sangue não está circulando tão bem até a ponta dos dedos."
     }
   ],
-  "rejeicoes": []
+  "rejeicoes": [],
+  "legibilidade_pt": {
+    "formula": "248.835 - 1.015 × ASL - 84.6 × ASW",
+    "contagem_silabas": "stress-pt",
+    "original": {
+      "flesch_pt": 51.8,
+      "classificacao": "Fácil"
+    },
+    "simplificado": {
+      "flesch_pt": 69.6,
+      "classificacao": "Fácil"
+    },
+    "variacao_pt": 17.8
+  }
 }

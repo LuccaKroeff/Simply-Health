@@ -71,5 +71,18 @@
       "answer": "A recomendação de não passar creme entre os dedos é para evitar a umidade excessiva na região, o que pode favorecer o desenvolvimento de micoses. Em relação aos calçados, um bom ajuste significa que o calçado não causa pontos de pressão, atrito ou sobrecarga. Ele deve permitir espaço suficiente para os dedos se movimentarem sem apertar ou roçar nas laterais e no topo. Deve ser confortável desde o primeiro uso, sem necessidade de 'amaciar', e a sola deve oferecer boa aderência ao solo."
     }
   ],
-  "rejeicoes": []
+  "rejeicoes": [],
+  "legibilidade_pt": {
+    "formula": "248.835 - 1.015 × ASL - 84.6 × ASW",
+    "contagem_silabas": "stress-pt",
+    "original": {
+      "flesch_pt": 51.8,
+      "classificacao": "Fácil"
+    },
+    "simplificado": {
+      "flesch_pt": 50.9,
+      "classificacao": "Fácil"
+    },
+    "variacao_pt": -0.9
+  }
 }

@@ -402,14 +402,16 @@ Se tiver pelos ao redor do estoma, você pode usar um barbeador elétrico ou um 
 
 ## Indicador de legibilidade
 
-- Flesch-PT original: 9.2 — Muito difícil
-- Classificação original: Muito difícil
-- Flesch-PT simplificado: 31.4 — Pouco difícil
-- Classificação simplificada: Pouco difícil
-- Variação: +22.2 pontos
+- Flesch original: 9.2 — Muito difícil
+- Flesch-PT original: 41.8 — Pouco difícil
 
-Observação: o Flesch-PT avalia apenas aspectos linguísticos do texto e não valida precisão médica.
+- Flesch simplificado: 31.4 — Pouco difícil
+- Flesch-PT simplificado: 67 — Fácil
 
+- Variação Flesch: +22.2 pontos
+- Variação Flesch-PT: +25.2 pontos
+
+Observação: **Flesch** usa a fórmula original (constante 206,835) com contagem de sílabas por grupos de vogais. **Flesch-PT** usa a adaptação para português (constante 248,835) com contagem precisa de sílabas via stress-pt. Nenhum dos índices valida precisão médica.
 ## Glossário
 
 **Estoma:** Abertura criada na pele para saída de fezes ou urina.

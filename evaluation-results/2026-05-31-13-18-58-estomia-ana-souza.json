@@ -71,5 +71,18 @@
       "answer": "O guia menciona que alguns alimentos podem aumentar o odor da urina e das fezes, e que essa reação varia de pessoa para pessoa. Ele recomenda que você observe como seu organismo reage à ingestão de diferentes alimentos. O texto lista alguns alimentos que produzem gases (ovos, feijão, bebidas gasosas), alimentos que favorecem o amolecimento das fezes (verduras e frutas cruas, lentilhas, ervilhas, bagaços de laranjas), alimentos que provocam constipação (batata, inhame, maçã cozida, banana prata, arroz branco) e alimentos que produzem cheiros fortes (cebola, alho cru, ovos cozidos, repolho, frutos do mar). Por outro lado, alimentos como cenoura, chuchu, espinafre e maisena podem neutralizar odores."
     }
   ],
-  "rejeicoes": []
+  "rejeicoes": [],
+  "legibilidade_pt": {
+    "formula": "248.835 - 1.015 × ASL - 84.6 × ASW",
+    "contagem_silabas": "stress-pt",
+    "original": {
+      "flesch_pt": 41.8,
+      "classificacao": "Pouco difícil"
+    },
+    "simplificado": {
+      "flesch_pt": 48.4,
+      "classificacao": "Pouco difícil"
+    },
+    "variacao_pt": 6.6
+  }
 }

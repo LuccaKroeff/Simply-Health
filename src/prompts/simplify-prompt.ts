@@ -103,7 +103,6 @@ const GLOSSARY_SECTION = [
   '- O termo aparece no texto simplificado (não apenas no original).',
   '- O termo é genuinamente clínico ou especializado — palavras do cotidiano como "infecção", "ferida", "diabetes" ou "inchaço" NÃO devem entrar.',
   '- O termo NÃO foi explicado entre parênteses dentro do próprio texto simplificado.',
-  '- Máximo de 4 entradas. Se não houver termos que atendam aos critérios, omita a seção inteiramente.',
   "Formato: cada entrada em uma linha, no formato 'TERMO: definição simples em até 15 palavras'.",
 ]
 

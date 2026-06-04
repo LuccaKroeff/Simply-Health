@@ -71,5 +71,18 @@
       "answer": "Para garantir um bom encaixe e vedação na bolsa de duas peças, após adaptar a placa adesiva à pele ao redor do estoma, certifique-se de que a bolsa coletora esteja firmemente encaixada na placa. Verifique se não há espaços entre elas e que o clamp (se aplicável) esteja fechado corretamente. A aderência adequada da placa à pele e o correto encaixe da bolsa são cruciais para evitar vazamentos."
     }
   ],
-  "rejeicoes": []
+  "rejeicoes": [],
+  "legibilidade_pt": {
+    "formula": "248.835 - 1.015 × ASL - 84.6 × ASW",
+    "contagem_silabas": "stress-pt",
+    "original": {
+      "flesch_pt": 41.8,
+      "classificacao": "Pouco difícil"
+    },
+    "simplificado": {
+      "flesch_pt": 50.9,
+      "classificacao": "Fácil"
+    },
+    "variacao_pt": 9.1
+  }
 }

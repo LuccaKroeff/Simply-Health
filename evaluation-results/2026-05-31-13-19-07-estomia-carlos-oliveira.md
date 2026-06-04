@@ -394,14 +394,16 @@ Ao experimentar um alimento novo, coma em pequena quantidade. Tenha cuidado com 
 
 ## Indicador de legibilidade
 
-- Flesch-PT original: 9.2 — Muito difícil
-- Classificação original: Muito difícil
-- Flesch-PT simplificado: 23.8 — Muito difícil
-- Classificação simplificada: Muito difícil
-- Variação: +14.6 pontos
+- Flesch original: 9.2 — Muito difícil
+- Flesch-PT original: 41.8 — Pouco difícil
 
-Observação: o Flesch-PT avalia apenas aspectos linguísticos do texto e não valida precisão médica.
+- Flesch simplificado: 23.8 — Muito difícil
+- Flesch-PT simplificado: 59.1 — Fácil
 
+- Variação Flesch: +14.6 pontos
+- Variação Flesch-PT: +17.3 pontos
+
+Observação: **Flesch** usa a fórmula original (constante 206,835) com contagem de sílabas por grupos de vogais. **Flesch-PT** usa a adaptação para português (constante 248,835) com contagem precisa de sílabas via stress-pt. Nenhum dos índices valida precisão médica.
 ## Glossário
 
 **Estoma:** Abertura criada por cirurgia para saída de urina ou fezes.

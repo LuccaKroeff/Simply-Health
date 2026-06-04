@@ -389,14 +389,16 @@ As bolsas são feitas com material que impede odores.
 
 ## Indicador de legibilidade
 
-- Flesch-PT original: 9.2 — Muito difícil
-- Classificação original: Muito difícil
-- Flesch-PT simplificado: 15.0 — Muito difícil
-- Classificação simplificada: Muito difícil
-- Variação: +5.8 pontos
+- Flesch original: 9.2 — Muito difícil
+- Flesch-PT original: 41.8 — Pouco difícil
 
-Observação: o Flesch-PT avalia apenas aspectos linguísticos do texto e não valida precisão médica.
+- Flesch simplificado: 15 — Muito difícil
+- Flesch-PT simplificado: 48.4 — Pouco difícil
 
+- Variação Flesch: +5.8 pontos
+- Variação Flesch-PT: +6.6 pontos
+
+Observação: **Flesch** usa a fórmula original (constante 206,835) com contagem de sílabas por grupos de vogais. **Flesch-PT** usa a adaptação para português (constante 248,835) com contagem precisa de sílabas via stress-pt. Nenhum dos índices valida precisão médica.
 ## Glossário
 
 **Estoma:** Abertura criada na pele através de cirurgia para a saída de urina ou fezes.

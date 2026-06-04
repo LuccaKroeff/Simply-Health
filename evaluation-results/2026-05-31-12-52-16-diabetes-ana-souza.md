@@ -411,14 +411,16 @@ Para evitar que o outro pé também desenvolva problemas, feridas ou até mesmo 
 
 ## Indicador de legibilidade
 
-- Flesch-PT original: 19.7 — Muito difícil
-- Classificação original: Muito difícil
-- Flesch-PT simplificado: 19.3 — Muito difícil
-- Classificação simplificada: Muito difícil
-- Variação: -0.4 pontos
+- Flesch original: 19.7 — Muito difícil
+- Flesch-PT original: 51.8 — Fácil
 
-Observação: o Flesch-PT avalia apenas aspectos linguísticos do texto e não valida precisão médica.
+- Flesch simplificado: 19.3 — Muito difícil
+- Flesch-PT simplificado: 50.9 — Fácil
 
+- Variação Flesch: -0.4 pontos
+- Variação Flesch-PT: -0.9 pontos
+
+Observação: **Flesch** usa a fórmula original (constante 206,835) com contagem de sílabas por grupos de vogais. **Flesch-PT** usa a adaptação para português (constante 248,835) com contagem precisa de sílabas via stress-pt. Nenhum dos índices valida precisão médica.
 ## Glossário
 
 **Neuropatia diabética:** Danos nos nervos causados pela diabetes, que podem afetar a sensibilidade e a força muscular.

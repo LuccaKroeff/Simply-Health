@@ -92,5 +92,18 @@
         "Na seção 'Tipos de bolsas (coletores)', alterar 'adesivo especial' para 'adesivo antialérgico' ou 'adesivo hipoalergênico' para manter a fidelidade à informação original."
       ]
     }
-  ]
+  ],
+  "legibilidade_pt": {
+    "formula": "248.835 - 1.015 × ASL - 84.6 × ASW",
+    "contagem_silabas": "stress-pt",
+    "original": {
+      "flesch_pt": 41.8,
+      "classificacao": "Pouco difícil"
+    },
+    "simplificado": {
+      "flesch_pt": 58.6,
+      "classificacao": "Fácil"
+    },
+    "variacao_pt": 16.8
+  }
 }

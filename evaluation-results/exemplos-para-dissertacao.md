@@ -19,15 +19,15 @@
 **Trecho original:**
 > "A estomia é um procedimento cirúrgico realizado quando é preciso construir um novo trajeto para eliminar a urina e as fezes. O estoma é vermelho vivo, úmido e não dói ao ser tocado, mas pode ocorrer um pequeno sangramento, devido aos vasos sanguíneos."
 
-**Ana — exec 1 (Flesch: 9,2 → 14,2 · +5,0):**
+**Ana — exec 1 (Flesch: 9,2 → 14,2 · +5,0 | Flesch-PT: 41,8 → 47,2 · +5,4):**
 > "Estomia é um procedimento cirúrgico que cria um novo caminho para a saída de urina e fezes do corpo. O estoma (a abertura criada) é vermelho vivo, úmido e não causa dor ao toque. Pode haver um pequeno sangramento devido aos vasos sanguíneos."
 
-**Carlos — exec 1 (Flesch: 9,2 → 24,2 · +15,0):**
+**Carlos — exec 1 (Flesch: 9,2 → 24,2 · +15,0 | Flesch-PT: 41,8 → 59,2 · +17,4):**
 > "Carlos, este guia foi feito para te ajudar a entender e cuidar da sua estomia.
 >
 > Estomia é uma cirurgia para criar um novo caminho para sair a urina ou as fezes do seu corpo. O estoma é a abertura que fica visível na barriga. Ele é vermelho vivo, úmido e não dói quando tocado."
 
-**Maria — exec 1 (Flesch: 9,2 → 31,4 · +22,2 · aprovada na 2ª tentativa):**
+**Maria — exec 1 (Flesch: 9,2 → 31,4 · +22,2 · aprovada na 2ª tentativa | Flesch-PT: 41,8 → 67 · +25,2):**
 > "Olá, Maria! Cuidar de você é muito importante, e este guia foi feito para te ajudar a entender melhor sobre a estomia e como cuidar de você no dia a dia.
 >
 > Estomia é o nome de uma cirurgia que cria um novo caminho para o xixi ou as fezes saírem do corpo. O lugar onde isso acontece se chama estoma. Ele é vermelho vivo, parece molhadinho e não dói quando você toca."
@@ -129,7 +129,7 @@ As definições são funcionalmente adequadas. Incerteza: definições não veri
 ### Exemplo 5 — Guardrail captura substituição de substância (estomia-maria-R1)
 
 - **Arquivo:** 12-54-51-estomia-maria-silva.md · execução 1, tentativa 1 rejeitada
-- **Flesch após aprovação:** 9,2 → 31,4 (+22,2)
+- **Flesch após aprovação:** 9,2 → 31,4 (+22,2) | **Flesch-PT após aprovação:** 41,8 → 67 (+25,2)
 
 **Trecho original:**
 > "Não utilize substâncias como álcool, benzina, colônias, **tintura de benjoim**, mercúrio, merthiolate, pomadas e cremes."
@@ -193,7 +193,7 @@ As 2ªs tentativas de ambas as execuções foram aprovadas. Os textos aprovados 
 **Motivo registrado:**
 > "A característica específica 'antialérgico' foi substituída por 'especial'. Isso suaviza uma informação de segurança relevante."
 
-**Resultado:** aprovada na 2ª tentativa com "adesivo antialérgico" restaurado. Flesch: 9,2 → 23,9 (+14,7).
+**Resultado:** aprovada na 2ª tentativa com "adesivo antialérgico" restaurado. Flesch: 9,2 → 23,9 (+14,7) | Flesch-PT: 41,8 → 58,6 (+16,8).
 
 **Por que usar:**
 "Antialérgico" é um atributo clinicamente relevante do adesivo — informa ao paciente uma propriedade do material. "Especial" é genérico e não carrega essa informação. O guardrail identificou a perda do atributo de segurança durante a simplificação de vocabulário.
@@ -222,7 +222,7 @@ As 2ªs tentativas de ambas as execuções foram aprovadas. Os textos aprovados 
 **Tentativa 3 — rejeitada pelo checker determinístico (negação):**
 > "não usar" do original sem negação equivalente no texto gerado.
 
-**Resultado:** fallback ativado. Re-run manual (exec 3, arquivo 12-57-56) aprovado na 1ª tentativa com Flesch +5,8.
+**Resultado:** fallback ativado. Re-run imediato (arquivo 12-57-56) aprovado na 1ª tentativa com Flesch: 9,2 → 17,6 (+8,4) | Flesch-PT: 41,8 → 50,9 (+9,1).
 
 **Por que usar:**
 Único fallback do conjunto — 3 tentativas rejeitadas por camadas e motivos distintos (guardrail LLM × 2, checker determinístico × 1). A 2ª rejeição é particularmente relevante: "cerca da metade (1/3)" é uma contradição numérica sutil — o valor "1/3" está presente, mas a expressão "cerca da metade" que o precede indica outra quantidade. Esse tipo de erro passaria despercebido em leitura rápida, mas altera a instrução de uso do equipamento.
@@ -250,7 +250,7 @@ Carlos e Maria recebem saudações personalizadas no início dos textos simplifi
 
 ### Limitação 2 — D-Ana: padrão negativo em 3 execuções (diabetes)
 
-- **Arquivos:** 12-48-27 (−3,1) · 12-50-40 (−1,6) · 12-52-16 (−0,4)
+- **Arquivos:** 12-48-27 (−3,1) · 12-50-40 (−1,6) · 12-52-16 (−0,4) — Flesch original
 
 Nas três execuções do par diabetes × Ana, o Flesch-PT da versão simplificada ficou abaixo do original. Nas execuções 1 e 2, o guardrail rejeitou a 1ª tentativa (instrução dos dedos para palpação do pulso), e o texto aprovado na 2ª tentativa ainda resultou em Flesch negativo. O padrão se replicou nas três execuções independentes. Não representa falha: para profissional de saúde lendo material procedimental, a manutenção da densidade técnica é coerente com o perfil. Ilustra o limite do Flesch-PT como indicador único.
 

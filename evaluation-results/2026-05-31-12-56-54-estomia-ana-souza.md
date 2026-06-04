@@ -277,10 +277,15 @@ Não foi possível gerar uma versão simplificada com segurança suficiente a pa
 
 ## Indicador de legibilidade
 
-*(indicador não disponível nesta execução)*
+- Flesch-PT original: 41.8 — Pouco difícil
 
-Observação: o Flesch-PT avalia apenas aspectos linguísticos do texto e não valida precisão médica.
+- Flesch simplificado: N/A (fallback ativado)
+- Flesch-PT simplificado: N/A (fallback ativado)
 
+- Variação Flesch: N/A
+- Variação Flesch-PT: N/A
+
+Observação: **Flesch** usa a fórmula original (constante 206,835) com contagem de sílabas por grupos de vogais. **Flesch-PT** usa a adaptação para português (constante 248,835) com contagem precisa de sílabas via stress-pt. Nenhum dos índices valida precisão médica.
 ## Glossário
 
 *(sem glossário nesta execução)*

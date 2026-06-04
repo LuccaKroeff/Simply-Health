@@ -1,0 +1,414 @@
+\chapter{Avaliação da Solução}
+\label{cap:avaliacao}
+
+\section{Objetivo da avaliação}
+\label{sec:objetivo-avaliacao}
+
+A avaliação da solução teve como objetivo analisar seu comportamento a partir de dois aspectos principais: a capacidade de reduzir a complexidade linguística de textos técnicos de saúde e a capacidade de preservar as informações essenciais presentes no material original. Dessa forma, buscou-se verificar se a solução foi capaz de produzir versões textuais mais acessíveis, adaptadas a diferentes perfis comunicacionais, sem alterar o sentido geral das orientações utilizadas como entrada.
+
+A avaliação realizada possui caráter funcional e linguístico, não correspondendo a uma validação clínica dos textos gerados. Assim, os resultados foram analisados com base no Flesch-PT, utilizado como indicador automático de legibilidade, e em uma análise qualitativa preliminar da preservação das informações essenciais. O índice foi considerado apenas como medida de complexidade textual, não como evidência de precisão médica, compreensão real do paciente ou adequação clínica do conteúdo.
+
+\section{Materiais e perfis utilizados}
+\label{sec:materiais-perfis-utilizados}
+
+Foram utilizados dois materiais contendo orientações de saúde: o Guia de Atenção à Saúde da Pessoa com Estomia e o Manual de cuidados com os pés para pessoas com diabetes. Esses documentos foram escolhidos por apresentarem linguagem técnica e orientações práticas voltadas ao cuidado em saúde, permitindo observar como a solução se comporta diante de conteúdos com diferentes temas, vocabulários e tipos de instrução. Além disso, a escolha desses materiais é coerente com o escopo da solução, uma vez que se tratam de documentos previamente aprovados por profissionais de saúde.
+
+A avaliação considerou três perfis simulados de pacientes:
+
+\begin{itemize}
+  \item Ana, 30 anos, ensino superior, área da saúde;
+  \item Carlos, 45 anos, ensino médio, área de negócios;
+  \item Maria, 68 anos, ensino fundamental, outra área de formação.
+\end{itemize}
+
+Todos os perfis utilizados são simulados, e nenhum dado real de paciente foi empregado na avaliação. A escolha desses três perfis teve como objetivo observar diferentes níveis de adaptação comunicacional. O perfil de Ana representa uma usuária com maior familiaridade com linguagem técnica e termos de saúde. O perfil de Carlos representa um usuário intermediário, com escolaridade média e menor familiaridade com linguagem técnica de saúde. O perfil de Maria representa uma usuária com menor escolaridade e maior necessidade de linguagem simples, direta e acessível.
+
+Essa variação entre perfis permitiu avaliar se a solução produzia diferentes níveis de simplificação conforme o contexto comunicacional informado, sem que isso significasse personalização clínica da conduta.
+
+\section{Procedimento de avaliação}
+\label{sec:procedimento-avaliacao}
+
+A avaliação foi planejada considerando três execuções para cada combinação entre material e perfil, resultando em 18 execuções principais: dois materiais, três perfis simulados e três execuções independentes para cada combinação. Cada execução correspondeu ao processamento de um material para um perfil específico, podendo envolver uma ou mais tentativas internas de geração quando a saída era rejeitada pelos guardrails.
+
+Cada execução produziu um conjunto de saídas composto por texto simplificado, valor de Flesch-PT do texto original e do texto simplificado, glossário quando gerado e perguntas frequentes. Quando uma tentativa era rejeitada pelo guardrail, a solução podia realizar uma nova tentativa de geração dentro da mesma execução. Essas tentativas internas não foram contabilizadas como novas execuções principais, mas como parte do funcionamento do pipeline.
+
+\section{Critérios de avaliação}
+\label{sec:criterios-avaliacao}
+
+A avaliação foi organizada em dois grupos de critérios: legibilidade textual e preservação das informações essenciais.
+
+\subsection{Legibilidade textual}
+\label{subsec:legibilidade-textual-avaliacao}
+
+A legibilidade textual foi avaliada por meio do Flesch-PT, utilizado como métrica principal e única de legibilidade nesta avaliação. Para cada caso aprovado, comparou-se o valor obtido no texto original com o valor obtido na versão simplificada, observando se houve aumento do índice após o processamento pela solução.
+
+Nesta avaliação, valores maiores de Flesch-PT foram interpretados como indício de menor complexidade linguística. No entanto, o índice foi analisado com cautela, pois não mede compreensão efetiva, qualidade comunicacional completa, precisão médica ou segurança clínica. Assim, um aumento no Flesch-PT foi considerado apenas como evidência de redução de complexidade textual, devendo ser analisado em conjunto com os exemplos qualitativos e com a preservação das informações essenciais.
+
+\subsection{Preservação das informações essenciais}
+\label{subsec:preservacao-informacoes-essenciais-avaliacao}
+
+A preservação das informações essenciais foi analisada a partir de duas camadas complementares: leitura manual preliminar dos textos gerados e verificação automática realizada pelos guardrails da solução. A leitura manual buscou identificar possíveis omissões críticas, adições indevidas, alterações de sentido, mudanças em instruções de segurança e alterações de dose ou frequência, quando aplicável.
+
+Os guardrails, por sua vez, atuaram como uma camada automatizada de verificação da fidelidade entre o texto original e a versão simplificada. Essa verificação teve como objetivo identificar alterações que poderiam comprometer o sentido do conteúdo original, como troca de termos clínicos, perda de negação, alteração de instruções procedimentais ou inconsistências numéricas. Quando uma tentativa era rejeitada, a solução podia gerar uma nova versão a partir do retorno do guardrail.
+
+Essa análise não substitui validação clínica por especialistas. Seu objetivo foi verificar indícios de preservação das informações essenciais dentro do escopo funcional da solução e identificar situações em que o guardrail contribuiu para bloquear ou corrigir saídas inadequadas.
+
+\section{Resultados de legibilidade textual}
+\label{sec:resultados-legibilidade-textual}
+
+A avaliação de legibilidade foi realizada a partir da comparação entre o Flesch-PT dos textos originais e o Flesch-PT das versões simplificadas aprovadas para cada perfil. Os resultados consideram as 18 execuções principais da avaliação, todas com texto final aprovado e Flesch-PT computado. As tentativas internas rejeitadas pelos guardrails não foram consideradas no cálculo de legibilidade, pois não correspondem às versões finais apresentadas pela solução.
+
+A Tabela~\ref{tab:flesch-estomia} apresenta os resultados médios obtidos para o material Guia de Atenção à Saúde da Pessoa com Estomia.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Média de Flesch-PT por perfil no material sobre estomia.}
+  \label{tab:flesch-estomia}
+  \small
+  \renewcommand{\arraystretch}{1.15}
+  \begin{tabular}{lccccc}
+    \hline
+    \textbf{Perfil} & \textbf{Casos} & \textbf{Original} & \textbf{Simplif.} & \textbf{Ganho} & \textbf{Classif.} \\
+    \hline
+    Ana    & 3 & 9,2 & 15,6 & +6,4  & Muito difícil \\
+    Carlos & 3 & 9,2 & 24,0 & +14,8 & Muito difícil \\
+    Maria  & 3 & 9,2 & 31,3 & +22,1 & Pouco difícil \\
+    \hline
+  \end{tabular}
+\end{table}
+
+No material sobre estomia, todos os perfis apresentaram aumento médio no Flesch-PT após a simplificação. O menor ganho ocorreu no perfil de Ana, com aumento médio de +6,4 pontos, enquanto o maior ganho ocorreu no perfil de Maria, com aumento médio de +22,1 pontos. Carlos apresentou resultado intermediário, com ganho médio de +14,8 pontos. Esse padrão indica que a solução aplicou uma simplificação mais intensa para o perfil com menor escolaridade e menor familiaridade com linguagem técnica, mantendo uma adaptação mais moderada para o perfil com formação na área da saúde.
+
+A diferença entre os perfis também se refletiu na classificação média dos textos. Enquanto as versões geradas para Ana e Carlos permaneceram classificadas como ``Muito difícil'', as versões geradas para Maria passaram para a classificação ``Pouco difícil''. Isso sugere que a adaptação ao perfil de menor letramento produziu impacto mais expressivo na superfície linguística do texto.
+
+A Tabela~\ref{tab:flesch-diabetes} apresenta os resultados médios obtidos para o material Manual de cuidados com os pés para pessoas com diabetes.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Média de Flesch-PT por perfil no material sobre diabetes.}
+  \label{tab:flesch-diabetes}
+  \small
+  \renewcommand{\arraystretch}{1.15}
+  \begin{tabular}{lccccc}
+    \hline
+    \textbf{Perfil} & \textbf{Casos} & \textbf{Original} & \textbf{Simplif.} & \textbf{Ganho} & \textbf{Classif.} \\
+    \hline
+    Ana    & 3 & 19,7 & 18,0 & $-1,7$ & Muito difícil \\
+    Carlos & 3 & 19,7 & 23,8 & +4,1   & Muito difícil \\
+    Maria  & 3 & 19,7 & 33,7 & +14,0  & Pouco difícil \\
+    \hline
+  \end{tabular}
+\end{table}
+
+No material sobre diabetes, o mesmo gradiente entre perfis foi observado, embora com uma particularidade no perfil de Ana. Para esse perfil, a média das execuções apresentou variação negativa de $-1,7$ ponto, indicando ausência de ganho de legibilidade segundo o Flesch-PT. Esse resultado não deve ser interpretado diretamente como falha da solução, pois Ana representa um perfil com ensino superior e familiaridade com a área da saúde. Assim, a manutenção de terminologia técnica e de uma estrutura textual mais próxima do original é coerente com a proposta de adaptação comunicacional ao perfil.
+
+Carlos apresentou ganho médio de +4,1 pontos no material sobre diabetes, sugerindo uma simplificação moderada. Maria, por sua vez, apresentou ganho médio de +14,0 pontos e mudança de classificação para ``Pouco difícil''. Esse comportamento reforça o padrão observado no material sobre estomia: quanto menor a escolaridade e a familiaridade esperada com linguagem técnica de saúde, maior foi a intensidade da simplificação linguística produzida pela solução.
+
+Considerando os 18 textos aprovados e com Flesch-PT computado, a média dos textos originais foi de 14,5, enquanto a média das versões simplificadas foi de 24,4. O ganho médio geral foi, portanto, de +9,9 pontos. Em 15 dos 18 casos houve aumento do Flesch-PT, enquanto 3 casos apresentaram ganho nulo ou negativo. Todos os casos com ganho negativo ocorreram no par D-Ana, isto é, no material sobre diabetes para o perfil de Ana.
+
+A Tabela~\ref{tab:sintese-legibilidade} sintetiza os principais indicadores gerais da avaliação de legibilidade.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Síntese geral dos resultados de legibilidade.}
+  \label{tab:sintese-legibilidade}
+  \small
+  \begin{tabularx}{\textwidth}{Xccc}
+    \toprule
+    \textbf{Indicador} & \textbf{Diabetes} & \textbf{Estomia} & \textbf{Total} \\
+    \midrule
+    Flesch-PT original médio & 19,7 & 9,2 & 14,5 \\
+    Flesch-PT simplificado médio & 25,2 & 23,6 & 24,4 \\
+    Ganho médio & +5,5 & +14,4 & +9,9 \\
+    Maior ganho observado & +17,3 & +22,9 & +22,9 \\
+    Menor ganho observado & $-3,1$ & +5,0 & $-3,1$ \\
+    Casos com ganho positivo & 6/9 & 9/9 & 15/18 \\
+    Casos com ganho nulo ou negativo & 3/9 & 0/9 & 3/18 \\
+    Casos com mudança de classificação & 3/9 & 3/9 & 6/18 \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Os resultados reforçam o gradiente observado nas tabelas anteriores: Ana apresentou os menores ganhos, Carlos ocupou uma posição intermediária e Maria apresentou os maiores ganhos, com mudança de classificação nos dois materiais. O caso D-Ana, com variações negativas nas três execuções, deve ser interpretado com cautela: para um perfil com formação na área da saúde, a manutenção de maior densidade técnica pode ser coerente com a proposta de adaptação comunicacional, ao mesmo tempo em que evidencia os limites do Flesch-PT como único indicador de qualidade textual.
+
+\section{Resultados de preservação das informações essenciais}
+\label{sec:resultados-preservacao-informacoes-essenciais}
+
+A preservação das informações essenciais foi analisada combinando leitura manual preliminar dos textos finais e verificação automática pelos guardrails. Essa análise buscou observar se as versões simplificadas mantinham o sentido geral, as instruções de segurança e as informações relevantes dos materiais originais.
+
+Nos casos analisados em maior detalhe, a leitura manual preliminar não identificou omissões críticas aparentes, alterações relevantes de sentido ou mudanças em instruções de segurança nos textos finais aprovados. Esse resultado foi compatível com a validação automática, uma vez que as 18 execuções principais resultaram em textos finais aprovados pelos guardrails. Em uma dessas execuções, a aprovação ocorreu apenas na quarta tentativa, após rejeições anteriores por alterações consideradas problemáticas.
+
+A Tabela~\ref{tab:preservacao-guardrails-saidas} apresenta uma síntese dos resultados relacionados ao pipeline, aos guardrails e às saídas complementares.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Síntese dos resultados de preservação, guardrails e saídas complementares.}
+  \label{tab:preservacao-guardrails-saidas}
+  \small
+  \begin{tabularx}{\textwidth}{Xc}
+    \toprule
+    \textbf{Indicador} & \textbf{Resultado} \\
+    \midrule
+    Execuções principais avaliadas & 18 \\
+    Textos finais aprovados pelo guardrail & 18/18 \\
+    Aprovados na primeira tentativa & 10/18 \\
+    Aprovados na segunda tentativa & 6/18 \\
+    Aprovados na terceira tentativa & 1/18 \\
+    Aprovados na quarta tentativa & 1/18 \\
+    Execuções com ao menos uma rejeição & 8/18 \\
+    Eventos de rejeição registrados & 11 \\
+    FAQ gerado & 18/18 \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+A ativação do guardrail foi um resultado relevante da avaliação. Diferentemente de uma situação em que todas as saídas passam diretamente pela verificação automática, os testes mostraram que o guardrail rejeitou simplificações em diferentes cenários, exigindo novas tentativas de geração. Das 18 execuções principais, 10 foram aprovadas na primeira tentativa, 6 foram aprovadas na segunda tentativa, 1 foi aprovada na terceira tentativa e 1 foi aprovada na quarta tentativa. Esse comportamento sugere que a camada de verificação não atuou apenas de forma simbólica, mas interferiu no fluxo de geração quando identificou possíveis alterações problemáticas.
+
+Entre os problemas detectados pelo guardrail, foram registrados casos de perda ou alteração de negação, alteração de instrução procedimental, substituição de substâncias ou atributos específicos, inconsistência numérica e alteração de sentido. Esses casos são relevantes porque representam exatamente o tipo de problema que a solução buscava evitar: mudanças no conteúdo original que poderiam comprometer a fidelidade das orientações de saúde.
+
+A Tabela~\ref{tab:eventos-rejeicao-guardrails} apresenta a classificação dos eventos de rejeição registrados.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Classificação dos eventos de rejeição identificados pelos guardrails.}
+  \label{tab:eventos-rejeicao-guardrails}
+  \small
+  \begin{tabularx}{\textwidth}{XcX}
+    \toprule
+    \textbf{Tipo de problema identificado} & \textbf{Eventos} & \textbf{Fonte principal de detecção} \\
+    \midrule
+    Negação sem equivalente no texto gerado & 5 & Checker determinístico \\
+    Instrução procedimental alterada & 2 & Guardrail LLM \\
+    Substituição de substância ou atributo específico & 2 & Guardrail LLM \\
+    Alteração de sentido semântico & 1 & Guardrail LLM \\
+    Contradição numérica & 1 & Guardrail LLM \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Os eventos de rejeição mostram que os guardrails atuaram sobre diferentes tipos de problema. O guardrail baseado em LLM foi responsável por identificar alterações mais semânticas e contextuais, como troca de substâncias, modificação de instruções procedimentais, contradições numéricas e alterações de sentido. Já o checker determinístico atuou sobre padrões específicos considerados críticos, especialmente relacionados à preservação de negações.
+
+Um exemplo ocorreu no material sobre estomia, em uma execução para o perfil Maria. A primeira tentativa substituiu ``tintura de benjoim'' por ``tintura de iodo'' em uma lista de substâncias que não deveriam ser utilizadas. Embora a estrutura geral da frase tivesse sido preservada, a troca de uma substância por outra alterava uma informação específica do material original. O guardrail rejeitou a tentativa e a execução foi aprovada apenas na tentativa seguinte, com a correção do problema. Esse caso mostra que o guardrail foi capaz de detectar uma alteração que não seria percebida por uma métrica de legibilidade, mas que poderia comprometer a fidelidade do conteúdo.
+
+Outro exemplo ocorreu no material sobre diabetes, em execuções para o perfil Ana. O texto original orientava que um familiar colocasse o segundo e terceiro dedos da mão na região acima do pé para sentir o pulso. Em tentativas rejeitadas, a simplificação alterou essa orientação, sugerindo uma localização confusa ou indicando dedos diferentes dos descritos no original. Nesses casos, o guardrail identificou alteração de instrução procedimental e solicitou nova geração. Esse tipo de rejeição é importante porque mostra que a verificação não se limitou a identificar informações novas, mas também alterações em instruções práticas já existentes.
+
+Também houve um caso em que a simplificação removeu ou suavizou um atributo relevante. No material sobre estomia, o texto original descrevia uma bolsa que cola na pele por meio de um ``adesivo antialérgico''. Em uma tentativa rejeitada, a expressão foi substituída por ``adesivo especial''. Embora a frase continuasse compreensível, o termo ``especial'' não preserva a mesma informação de segurança indicada por ``antialérgico''. A rejeição desse caso mostra que a simplificação de vocabulário pode, em algumas situações, tornar o texto menos preciso, justificando a necessidade de verificação automática.
+
+Além das verificações realizadas pelo guardrail LLM, o checker determinístico identificou cinco eventos relacionados à ausência de negação equivalente no texto gerado. Esse componente foi implementado por meio de expressões regulares, sem chamada a LLM, e verifica padrões considerados críticos, como alterações em doses e possíveis inversões de negação. No caso das negações, o algoritmo busca no texto original expressões como ``não usar'', ``não tomar'', ``não interromper'', ``não consumir'' e outras construções semelhantes. Em seguida, verifica se o verbo correspondente aparece no texto gerado sem sinais de negação próximos, como ``não'', ``evite'', ``proibido'', ``contraindicado'', ``nunca'' ou ``jamais''.
+
+Esse tipo de verificação tem limitações. Por depender de uma lista fixa de verbos e de uma janela de contexto definida, o algoritmo pode não reconhecer todas as formas possíveis de negação ou pode rejeitar uma saída válida quando a negação aparece distante do verbo analisado. Assim, parte dos bloqueios determinísticos pode corresponder a falsos positivos, especialmente quando o texto gerado reorganiza a frase ou usa construções equivalentes em outra posição. Ainda assim, esse comportamento conservador é aceitável no contexto da solução, pois evita que uma possível perda de negação seja apresentada ao usuário sem nova verificação.
+
+A geração de perguntas frequentes ocorreu em todos os textos aprovados, conforme previsto no funcionamento da solução. Essa saída complementar foi utilizada para apoiar a compreensão do conteúdo original por meio de perguntas e respostas baseadas no material processado, mantendo relação com as informações presentes nos documentos de entrada.
+
+De modo geral, os resultados indicam que a solução manteve estabilidade operacional e preservou as informações essenciais nos casos analisados. As saídas finais aprovadas não apresentaram, na leitura manual preliminar, omissões críticas aparentes ou alterações relevantes de sentido. Além disso, os guardrails bloquearam tentativas em que foram detectadas alterações potencialmente problemáticas, como troca de substância, alteração de instrução procedimental, inconsistência numérica e possível perda de negação. Ainda assim, essa verificação não deve ser interpretada como validação clínica dos textos gerados.
+
+\section{Exemplos qualitativos}
+\label{sec:exemplos-qualitativos}
+
+Além dos resultados quantitativos de legibilidade e dos indicadores de guardrail, foram analisados exemplos qualitativos para observar como a adaptação comunicacional ocorreu nas saídas geradas. Os exemplos a seguir ilustram diferenças entre perfis, preservação de instruções de segurança, funcionamento das saídas complementares e atuação dos guardrails.
+
+\subsection{Gradiente de legibilidade por perfil}
+\label{subsec:gradiente-legibilidade-perfil}
+
+O primeiro exemplo qualitativo analisado corresponde a um trecho do material sobre estomia, utilizado para observar como a solução adaptou a linguagem de uma mesma definição para diferentes perfis comunicacionais.
+
+O trecho original apresentava a seguinte definição:
+
+\begin{quote}
+``A estomia é um procedimento cirúrgico realizado quando é preciso construir um novo trajeto para eliminar a urina e as fezes. O estoma é vermelho vivo, úmido e não dói ao ser tocado, mas pode ocorrer um pequeno sangramento, devido aos vasos sanguíneos.''
+\end{quote}
+
+Na execução para o perfil de Ana, com ensino superior e familiaridade com a área da saúde, a versão simplificada manteve uma linguagem mais próxima da terminologia técnica:
+
+\begin{quote}
+``Estomia é um procedimento cirúrgico que cria um novo caminho para a saída de urina e fezes do corpo. O estoma (a abertura criada) é vermelho vivo, úmido e não causa dor ao toque. Pode haver um pequeno sangramento devido aos vasos sanguíneos.''
+\end{quote}
+
+Nessa versão, a simplificação ocorre de forma moderada. A expressão ``procedimento cirúrgico'' foi preservada, assim como a referência a ``vasos sanguíneos''. A principal mudança está na reorganização da frase e na explicitação de que o estoma é ``a abertura criada''. Isso sugere uma adaptação voltada à clareza, sem reduzir de forma significativa a densidade técnica do texto.
+
+Na execução para o perfil de Carlos, com ensino médio e menor familiaridade com terminologia médica, a solução produziu uma formulação mais direta:
+
+\begin{quote}
+``Carlos, este guia foi feito para te ajudar a entender e cuidar da sua estomia.
+
+Estomia é uma cirurgia para criar um novo caminho para sair a urina ou as fezes do seu corpo. O estoma é a abertura que fica visível na barriga. Ele é vermelho vivo, úmido e não dói quando tocado.''
+\end{quote}
+
+Nesse caso, a expressão ``procedimento cirúrgico'' foi substituída por ``cirurgia'', termo mais comum no uso cotidiano. A explicação também passa a usar construções mais diretas, como ``criar um novo caminho para sair a urina ou as fezes'' e ``abertura que fica visível na barriga''. A versão mantém o sentido do trecho original, mas aproxima a linguagem de uma explicação prática, menos dependente de vocabulário técnico.
+
+Na execução para o perfil de Maria, com ensino fundamental e maior necessidade de linguagem acessível, a versão simplificada adotou uma linguagem ainda mais coloquial e explicativa:
+
+\begin{quote}
+``Olá, Maria! Cuidar de você é muito importante, e este guia foi feito para te ajudar a entender melhor sobre a estomia e como cuidar de você no dia a dia.
+
+Estomia é o nome de uma cirurgia que cria um novo caminho para o xixi ou as fezes saírem do corpo. O lugar onde isso acontece se chama estoma. Ele é vermelho vivo, parece molhadinho e não dói quando você toca.''
+\end{quote}
+
+Nessa versão, a solução utiliza termos mais próximos da linguagem cotidiana, como ``xixi'', ``molhadinho'' e ``não dói quando você toca''. Além disso, a explicação é dividida em frases curtas e mais concretas. A expressão ``novo trajeto para eliminar a urina e as fezes'' é reformulada como ``novo caminho para o xixi ou as fezes saírem do corpo'', o que torna a informação mais direta para um perfil com menor escolaridade.
+
+Esse exemplo evidencia o gradiente de adaptação comunicacional entre os perfis. Para Ana, a terminologia técnica foi mais preservada; para Carlos, houve uma reformulação intermediária; e, para Maria, a linguagem foi mais coloquial, segmentada e explicativa. Apesar dessas diferenças, as três versões mantêm o núcleo informacional do trecho: explicam o que é a estomia, indicam a função do estoma, preservam a informação de que ele não dói ao toque e descrevem seu aspecto visual.
+
+\subsection{Preservação de instrução de segurança}
+\label{subsec:preservacao-instrucao-seguranca}
+
+Um segundo exemplo qualitativo envolve uma instrução restritiva do material sobre estomia. O trecho original afirmava:
+
+\begin{quote}
+``Não utilize substâncias como álcool, benzina, colônias, tintura de benjoim, mercúrio, merthiolate, pomadas e cremes. Estes produtos podem ressecar a pele, causar ferimentos e reações alérgicas, além de impedir a aderência do coletor.''
+\end{quote}
+
+Para o perfil de Ana, a versão simplificada foi:
+
+\begin{quote}
+``Não use álcool, benzina, colônias, tintura de benjoim, mercúrio, merthiolate, pomadas e cremes. Esses produtos podem ressecar a pele, causar ferimentos, reações alérgicas e impedir que o coletor cole bem.''
+\end{quote}
+
+Para o perfil de Carlos, a versão foi:
+
+\begin{quote}
+``Não use: Álcool, benzina, colônias, tintura de benjoim, mercúrio, merthiolate, pomadas e cremes. Eles podem ressecar a pele, causar feridas e alergias, além de fazer a bolsa descolar.''
+\end{quote}
+
+Para o perfil de Maria, a versão foi:
+
+\begin{quote}
+``Não use álcool, benzina, colônias, tintura de benjoim, mercúrio, merthiolate, pomadas e cremes. Esses produtos podem ressecar a pele, causar machucados e alergias, além de fazer a bolsa não grudar direito.''
+\end{quote}
+
+Esse exemplo mostra que a instrução de segurança foi preservada nos três perfis. A negação ``não use'' foi mantida, assim como a lista de substâncias, incluindo ``tintura de benjoim''. A principal diferença está na adaptação lexical dos efeitos descritos: ``ferimentos'' e ``reações alérgicas'' foram mantidos em Ana, enquanto Carlos recebeu ``feridas e alergias'' e Maria recebeu ``machucados e alergias''. Da mesma forma, a consequência sobre o coletor foi adaptada de ``impedir que o coletor cole bem'' para formulações mais concretas, como ``fazer a bolsa descolar'' e ``fazer a bolsa não grudar direito''.
+
+Esse caso é relevante porque mostra que a simplificação não consistiu apenas em tornar o texto mais curto ou informal. A solução preservou uma restrição importante, manteve a lista de substâncias e adaptou a forma de expressão conforme o perfil, sem suavizar a orientação original.
+
+\subsection{Perguntas frequentes adaptadas ao perfil}
+\label{subsec:perguntas-frequentes-adaptadas-perfil}
+
+Além do texto simplificado, a solução também gerou perguntas frequentes baseadas no material original. A análise qualitativa dessas perguntas mostrou que a adaptação ao perfil ocorreu também nas saídas complementares.
+
+Para o perfil de Ana, a pergunta apresentou formulação mais técnica e analítica:
+
+\begin{quote}
+``Tenho uma colostomia ascendente e tenho notado que minhas fezes estão mais pastosas. Isso é normal, considerando que o guia menciona que elas podem ser semi-líquidas no início?''
+\end{quote}
+
+A resposta gerada foi:
+
+\begin{quote}
+``Sim, é esperado que com a adaptação do seu organismo, as fezes de uma colostomia ascendente, que inicialmente podem ser semi-líquidas, tornem-se pastosas. A adaptação do sistema digestivo ao novo trajeto é um processo gradual.''
+\end{quote}
+
+Para o perfil de Carlos, a pergunta foi mais prática e voltada a uma observação cotidiana:
+
+\begin{quote}
+``Doutor, meu estoma é vermelho vivo e úmido, mas às vezes ele sangra um pouquinho. Isso é normal?''
+\end{quote}
+
+A resposta gerada foi:
+
+\begin{quote}
+``Sim, um pequeno sangramento no estoma pode ocorrer porque ele tem vasos sanguíneos. É importante que ele continue vermelho vivo e úmido, pois isso indica que está saudável.''
+\end{quote}
+
+Para o perfil de Maria, a pergunta foi mais simples e direta:
+
+\begin{quote}
+``O que é esse `estoma' que o médico falou? É alguma coisa que dói?''
+\end{quote}
+
+A resposta gerada foi:
+
+\begin{quote}
+``O estoma é um buraquinho que fazem na barriga para o cocô ou a urina saírem. Ele é vermelhinho e molhadinho, e não dói quando a gente toca.''
+\end{quote}
+
+Esses exemplos mostram que as perguntas frequentes não apenas retomaram o conteúdo do material original, mas também variaram em estilo conforme o perfil. Ana recebeu uma pergunta com termos como ``colostomia ascendente'', ``semi-líquidas'' e ``sistema digestivo''; Carlos recebeu uma pergunta prática sobre sangramento e aspecto do estoma; e Maria recebeu uma formulação mais simples, com expressões como ``buraquinho'', ``cocô'' e ``não dói quando a gente toca''. Assim, a adaptação comunicacional foi observada também na forma como dúvidas e respostas foram construídas.
+
+\subsection{Guardrail identificando substituição de substância}
+\label{subsec:guardrail-substituicao-substancia}
+
+Um dos exemplos mais relevantes da atuação dos guardrails ocorreu no material sobre estomia, em uma execução para o perfil Maria. O trecho original apresentava uma lista de substâncias que não deveriam ser utilizadas:
+
+\begin{quote}
+``Não utilize substâncias como álcool, benzina, colônias, tintura de benjoim, mercúrio, merthiolate, pomadas e cremes.''
+\end{quote}
+
+Na primeira tentativa, a versão simplificada substituiu ``tintura de benjoim'' por ``tintura de iodo'':
+
+\begin{quote}
+``Não use álcool, benzina, colônias, tintura de iodo, mercúrio, merthiolate, pomadas ou cremes.''
+\end{quote}
+
+Essa tentativa foi rejeitada pelo guardrail, pois a substância ``tintura de benjoim'' foi alterada para ``tintura de iodo''. A alteração ocorreu em dois trechos do texto gerado. A execução foi aprovada apenas em uma tentativa posterior, com a correção do problema.
+
+Esse exemplo demonstra que o guardrail foi capaz de detectar uma alteração específica em uma instrução de segurança. A troca não era apenas uma mudança de estilo ou uma simplificação lexical: ``benjoim'' e ``iodo'' são substâncias distintas. Portanto, a rejeição impediu que uma versão com alteração do conteúdo original fosse considerada como saída final.
+
+\subsection{Guardrail identificando alteração de instrução procedimental}
+\label{subsec:guardrail-alteracao-instrucao-procedimental}
+
+Outro exemplo ocorreu no material sobre diabetes, em uma execução para o perfil Ana. O texto original orientava:
+
+\begin{quote}
+``Peça que algum familiar coloque o segundo e terceiro dedos da mão na região acima do pé para sentir o pulso (batimento).''
+\end{quote}
+
+Em uma das tentativas rejeitadas, a simplificação gerou a seguinte formulação:
+
+\begin{quote}
+``Peça para um familiar sentir o pulso (batimento) na região acima do pé com os dedos médio e anelar.''
+\end{quote}
+
+Essa tentativa foi rejeitada porque a versão simplificada alterou os dedos indicados para realizar o procedimento. O texto original especificava o uso do segundo e terceiro dedos, correspondentes a indicador e médio, enquanto a versão gerada mencionava médio e anelar.
+
+Esse exemplo mostra que o guardrail não se limitou a identificar informações completamente novas. Ele também detectou alterações em instruções procedimentais já existentes. Em textos de saúde, esse tipo de detalhe é relevante, pois uma pequena mudança na forma de executar uma orientação pode modificar o procedimento descrito.
+
+\subsection{Guardrail identificando remoção de atributo de segurança}
+\label{subsec:guardrail-remocao-atributo-seguranca}
+
+Outro caso relevante ocorreu no material sobre estomia, em uma execução para o perfil Carlos. O texto original descrevia o sistema coletor da seguinte forma:
+
+\begin{quote}
+``O sistema é formado por uma bolsa que cola na pele através de um adesivo antialérgico.''
+\end{quote}
+
+Na primeira tentativa, a versão simplificada substituiu ``adesivo antialérgico'' por ``adesivo especial'':
+
+\begin{quote}
+``O sistema é formado por uma bolsa que cola na pele com um adesivo especial.''
+\end{quote}
+
+Essa tentativa foi rejeitada pelo guardrail, pois a característica específica ``antialérgico'' foi substituída por ``especial''. Embora a frase continuasse compreensível, o termo ``especial'' não preserva a mesma informação do original. A palavra ``antialérgico'' informa uma propriedade do material, enquanto ``especial'' é uma descrição genérica.
+
+Esse caso mostra que a simplificação de vocabulário pode, em algumas situações, reduzir a precisão do texto. A rejeição pelo guardrail evidencia a importância de verificar não apenas se o texto ficou mais simples, mas também se atributos relevantes foram preservados.
+
+\section{Síntese dos resultados}
+\label{sec:sintese-resultados-avaliacao}
+
+A avaliação mostrou que a aplicação aumentou a legibilidade textual em 15 dos 18 textos aprovados com Flesch-PT computado. A média dos textos originais foi de 14,5, enquanto a média das versões simplificadas foi de 24,4, resultando em ganho médio geral de +9,9 pontos. Ao separar os materiais, o ganho médio foi de +5,5 no material sobre diabetes e de +14,4 no material sobre estomia.
+
+Os resultados também mostraram diferenças entre os perfis simulados. Maria apresentou os maiores ganhos médios nos dois materiais, com +22,1 no material sobre estomia e +14,0 no material sobre diabetes. Carlos ocupou uma posição intermediária, com ganhos médios de +14,8 e +4,1, respectivamente. Ana apresentou os menores ganhos, com +6,4 no material sobre estomia e $-1,7$ no material sobre diabetes. As mudanças de classificação do Flesch-PT ocorreram em 6 dos 18 casos, sempre associadas ao perfil de Maria.
+
+Em relação à preservação das informações essenciais, as 18 execuções principais resultaram em textos finais aprovados pelos guardrails. Das 18 execuções, 10 foram aprovadas na primeira tentativa, 6 na segunda, 1 na terceira e 1 na quarta. Ao todo, 8 execuções tiveram ao menos uma rejeição, totalizando 11 eventos de rejeição. Esses eventos envolveram perda ou alteração de negação, alteração de instrução procedimental, substituição de substância ou atributo específico, inconsistência numérica e alteração de sentido.
+
+A leitura manual preliminar dos casos analisados em maior detalhe não identificou omissões críticas aparentes, alterações relevantes de sentido ou mudanças em instruções de segurança nos textos finais aprovados. Além disso, os exemplos qualitativos mostraram que a solução preservou restrições importantes, como a orientação de não utilizar determinadas substâncias no cuidado com a estomia, e que os guardrails bloquearam tentativas com alterações potencialmente problemáticas antes da definição da saída final.
+
+De modo geral, a avaliação indicou que a solução produziu versões mais acessíveis na maior parte dos casos, diferenciou a linguagem conforme os perfis simulados, gerou perguntas frequentes em todas as execuções e utilizou guardrails para bloquear ou corrigir simplificações com possíveis alterações de sentido. Esses resultados, entretanto, devem ser entendidos no escopo funcional e linguístico da avaliação, sem equivaler a uma validação clínica dos textos gerados.
+
+\section{Discussão dos resultados da avaliação}
+\label{sec:discussao-resultados-avaliacao}
+
+Os resultados obtidos sugerem que a solução foi capaz de atuar como uma camada de adaptação comunicacional de textos técnicos de saúde. A melhora do Flesch-PT em 15 dos 18 casos indica redução da complexidade textual na maior parte das execuções, mas esse resultado não deve ser interpretado isoladamente. O aumento da legibilidade é um indício linguístico, não uma evidência de compreensão efetiva pelo usuário nem de adequação clínica do conteúdo. Por isso, o resultado mais relevante da avaliação não está apenas no aumento do índice, mas na combinação entre simplificação, diferenciação por perfil e preservação das informações essenciais.
+
+O gradiente observado entre Ana, Carlos e Maria reforça que a solução não aplicou uma simplificação uniforme a todos os casos. Ana, que representa um perfil com maior escolaridade e familiaridade com a linguagem de saúde, teve os menores ganhos. Carlos apresentou ganhos intermediários. Maria, perfil com menor escolaridade e maior necessidade de linguagem acessível, apresentou os maiores ganhos e foi o único perfil com mudança de classificação em todos os casos avaliados. Esse comportamento é coerente com a proposta da solução, que busca ajustar a intensidade da simplificação ao perfil comunicacional, e não apenas tornar todos os textos igualmente simples.
+
+O caso D-Ana ajuda a evidenciar os limites do Flesch-PT como métrica única. Nas três execuções do material sobre diabetes para Ana, a variação do índice foi negativa. Esse resultado poderia ser interpretado, em uma leitura superficial, como ausência de melhora. No entanto, considerando o perfil de Ana, a manutenção de maior densidade técnica pode ser adequada, pois esse perfil representa uma usuária com formação na área da saúde. Assim, o caso mostra que nem toda adaptação comunicacional precisa resultar em aumento expressivo de Flesch-PT. Em alguns contextos, preservar terminologia técnica pode ser mais apropriado do que simplificar excessivamente.
+
+Esse ponto também mostra que a avaliação automática de legibilidade deve ser complementada por análise qualitativa. O Flesch-PT considera características formais do texto, como estrutura das frases e composição das palavras, mas não mede sozinho a clareza comunicacional, a adequação ao perfil, a organização da informação ou a preservação do sentido clínico. Por esse motivo, os exemplos qualitativos foram importantes para observar como a simplificação ocorreu na prática: em alguns casos, por troca lexical; em outros, por reformulação de frases, uso de termos mais cotidianos ou segmentação da explicação.
+
+A atuação dos guardrails foi outro resultado central da avaliação. O fato de 8 das 18 execuções terem apresentado ao menos uma rejeição mostra que essa camada não funcionou apenas como uma etapa formal do pipeline. Os guardrails interferiram diretamente no processo de geração, bloqueando tentativas com problemas como troca de substância, alteração de instrução procedimental, remoção de atributo de segurança, contradição numérica e possível perda de negação. Esses casos reforçam a importância de avaliar não apenas se o texto ficou mais simples, mas também se permaneceu fiel ao material original.
+
+A diferença entre o guardrail baseado em LLM e o checker determinístico também é relevante. O guardrail LLM identificou alterações mais contextuais, como substituição de substâncias e mudanças em instruções procedimentais. Já o checker determinístico atuou sobre padrões específicos, especialmente relacionados a negações. Esse tipo de verificação pode ser rígido e gerar falsos positivos, pois depende de expressões regulares, lista fixa de verbos e janelas de contexto. Ainda assim, no domínio de saúde, essa postura conservadora é justificável, já que é preferível rejeitar uma saída e gerar uma nova tentativa do que apresentar ao usuário um texto que possa ter perdido uma negação ou alterado uma instrução de segurança.
+
+Os resultados também indicam que a simplificação textual em saúde exige equilíbrio entre acessibilidade e fidelidade. Tornar o texto mais simples não pode significar remover atributos relevantes, alterar quantidades, trocar substâncias ou suavizar instruções restritivas. Os exemplos de rejeição mostram que essas alterações podem ocorrer mesmo quando a frase gerada parece clara e bem escrita. Dessa forma, os guardrails se mostraram uma parte importante da solução, pois ajudaram a mitigar riscos associados ao uso de LLMs na reescrita de conteúdo técnico de saúde.
+
+No contexto de aplicações mHealth baseadas em planos de cuidado, como a Takere, os resultados sugerem que uma solução desse tipo pode ser útil como apoio à comunicação entre conteúdos técnicos previamente definidos e usuários finais. A aplicação não cria novas condutas clínicas, mas transforma a forma de apresentação de conteúdos já existentes, buscando torná-los mais compreensíveis para diferentes perfis. Essa distinção é importante: a contribuição da solução está na adaptação comunicacional, não na tomada de decisão clínica.
+
+Apesar dos resultados positivos, a avaliação reforça a necessidade de revisão humana especializada antes de qualquer uso em contexto real. A leitura manual realizada foi preliminar, os perfis utilizados foram simulados e o Flesch-PT não mede compreensão real por parte dos pacientes. Assim, os achados apoiam a viabilidade da abordagem, mas não permitem afirmar que os textos gerados estão clinicamente validados. A próxima seção retoma essas questões a partir das limitações e ameaças à validade do trabalho.

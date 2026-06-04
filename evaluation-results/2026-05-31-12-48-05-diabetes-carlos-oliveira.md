@@ -400,14 +400,16 @@ Fazer exercícios específicos para os pés todos os dias pode ajudar a diminuir
 
 ## Indicador de legibilidade
 
-- Flesch-PT original: 19.7 — Muito difícil
-- Classificação original: Muito difícil
-- Flesch-PT simplificado: 23.2 — Muito difícil
-- Classificação simplificada: Muito difícil
-- Variação: +3.5 pontos
+- Flesch original: 19.7 — Muito difícil
+- Flesch-PT original: 51.8 — Fácil
 
-Observação: o Flesch-PT avalia apenas aspectos linguísticos do texto e não valida precisão médica.
+- Flesch simplificado: 23.2 — Muito difícil
+- Flesch-PT simplificado: 55.6 — Fácil
 
+- Variação Flesch: +3.5 pontos
+- Variação Flesch-PT: +3.8 pontos
+
+Observação: **Flesch** usa a fórmula original (constante 206,835) com contagem de sílabas por grupos de vogais. **Flesch-PT** usa a adaptação para português (constante 248,835) com contagem precisa de sílabas via stress-pt. Nenhum dos índices valida precisão médica.
 ## Glossário
 
 **Neuropatia diabética:** Dano nos nervos causado pela diabetes, que pode afetar a sensibilidade e a força muscular.

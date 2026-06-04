@@ -73,5 +73,18 @@
       "answer": "Sim, você pode continuar usando suas roupas normais e praticar atividades físicas. O estoma não impede de ir à praia ou mergulhar, apenas lembre-se de esvaziar a bolsa antes de entrar na piscina ou no mar. No banho de água quente ou sauna, o calor pode soltar a bolsa, então verifique se ela está bem presa. Quanto aos exercícios, evite esportes de contato físico intenso. Para se sentir mais seguro, um cinto especial pode ajudar a proteger o estoma."
     }
   ],
-  "rejeicoes": []
+  "rejeicoes": [],
+  "legibilidade_pt": {
+    "formula": "248.835 - 1.015 × ASL - 84.6 × ASW",
+    "contagem_silabas": "stress-pt",
+    "original": {
+      "flesch_pt": 41.8,
+      "classificacao": "Pouco difícil"
+    },
+    "simplificado": {
+      "flesch_pt": 59.1,
+      "classificacao": "Fácil"
+    },
+    "variacao_pt": 17.3
+  }
 }

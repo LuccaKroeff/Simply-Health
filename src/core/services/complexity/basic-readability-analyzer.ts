@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { syllable as syllablePT } from 'stress-pt'
 import type { ComplexityComparison, ReadabilityMetrics } from '@src/types/complexity'
 import type { TextComplexityAnalyzer } from './text-complexity-analyzer.interface'
 
@@ -54,15 +55,17 @@ export class BasicReadabilityAnalyzer implements TextComplexityAnalyzer {
   }
 
   private countSyllablesPT(word: string): number {
-    const cleaned = word.toLowerCase()
-    if (cleaned.length === 0) return 0
-    const vowelGroups = cleaned.replace(/[aáàãâeéêiíoóôõuúü]+/g, 'V')
-    const count = (vowelGroups.match(/V/g) ?? []).length
-    return Math.max(1, count)
+    if (word.length === 0) return 0
+    try {
+      const result = syllablePT(word.toLowerCase())
+      return Math.max(1, result.split('|').length)
+    } catch {
+      return 1
+    }
   }
 
   private computeFlesch(asl: number, asw: number): number {
-    const raw = 206.835 - 1.015 * asl - 84.6 * asw
+    const raw = 248.835 - 1.015 * asl - 84.6 * asw
     return Math.max(0, Math.min(100, raw))
   }
 

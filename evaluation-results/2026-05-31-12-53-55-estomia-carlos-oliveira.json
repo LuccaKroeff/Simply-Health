@@ -73,5 +73,18 @@
       "answer": "Você pode ir à praia ou piscina sem problemas. Antes de entrar na água, esvazie sua bolsa. Se for usar piscina ou mar, pode mergulhar tranquilamente. O calor da sauna ou banheira pode soltar a vedação da bolsa, então sempre verifique se ela está bem colada e troque se necessário."
     }
   ],
-  "rejeicoes": []
+  "rejeicoes": [],
+  "legibilidade_pt": {
+    "formula": "248.835 - 1.015 × ASL - 84.6 × ASW",
+    "contagem_silabas": "stress-pt",
+    "original": {
+      "flesch_pt": 41.8,
+      "classificacao": "Pouco difícil"
+    },
+    "simplificado": {
+      "flesch_pt": 59.2,
+      "classificacao": "Fácil"
+    },
+    "variacao_pt": 17.4
+  }
 }

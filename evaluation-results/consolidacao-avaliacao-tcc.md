@@ -26,33 +26,40 @@ Na execução 2 de Ana/estomia, todas as 3 tentativas internas foram rejeitadas 
 
 ## 1. Tabela consolidada de legibilidade
 
-### diabetes.pdf — Flesch original: 19,7
+> **Flesch** = fórmula original (206,835), sílabas por grupos de vogais — valores gerados pela solução.
+> **Flesch-PT** = adaptação para português (248,835), sílabas via stress-pt — recalculado sobre os mesmos textos.
+
+### diabetes.pdf — Flesch original: 19,7 · Flesch-PT original: 51,8
 
 | Execução | Ana (Superior/Saúde) | Carlos (Médio/Negócios) | Maria (Fundamental) |
 |----------|----------------------|------------------------|-------------------|
-| Exec. 1 | 16,6 (−3,1) · 2 tent. | 23,2 (+3,5) · 2 tent. | 35,0 (+15,3) · 1 tent. |
-| Exec. 2 | 18,1 (−1,6) · 2 tent. | 24,7 (+5,0) · 1 tent. | 29,1 (+9,4) · 1 tent. |
-| Exec. 3 | 19,3 (−0,4) · 1 tent. | 23,5 (+3,8) · 3 tent. | 37,0 (+17,3) · 2 tent. |
-| **Média** | **18,0 (−1,7)** | **23,8 (+4,1)** | **33,7 (+14,0)** |
-| Classif. | Muito difícil | Muito difícil | **Pouco difícil** |
+| Exec. 1 | Flesch: 16,6 (−3,1) · 2T<br>Flesch-PT: 48 (−3,8) | Flesch: 23,2 (+3,5) · 2T<br>Flesch-PT: 55,6 (+3,8) | Flesch: 35,0 (+15,3) · 1T<br>Flesch-PT: 69,6 (+17,8) |
+| Exec. 2 | Flesch: 18,1 (−1,6) · 2T<br>Flesch-PT: 49,5 (−2,3) | Flesch: 24,7 (+5,0) · 1T<br>Flesch-PT: 57,9 (+6,1) | Flesch: 29,1 (+9,4) · 1T<br>Flesch-PT: 62,5 (+10,7) |
+| Exec. 3 | Flesch: 19,3 (−0,4) · 1T<br>Flesch-PT: 50,9 (−0,9) | Flesch: 23,5 (+3,8) · 3T<br>Flesch-PT: 56,4 (+4,6) | Flesch: 37,0 (+17,3) · 2T<br>Flesch-PT: 72,1 (+20,3) |
+| **Média Flesch** | **18,0 (−1,7)** | **23,8 (+4,1)** | **33,7 (+14,0)** |
+| **Média Flesch-PT** | **49,5 (−2,3)** | **56,6 (+4,8)** | **68,1 (+16,3)** |
+| Classif. Flesch | Muito difícil | Muito difícil | **Pouco difícil** |
+| Classif. Flesch-PT | **Pouco difícil** | **Fácil** | **Fácil** |
 
-### estomia.pdf — Flesch original: 9,2
+### estomia.pdf — Flesch original: 9,2 · Flesch-PT original: 41,8
 
 | Execução | Ana (Superior/Saúde) | Carlos (Médio/Negócios) | Maria (Fundamental) |
 |----------|----------------------|------------------------|-------------------|
-| Exec. 1 | 14,2 (+5,0) · 1 tent. | 24,2 (+15,0) · 1 tent. | 31,4 (+22,2) · 2 tent. |
-| Exec. 2 | **FALLBACK** · 3 tent. + re-run: 17,6 (+8,4) · 1 tent. | 23,9 (+14,7) · 2 tent. | 32,1 (+22,9) · 1 tent. |
-| Exec. 3 | 15,0 (+5,8) · 1 tent. | 23,8 (+14,6) · 1 tent. | 30,4 (+21,2) · 1 tent. |
-| **Média** (valid.) | **15,6 (+6,4)** | **24,0 (+14,8)** | **31,3 (+22,1)** |
-| Classif. | Muito difícil | Muito difícil | **Pouco difícil** |
+| Exec. 1 | Flesch: 14,2 (+5,0) · 1T<br>Flesch-PT: 47,2 (+5,4) | Flesch: 24,2 (+15,0) · 1T<br>Flesch-PT: 59,2 (+17,4) | Flesch: 31,4 (+22,2) · 2T<br>Flesch-PT: 67 (+25,2) |
+| Exec. 2 | **FALLBACK** · 3T<br>Re-run: Flesch: 17,6 (+8,4) · 1T<br>Re-run Flesch-PT: 50,9 (+9,1) | Flesch: 23,9 (+14,7) · 2T<br>Flesch-PT: 58,6 (+16,8) | Flesch: 32,1 (+22,9) · 1T<br>Flesch-PT: 68,3 (+26,5) |
+| Exec. 3 | Flesch: 15,0 (+5,8) · 1T<br>Flesch-PT: 48,4 (+6,6) | Flesch: 23,8 (+14,6) · 1T<br>Flesch-PT: 59,1 (+17,3) | Flesch: 30,4 (+21,2) · 1T<br>Flesch-PT: 67 (+25,2) |
+| **Média Flesch** (valid.) | **15,6 (+6,4)** | **24,0 (+14,8)** | **31,3 (+22,1)** |
+| **Média Flesch-PT** (valid.) | **48,8 (+7,0)** | **59,0 (+17,2)** | **67,4 (+25,6)** |
+| Classif. Flesch | Muito difícil | Muito difícil | **Pouco difícil** |
+| Classif. Flesch-PT | **Pouco difícil** | **Fácil** | **Fácil** |
 
 ### Resumo por perfil (médias gerais)
 
-| Perfil | Estomia — ganho médio | Diabetes — ganho médio | Observação |
-|--------|----------------------|----------------------|-----------|
-| Ana (Superior/Saúde) | +6,4 | −1,7 | Único perfil com média negativa em diabetes |
-| Carlos (Médio/Negócios) | +14,8 | +4,1 | Consistente entre execuções |
-| Maria (Fundamental) | +22,1 | +14,0 | Maior ganho · Mudança de classificação em 100% dos casos |
+| Perfil | Estomia Flesch | Estomia Flesch-PT | Diabetes Flesch | Diabetes Flesch-PT |
+|--------|---------------|-------------------|----------------|-------------------|
+| Ana (Superior/Saúde) | +6,4 | **+7,0** | −1,7 | **−2,3** |
+| Carlos (Médio/Negócios) | +14,8 | **+17,2** | +4,1 | **+4,8** |
+| Maria (Fundamental) | +22,1 | **+25,6** | +14,0 | **+16,3** |
 
 ---
 
@@ -120,16 +127,39 @@ Na execução 2 de Ana/estomia, todas as 3 tentativas internas foram rejeitadas 
 
 ## 3. Síntese quantitativa
 
-| Indicador | Diabetes (9 casos) | Estomia (9 válidos + 1 fallback) | Total (19) |
-|-----------|-------------------|----------------------------------|-----------|
-| Flesch-PT original médio | 19,7 | 9,2 | **14,5** |
-| Flesch-PT simplificado médio | 25,2 | 23,6¹ | **24,4¹** |
-| Ganho médio | +5,5 | +14,4¹ | **+9,9¹** |
+> **Flesch** = fórmula original (206,835), gerado pela solução no momento da execução.
+> **Flesch-PT** = adaptação para português (248,835) + stress-pt, recalculado sobre os mesmos textos.
+
+### Legibilidade — Flesch (fórmula original)
+
+| Indicador | Diabetes (9) | Estomia (9 válidos) | Total (18 válidos) |
+|-----------|-------------|--------------------|--------------------|
+| Original médio | 19,7 | 9,2 | **14,5** |
+| Simplificado médio | 25,2 | 23,6 | **24,4** |
+| Ganho médio | +5,5 | +14,4 | **+9,9** |
 | Maior ganho | +17,3 (D-Maria-R3) | +22,9 (E-Maria-R2) | **+22,9** |
 | Menor ganho | −3,1 (D-Ana-R1) | +5,0 (E-Ana-R1) | **−3,1** |
 | Ganho positivo | 6/9 (67%) | 9/9 (100%) | **15/18 (83%)** |
-| Ganho nulo/negativo | 3/9 — todos D-Ana | 0 | **3/18 (17%)** |
-| Mudança de classificação | 3/9 — todos D-Maria | 3/9 — todos E-Maria | **6/18 (33%)** |
+| Ganho nulo/negativo | 3/9 — todos D-Ana | 0/9 | **3/18 (17%)** |
+| Mudança de classificação | 3/9 — D-Maria | 3/9 — E-Maria | **6/18 (33%)** |
+
+### Legibilidade — Flesch-PT (adaptação portuguesa)
+
+| Indicador | Diabetes (9) | Estomia (9 válidos) | Total (18 válidos) |
+|-----------|-------------|--------------------|--------------------|
+| Original médio | 51,8 | 41,8 | **46,8** |
+| Simplificado médio | 58,1 | 58,4 | **58,2** |
+| Ganho médio | +6,3 | +16,6 | **+11,4** |
+| Maior ganho | +20,3 (D-Maria-R3) | +26,5 (E-Maria-R2) | **+26,5** |
+| Menor ganho | −3,8 (D-Ana-R1) | +5,4 (E-Ana-R1) | **−3,8** |
+| Ganho positivo | 6/9 (67%) | 9/9 (100%) | **15/18 (83%)** |
+| Ganho nulo/negativo | 3/9 — todos D-Ana | 0/9 | **3/18 (17%)** |
+| Mudança de classificação | 3/9 (33%) — D-Ana piora (Fácil→Pouco difícil) | 7/9 (78%) — E-Carlos(3), E-Maria(3), E-Ana-rerun | **10/18 (56%)** |
+
+### Pipeline e guardrails
+
+| Indicador | Diabetes (9 casos) | Estomia (9 válidos + 1 fallback) | Total (19) |
+|-----------|-------------------|----------------------------------|-----------|
 | Aprovados no guardrail | 9/9 (100%) | 9/10 (90%) | **18/19 (95%)** |
 | Aprovados na 1ª tentativa | 4/9 (44%) | 7/10 (70%) | **11/19 (58%)** |
 | Aprovados com retry (2–3 tent.) | 5/9 (56%) | 2/9 (22%) | **7/18 (39%)** |

@@ -71,5 +71,18 @@
       "answer": "Para garantir a aderência do coletor e a saúde da pele ao redor do estoma, você deve evitar estritamente o uso de substâncias como álcool, benzina, colônias, tintura de benjoim, mercúrio, merthiolate, pomadas e cremes. Esses produtos podem ressecar a pele, causar ferimentos, reações alérgicas e, crucialmente, impedir a correta adesão do coletor, levando a vazamentos."
     }
   ],
-  "rejeicoes": []
+  "rejeicoes": [],
+  "legibilidade_pt": {
+    "formula": "248.835 - 1.015 × ASL - 84.6 × ASW",
+    "contagem_silabas": "stress-pt",
+    "original": {
+      "flesch_pt": 41.8,
+      "classificacao": "Pouco difícil"
+    },
+    "simplificado": {
+      "flesch_pt": 47.2,
+      "classificacao": "Pouco difícil"
+    },
+    "variacao_pt": 5.4
+  }
 }

@@ -398,14 +398,16 @@ Alguns alimentos ajudam a neutralizar odores, como cenoura, chuchu e espinafre.
 
 ## Indicador de legibilidade
 
-- Flesch-PT original: 9.2 — Muito difícil
-- Classificação original: Muito difícil
-- Flesch-PT simplificado: 24.2 — Muito difícil
-- Classificação simplificada: Muito difícil
-- Variação: +15.0 pontos
+- Flesch original: 9.2 — Muito difícil
+- Flesch-PT original: 41.8 — Pouco difícil
 
-Observação: o Flesch-PT avalia apenas aspectos linguísticos do texto e não valida precisão médica.
+- Flesch simplificado: 24.2 — Muito difícil
+- Flesch-PT simplificado: 59.2 — Fácil
 
+- Variação Flesch: +15 pontos
+- Variação Flesch-PT: +17.4 pontos
+
+Observação: **Flesch** usa a fórmula original (constante 206,835) com contagem de sílabas por grupos de vogais. **Flesch-PT** usa a adaptação para português (constante 248,835) com contagem precisa de sílabas via stress-pt. Nenhum dos índices valida precisão médica.
 ## Glossário
 
 **Estoma:** Abertura criada cirurgicamente para saída de fezes ou urina.

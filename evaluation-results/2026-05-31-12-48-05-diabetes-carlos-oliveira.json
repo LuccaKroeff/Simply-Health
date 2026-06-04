@@ -92,5 +92,18 @@
         "Negação possivelmente invertida: \"não usar\" do original não aparece com negação no gerado"
       ]
     }
-  ]
+  ],
+  "legibilidade_pt": {
+    "formula": "248.835 - 1.015 × ASL - 84.6 × ASW",
+    "contagem_silabas": "stress-pt",
+    "original": {
+      "flesch_pt": 51.8,
+      "classificacao": "Fácil"
+    },
+    "simplificado": {
+      "flesch_pt": 55.6,
+      "classificacao": "Fácil"
+    },
+    "variacao_pt": 3.8
+  }
 }

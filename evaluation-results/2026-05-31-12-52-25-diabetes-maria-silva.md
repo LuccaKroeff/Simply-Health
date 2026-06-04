@@ -418,14 +418,16 @@ Para manter seus pés saudáveis, faça isso todo dia:
 
 ## Indicador de legibilidade
 
-- Flesch-PT original: 19.7 — Muito difícil
-- Classificação original: Muito difícil
-- Flesch-PT simplificado: 37.0 — Pouco difícil
-- Classificação simplificada: Pouco difícil
-- Variação: +17.3 pontos
+- Flesch original: 19.7 — Muito difícil
+- Flesch-PT original: 51.8 — Fácil
 
-Observação: o Flesch-PT avalia apenas aspectos linguísticos do texto e não valida precisão médica.
+- Flesch simplificado: 37 — Pouco difícil
+- Flesch-PT simplificado: 72.1 — Fácil
 
+- Variação Flesch: +17.3 pontos
+- Variação Flesch-PT: +20.3 pontos
+
+Observação: **Flesch** usa a fórmula original (constante 206,835) com contagem de sílabas por grupos de vogais. **Flesch-PT** usa a adaptação para português (constante 248,835) com contagem precisa de sílabas via stress-pt. Nenhum dos índices valida precisão médica.
 ## Glossário
 
 **Neuropatia diabética:** Problema nos nervos causado pelo diabetes, que pode afetar os pés.
