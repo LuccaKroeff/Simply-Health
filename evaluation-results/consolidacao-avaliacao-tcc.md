@@ -154,7 +154,7 @@ Na execução 2 de Ana/estomia, todas as 3 tentativas internas foram rejeitadas 
 | Menor ganho | −3,8 (D-Ana-R1) | +5,4 (E-Ana-R1) | **−3,8** |
 | Ganho positivo | 6/9 (67%) | 9/9 (100%) | **15/18 (83%)** |
 | Ganho nulo/negativo | 3/9 — todos D-Ana | 0/9 | **3/18 (17%)** |
-| Mudança de classificação | 3/9 (33%) — D-Ana piora (Fácil→Pouco difícil) | 7/9 (78%) — E-Carlos(3), E-Maria(3), E-Ana-rerun | **10/18 (56%)** |
+| Mudança de classificação | 2/9 (22%) — D-Ana-R1 e R2 (Fácil→Pouco difícil) | 7/9 (78%) — E-Carlos(3), E-Maria(3), E-Ana-rerun | **9/18 (50%)** |
 
 ### Pipeline e guardrails
 
