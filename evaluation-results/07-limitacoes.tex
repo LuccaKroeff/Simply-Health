@@ -1,0 +1,82 @@
+\chapter{Limitações e Ameaças à Validade}
+\label{cap:limitacoes}
+
+\section{Limitações decorrentes do escopo da solução}
+\label{sec:limitacoes-escopo-solucao}
+
+Como delimitado na proposta, a solução foi concebida como um mecanismo de adaptação comunicacional de textos técnicos de saúde previamente definidos ou validados. Sua atuação se concentra na forma de apresentação da informação, e não na definição do conteúdo clínico. Por isso, os resultados da avaliação permitem observar o comportamento da simplificação textual, da adaptação por perfil e dos guardrails, mas não permitem inferir eficácia clínica, segurança de uso em contexto assistencial real ou impacto sobre a adesão ao tratamento.
+
+Também não foi avaliado se os textos gerados melhoram a execução de cuidados, reduzem erros em tratamentos ou produzem efeitos concretos sobre desfechos de saúde. Esses aspectos exigiriam estudos específicos, com participação de usuários reais e validação por profissionais da saúde. Assim, os resultados devem ser compreendidos dentro de um escopo funcional e linguístico, não como evidência de validação clínica dos textos produzidos.
+
+\section{Limitações da avaliação}
+\label{sec:limitacoes-avaliacao}
+
+A avaliação realizada utilizou dois materiais de saúde, três perfis simulados de pacientes e 18 execuções principais. Essa configuração foi adequada para observar o comportamento inicial da solução, comparar diferentes níveis de adaptação comunicacional e analisar a atuação dos guardrails em um cenário controlado. No entanto, ela não permite generalizar os resultados para todos os tipos de documentos de saúde, perfis de pacientes ou contextos de uso em aplicações mHealth.
+
+Os dois materiais utilizados apresentam orientações práticas e linguagem técnica, mas não representam toda a diversidade de conteúdos encontrados em saúde digital. Materiais envolvendo medicamentos, dosagens, horários, contraindicações detalhadas, sinais de alerta, protocolos clínicos complexos ou orientações pós-operatórias poderiam apresentar desafios diferentes. Nesses casos, pequenas alterações textuais poderiam ter impacto mais sensível sobre a interpretação das orientações.
+
+Da mesma forma, os três perfis simulados permitiram observar variações de escolaridade e familiaridade com linguagem técnica, mas não cobrem a diversidade real de usuários. Pacientes podem variar quanto à idade, letramento em saúde, experiência prévia com a condição, limitações cognitivas, preferências de linguagem e contexto social. Além disso, como não houve participação de pacientes reais nem testes de compreensão com usuários finais, não é possível afirmar que os textos simplificados seriam efetivamente compreendidos com mais facilidade em situações reais de uso.
+
+\section{Limitações das métricas de legibilidade}
+\label{sec:limitacoes-metricas-legibilidade}
+
+O Flesch-PT foi utilizado como métrica automática de legibilidade por permitir uma comparação objetiva entre os textos originais e as versões simplificadas. No contexto da avaliação, ele foi útil para indicar mudanças gerais do texto, como possíveis reduções de complexidade associadas à estrutura das frases e às características das palavras utilizadas. No entanto, essa métrica representa apenas uma dimensão limitada da legibilidade.
+
+O índice não mede compreensão real do usuário, clareza percebida, adequação comunicacional completa ou precisão médica. Um texto pode apresentar Flesch-PT mais alto e ainda assim conter problemas de organização, ambiguidade, perda de informação relevante ou inadequação ao perfil do leitor. Da mesma forma, um texto pode manter Flesch-PT baixo por preservar termos técnicos necessários, sem que isso signifique necessariamente uma pior adaptação.
+
+O caso do perfil Ana no material sobre diabetes ilustra essa limitação. Nesse cenário, a variação média do Flesch-PT foi negativa, mas Ana representa uma usuária com ensino superior e familiaridade com a área da saúde. Portanto, a manutenção de terminologia mais técnica pode ser coerente com o perfil comunicacional definido. Esse resultado mostra que a qualidade da adaptação não pode ser avaliada apenas pelo aumento do índice, pois a simplificação adequada depende também do público-alvo e da necessidade de preservar determinados termos.
+
+Dessa forma, o Flesch-PT deve ser interpretado como um indicador auxiliar, e não como uma medida completa de qualidade textual. Sua utilização contribui para a análise exploratória da solução, mas precisa ser complementada por avaliação qualitativa, revisão e, em trabalhos futuros, testes de compreensão com usuários finais.
+
+\section{Limitações dos guardrails}
+\label{sec:limitacoes-guardrails}
+
+Os guardrails implementados contribuíram para identificar alterações potencialmente problemáticas nas versões geradas, como troca de substância, alteração de instrução procedimental, alteração de sentido semântico, contradição numérica e possível perda de negação. Ainda assim, eles não garantem preservação absoluta do conteúdo original. A existência de uma camada de verificação reduz riscos, mas não elimina a possibilidade de falhas.
+
+O guardrail baseado em LLM depende da capacidade do próprio modelo de comparar o texto original e a versão simplificada. Esse tipo de verificação pode ser sensível à formulação do prompt, ao modelo utilizado, à configuração de geração e à complexidade do trecho analisado. Em alguns casos, o modelo pode deixar de identificar uma alteração relevante ou interpretar como problemática uma reformulação aceitável.
+
+O checker determinístico, por sua vez, possui limitações diferentes. Por ser baseado em regras e expressões regulares, ele depende dos padrões previamente definidos na implementação. Esse tipo de verificação pode ser rígido demais, gerando falsos positivos quando uma informação é preservada por meio de outra construção linguística, mas também pode deixar de detectar casos que não se encaixam nos padrões previstos. Isso é especialmente relevante em linguagem natural, na qual negações, instruções e equivalências semânticas podem aparecer de formas variadas.
+
+Apesar dessas limitações, a postura conservadora adotada é adequada ao domínio de saúde. Em textos que envolvem orientações de cuidado, é preferível rejeitar uma saída e gerar uma nova tentativa do que apresentar ao usuário uma versão com possível alteração de sentido, perda de negação ou mudança em uma instrução relevante. Portanto, os guardrails devem ser compreendidos como mecanismos de mitigação de risco, e não como garantia definitiva de correção clínica.
+
+\section{Ameaças à validade interna}
+\label{sec:ameacas-validade-interna}
+
+A validade interna do trabalho pode ter sido influenciada por fatores relacionados ao comportamento do modelo de linguagem, à configuração da solução e às decisões de implementação. Como LLMs podem gerar respostas diferentes para entradas semelhantes, a variabilidade das saídas é uma ameaça relevante. Mesmo com prompts definidos e guardrails aplicados, pequenas diferenças entre execuções podem afetar o grau de simplificação, a escolha lexical e a forma de organização do texto.
+
+A escolha dos prompts, das configurações do modelo e dos critérios de verificação também pode ter influenciado os resultados. Instruções mais restritivas ou mais flexíveis poderiam levar a versões com diferentes níveis de simplificação, assim como a própria escolha do modelo poderia afetar a tendência a reformular, resumir ou preservar termos técnicos. Da mesma forma, a forma como os guardrails foram implementados, incluindo critérios de rejeição, regras determinísticas e retorno usado para novas tentativas, influencia quais saídas são aprovadas ou bloqueadas pelo pipeline.
+
+As características dos documentos de entrada também representam uma possível fonte de influência. Os dois materiais avaliados possuem temas, vocabulários e estruturas próprias, o que pode ter afetado tanto os valores de Flesch-PT quanto a ocorrência de rejeições pelos guardrails. Um texto original mais técnico, mais longo ou com maior quantidade de instruções restritivas poderia produzir resultados diferentes.
+
+Dessa forma, os resultados devem ser interpretados em relação ao ambiente controlado e às escolhas técnicas adotadas neste trabalho, e não como comportamento universal da abordagem para qualquer modelo, prompt, configuração ou conjunto de documentos.
+
+\section{Ameaças à validade de construto}
+\label{sec:ameacas-validade-construto}
+
+As ameaças à validade de construto estão relacionadas à forma como os principais conceitos do trabalho foram avaliados. Neste estudo, aspectos como legibilidade, simplificação, preservação de informações essenciais e adequação ao perfil precisaram ser observados por meio de métricas e análises específicas, que não capturam todos os elementos envolvidos nesses conceitos.
+
+A legibilidade foi medida apenas pelo Flesch-PT, que representa uma parte da complexidade textual, mas não contempla integralmente a experiência de leitura. Aspectos como clareza percebida, esforço cognitivo e compreensão efetiva não foram medidos diretamente. Assim, o índice não deve ser tratado como representação completa da legibilidade.
+
+A preservação das informações essenciais foi analisada por meio de leitura manual preliminar e verificação automática pelos guardrails. Embora essas estratégias tenham permitido identificar indícios de fidelidade ao material original, elas não equivalem a uma validação clínica independente.
+
+A adequação ao perfil também apresenta limitações de construto. Os perfis utilizados foram simulados e definidos a partir de características gerais, como idade, escolaridade e familiaridade com a área da saúde. Essa representação é útil para testar a capacidade de adaptação comunicacional da solução, mas não captura plenamente a complexidade de usuários reais. Em situações concretas, fatores como experiência prévia com a condição, nível de letramento em saúde, ansiedade, preferências de linguagem e contexto social podem influenciar a compreensão do conteúdo.
+
+\section{Ameaças à validade externa}
+\label{sec:ameacas-validade-externa}
+
+Os resultados deste trabalho não podem ser generalizados diretamente para outros materiais de saúde, outros perfis de pacientes, outras línguas, outros modelos de linguagem ou outros contextos clínicos. A avaliação foi realizada em português, com dois documentos específicos e três perfis simulados, dentro de um pipeline implementado para fins acadêmicos e exploratórios.
+
+Materiais com maior criticidade clínica poderiam apresentar riscos diferentes. Textos que envolvem protocolos clínicos complexos exigiriam mecanismos de verificação mais robustos e revisão profissional rigorosa. Nesses casos, pequenas alterações textuais poderiam ter impacto mais sensível sobre a interpretação do usuário.
+
+Também não é possível assumir que os mesmos resultados seriam obtidos com outros modelos de linguagem. Nesta implementação, foi utilizado o Gemini, e os resultados observados estão vinculados ao comportamento desse modelo no ambiente avaliado. Diferentes LLMs podem variar quanto à tendência de simplificar, resumir, omitir detalhes, manter terminologia técnica ou seguir instruções de preservação. Mesmo versões diferentes de um mesmo modelo podem apresentar comportamentos distintos. Portanto, os achados estão relacionados às escolhas técnicas e ao ambiente de execução utilizados neste trabalho.
+
+No contexto da Takere, entendida neste trabalho como plataforma-alvo de aplicação, a adoção de uma solução desse tipo exigiria novos testes, revisão por profissionais responsáveis pelos planos de cuidado e avaliação com usuários finais. A integração a um ambiente mHealth real também demandaria atenção a aspectos operacionais, de governança do conteúdo e de responsabilidade sobre a validação das informações apresentadas.
+
+\section{Síntese das limitações}
+\label{sec:sintese-limitacoes}
+
+As limitações apresentadas não invalidam os resultados obtidos, mas delimitam seu alcance. A avaliação realizada fornece evidências iniciais de que a solução é capaz de simplificar textos técnicos de saúde na maior parte dos casos avaliados, adaptar a linguagem conforme perfis comunicacionais simulados e utilizar guardrails para bloquear alterações potencialmente problemáticas. No entanto, esses achados devem ser compreendidos em caráter funcional, linguístico e exploratório.
+
+O trabalho não demonstrou validação clínica, compreensão efetiva por pacientes reais ou impacto em adesão ao tratamento. Além disso, a avaliação foi limitada a dois materiais, três perfis simulados, uma métrica automática de legibilidade e uma análise manual preliminar. Como já mencionado, os guardrails contribuíram para reduzir riscos, mas não garantem precisão médica absoluta.
+
+Dessa forma, o uso da abordagem em contexto real exigiria validação mais ampla, participação de profissionais da saúde, avaliação com usuários finais, ampliação dos materiais testados e aprimoramento contínuo dos mecanismos de verificação. Ainda assim, dentro do escopo proposto, os resultados apoiam a viabilidade da solução como apoio à adaptação comunicacional de textos de saúde previamente definidos, desde que seu uso seja mantido dentro de limites claros e, em contextos reais, seja acompanhado por processos adequados de revisão e validação.
