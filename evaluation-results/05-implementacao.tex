@@ -23,7 +23,28 @@ De forma geral, o frontend atua como camada de interação com o usuário, enqua
 
 A implementação utilizou tecnologias voltadas ao desenvolvimento web moderno, com separação entre frontend e backend. No backend, foram utilizados TypeScript e NestJS. O TypeScript contribui para a organização do código por meio de tipagem estática, enquanto o NestJS oferece uma estrutura modular baseada em controllers, provedor, injeção de dependência e services.
 
-O backend também utiliza recursos para recebimento de arquivos, especialmente no fluxo de upload de PDFs e arquivos TXT. Para a comunicação com modelos de linguagem, a aplicação foi organizada a partir de uma abstração de provedores de LLM. O provedor principal é o Gemini, utilizado para a geração das simplificações. A implementação também prevê um provedor alternativo e um provedor mockado, usado em desenvolvimento e testes para simular respostas sem depender de chamadas externas.
+O backend também utiliza recursos para recebimento de arquivos, especialmente no fluxo de upload de PDFs e arquivos TXT. Para a comunicação com modelos de linguagem, a aplicação foi organizada a partir de uma abstração de provedores de LLM. O provedor principal utilizado é o Gemini, da Google. A implementação também prevê suporte ao Claude, da Anthropic, e a um provedor mockado, usado em desenvolvimento e testes para simular respostas sem depender de chamadas externas. Todos os testes e a avaliação descritos neste trabalho foram realizados exclusivamente com o Gemini.
+
+A Tabela~\ref{tab:modelos-llm} apresenta os modelos Gemini utilizados em cada papel da aplicação durante a avaliação.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Modelos de linguagem utilizados por papel na avaliação da SimplyHealth.}
+  \label{tab:modelos-llm}
+  \small
+  \renewcommand{\arraystretch}{1.15}
+  \begin{tabular}{ll}
+    \hline
+    \textbf{Papel} & \textbf{Modelo} \\
+    \hline
+    Simplificação textual & gemini-2.5-flash-lite \\
+    Transcrição de voz (STT) & gemini-2.5-flash-lite \\
+    Síntese de fala (TTS) & gemini-2.5-flash-preview-tts \\
+    Guardrail de entrada do chat & gemini-2.5-flash-lite \\
+    Guardrail de fidelidade (LLM avaliador) & gemini-2.5-flash \\
+    \hline
+  \end{tabular}
+\end{table}
 
 No frontend, foram utilizados React 18 e Vite. O React foi adotado para construção da interface em componentes, enquanto o Vite foi utilizado como ferramenta de desenvolvimento e build. A interface se comunica com o backend por chamadas HTTP e não conhece diretamente os detalhes dos provedores de LLM, dos prompts ou dos guardrails. Essa separação reforça o papel do backend como camada responsável pela lógica da solução.
 
@@ -95,7 +116,7 @@ Após a geração do texto simplificado, a resposta passa inicialmente por verif
 
 Em seguida, a resposta passa por uma avaliação de fidelidade em relação ao texto original, realizada por uma LLM avaliadora. Essa etapa compara o conteúdo de entrada com o texto simplificado e busca identificar problemas como inserção de informação clínica nova, alteração de sentido, mudança de dose ou frequência, criação de diagnóstico, sugestão de conduta, suavização de riscos ou produção de glossário com conteúdo não derivado do texto original. Assim, enquanto as verificações determinísticas cobrem casos objetivos e pontuais, a avaliação por LLM busca analisar a fidelidade da resposta de forma mais ampla.
 
-Quando a resposta é rejeitada por alguma dessas etapas, o sistema pode realizar uma nova tentativa de geração, incorporando ao processo o feedback produzido pelos guardrails. A implementação prevê um número limitado de tentativas; caso nenhuma saída seja aprovada, a aplicação retorna uma mensagem segura de fallback, evitando apresentar ao usuário uma resposta que não atendeu aos critérios mínimos de fidelidade.
+Quando a resposta é rejeitada por alguma dessas etapas, o sistema pode realizar uma nova tentativa de geração, incorporando ao processo o feedback produzido pelos guardrails. A implementação prevê até cinco tentativas por execução; caso nenhuma saída seja aprovada, a aplicação retorna uma mensagem segura de fallback, evitando apresentar ao usuário uma resposta que não atendeu aos critérios mínimos de fidelidade.
 
 O mesmo princípio de controle é aplicado aos recursos interativos, como o chat contextual. Nesses casos, a aplicação verifica se a interação permanece dentro do escopo do material carregado e se a resposta gerada não introduz informações externas. Os detalhes funcionais do chat são apresentados na seção seguinte, junto aos demais recursos auxiliares da solução.
 
@@ -112,6 +133,8 @@ As perguntas frequentes são geradas a partir do conteúdo original e adaptadas 
 
 O chat contextual permite que o usuário faça perguntas adicionais sobre o material carregado. Ele utiliza o texto original como referência e atua como recurso de apoio à compreensão textual. Quando a pergunta extrapola o conteúdo, solicita aconselhamento médico ou depende de informação ausente, o sistema retorna uma resposta segura. Assim, o chat não é apresentado como assistente clínico independente, mas como uma forma de esclarecer o conteúdo já fornecido.
 
+A interface do chat também aceita entrada por voz: o usuário pode gravar uma pergunta pelo microfone, que é transcrita automaticamente e inserida no campo de texto antes do envio. Complementarmente, o texto simplificado pode ser reproduzido em áudio por meio de síntese de fala, gerada via API com o modelo \textit{gemini-2.5-flash-preview-tts}. Esses dois recursos — transcrição de voz e síntese de fala — ampliam a acessibilidade da solução para perfis com menor familiaridade com interação por texto escrito, como pacientes idosos ou com baixo letramento digital. Ambos integram a implementação funcional, mas não fizeram parte do escopo de avaliação deste trabalho.
+
 \section{Indicador de legibilidade}
 \label{sec:indicador-legibilidade}
 
@@ -126,11 +149,29 @@ A média de palavras por frase pode aparecer internamente como parte do cálculo
 
 A interface da SimplyHealth foi construída para demonstrar o fluxo principal da solução e permitir a comparação entre versões geradas para diferentes perfis. Ela pode ser entendida em duas etapas principais: a tela inicial e a tela de resultados.
 
-Na tela inicial, o usuário seleciona um ou mais perfis simulados de pacientes, insere texto livre ou envia um arquivo PDF/TXT e escolhe parâmetros de processamento, como nível de detalhamento e inclusão de glossário. Quando aplicável, também pode indicar se imagens presentes nos PDFs devem ser consideradas. Essa etapa concentra as decisões necessárias para iniciar o processamento.
+Na tela inicial, ilustrada na Figura~\ref{fig:tela-inicial}, o usuário seleciona um ou mais perfis simulados de pacientes, insere texto livre ou envia um arquivo PDF/TXT e escolhe parâmetros de processamento, como nível de detalhamento e inclusão de glossário. Quando aplicável, também pode indicar se imagens presentes nos PDFs devem ser consideradas. Essa etapa concentra as decisões necessárias para iniciar o processamento.
 
 A possibilidade de selecionar múltiplos perfis é relevante para o objetivo do trabalho. Ela permite observar como o mesmo texto técnico pode ser adaptado de formas diferentes conforme o perfil comunicacional escolhido. Assim, a interface não apenas executa a simplificação, mas também torna visível a lógica de adaptação ao perfil.
 
-Na tela de resultados, a aplicação apresenta os resultados em cartões por paciente. Cada cartão exibe o texto simplificado, o indicador de legibilidade, o glossário recolhível, perguntas sugeridas e acesso ao chat contextual. Também há uma área para consulta do material original, permitindo comparar a fonte com a versão simplificada.
+\begin{figure}[htbp]
+  \centering
+  % INSERIR FIGURA AQUI: captura de tela da tela inicial da SimplyHealth.
+  % \includegraphics[width=\textwidth]{figuras/implementacao/tela-inicial.png}
+  \caption{Tela inicial da SimplyHealth: seleção de perfis, inserção de conteúdo e parâmetros de processamento.}
+  \label{fig:tela-inicial}
+  {\small Fonte: elaboração própria.}
+\end{figure}
+
+Na tela de resultados, ilustrada na Figura~\ref{fig:tela-resultados}, a aplicação apresenta os resultados em cartões por paciente. Cada cartão exibe o texto simplificado, o indicador de legibilidade, o glossário recolhível, perguntas sugeridas e acesso ao chat contextual. Também há uma área para consulta do material original, permitindo comparar a fonte com a versão simplificada.
+
+\begin{figure}[htbp]
+  \centering
+  % INSERIR FIGURA AQUI: captura de tela da tela de resultados da SimplyHealth.
+  % \includegraphics[width=\textwidth]{figuras/implementacao/tela-resultados.png}
+  \caption{Tela de resultados da SimplyHealth: cartões por perfil com texto simplificado, indicador de legibilidade, glossário e chat contextual.}
+  \label{fig:tela-resultados}
+  {\small Fonte: elaboração própria.}
+\end{figure}
 
 Essa organização favorece a avaliação da solução, pois permite observar simultaneamente o conteúdo original, o texto simplificado e os elementos de apoio à compreensão. Além disso, a presença de resultados separados por perfil facilita a análise das diferenças entre versões, aspecto importante para verificar se a adaptação comunicacional está ocorrendo de forma coerente.
 

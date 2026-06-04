@@ -28,7 +28,7 @@ Essa variação entre perfis permitiu avaliar se a solução produzia diferentes
 \section{Procedimento de avaliação}
 \label{sec:procedimento-avaliacao}
 
-A avaliação foi planejada considerando três execuções para cada combinação entre material e perfil, resultando em 18 execuções principais: dois materiais, três perfis simulados e três execuções independentes para cada combinação. Cada execução correspondeu ao processamento de um material para um perfil específico, podendo envolver uma ou mais tentativas internas de geração quando a saída era rejeitada pelos guardrails.
+A avaliação foi planejada considerando três execuções para cada combinação entre material e perfil, resultando em 18 execuções principais: dois materiais, três perfis simulados e três execuções independentes para cada combinação. Cada execução correspondeu ao processamento de um material para um perfil específico, podendo envolver uma ou mais tentativas internas de geração quando a saída era rejeitada pelos guardrails. Todas as execuções utilizaram o modelo \texttt{gemini-2.5-flash-lite} tanto para a simplificação textual quanto para o guardrail de fidelidade, conforme a configuração descrita na Tabela~\ref{tab:modelos-llm}.
 
 Cada execução produziu um conjunto de saídas composto por texto simplificado, valor de Flesch-PT do texto original e do texto simplificado, glossário quando gerado e perguntas frequentes. Quando uma tentativa era rejeitada pelo guardrail, a solução podia realizar uma nova tentativa de geração dentro da mesma execução. Essas tentativas internas não foram contabilizadas como novas execuções principais, mas como parte do funcionamento do pipeline.
 
@@ -154,7 +154,7 @@ A Tabela~\ref{tab:preservacao-guardrails-saidas} apresenta uma síntese dos resu
     Aprovados na primeira tentativa & 10/18 \\
     Aprovados na segunda tentativa & 6/18 \\
     Aprovados na terceira tentativa & 1/18 \\
-    Aprovados na quarta tentativa & 1/18 \\
+    Aprovados na quarta tentativa\tablefootnote{Corresponde ao re-run realizado após o fallback da execução estomia-Ana-R2. As três tentativas internas dessa execução foram rejeitadas, ativando o fallback; o re-run subsequente foi aprovado na primeira tentativa, totalizando quatro tentativas no conjunto da sequência.} & 1/18 \\
     Execuções com ao menos uma rejeição & 8/18 \\
     Eventos de rejeição registrados & 11 \\
     FAQ gerado & 18/18 \\
