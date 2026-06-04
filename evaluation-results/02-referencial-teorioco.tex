@@ -103,6 +103,40 @@ Apesar de sua importância, os guardrails não devem ser tratados como garantia 
 \section{Legibilidade textual}
 \label{sec:legibilidade-textual}
 
-A avaliação da simplificação textual pode ser apoiada por indicadores automáticos de legibilidade, que buscam estimar propriedades linguísticas de um texto, como o tamanho das frases e a extensão das palavras. Entre esses indicadores, destaca-se o Índice de Legibilidade de Flesch adaptado ao português brasileiro, discutido por Martins et al. \cite{martins1996readability}. Em nível conceitual, esse índice considera propriedades como o tamanho médio das frases e o número médio de sílabas por palavra para estimar a facilidade de leitura de um texto. No contexto deste trabalho, o Flesch-PT auxilia na comparação entre o texto original e o texto simplificado, indicando se a versão gerada apresenta sinais de maior legibilidade.
+A avaliação da simplificação textual pode ser apoiada por indicadores automáticos de legibilidade, que buscam estimar propriedades linguísticas de um texto, como o comprimento médio das frases e o número médio de sílabas por palavra. O Índice de Legibilidade de Flesch, em sua formulação original para o inglês, é dado por:
+
+\[
+  \text{Flesch} = 206{,}835 - 1{,}015 \times \overline{\text{CP}} - 84{,}6 \times \overline{\text{SP}}
+\]
+
+onde $\overline{\text{CP}}$ é o número médio de palavras por sentença e $\overline{\text{SP}}$ é o número médio de sílabas por palavra. Valores mais altos indicam menor complexidade linguística.
+
+A constante 206,835 foi calibrada empiricamente para o inglês. Martins et al. \cite{martins1996readability} observaram que o português brasileiro apresenta, em média, maior número de sílabas por palavra do que o inglês, em decorrência de sua morfologia mais rica e de palavras tipicamente mais longas. Aplicada diretamente a textos em português, a fórmula original produziria pontuações sistematicamente inferiores às de textos ingleses de complexidade equivalente, tornando as faixas de classificação originais inadequadas. Para corrigir esse viés, os autores propõem acrescentar 42 pontos à constante da fórmula, obtendo a adaptação para o português brasileiro:
+
+\[
+  \text{Flesch-PT} = 248{,}835 - 1{,}015 \times \overline{\text{CP}} - 84{,}6 \times \overline{\text{SP}}
+\]
+
+Com esse ajuste, textos em português com nível de complexidade equivalente ao de textos em inglês tendem a produzir pontuações comparáveis, permitindo o uso das mesmas faixas de classificação. A Tabela~\ref{tab:classificacao-flesch-pt} apresenta a escala adotada neste trabalho.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Escala de classificação do índice Flesch-PT \cite{martins1996readability}.}
+  \label{tab:classificacao-flesch-pt}
+  \small
+  \renewcommand{\arraystretch}{1.15}
+  \begin{tabular}{cc}
+    \hline
+    \textbf{Índice Flesch-PT} & \textbf{Classificação} \\
+    \hline
+    75 a 100 & Muito fácil \\
+    50 a 74  & Fácil \\
+    25 a 49  & Pouco difícil \\
+    0 a 24   & Muito difícil \\
+    \hline
+  \end{tabular}
+\end{table}
+
+No contexto deste trabalho, o Flesch-PT auxilia na comparação entre o texto original e o texto simplificado, indicando se a versão gerada apresenta sinais de maior legibilidade.
 
 Contudo, esse tipo de métrica não avalia, isoladamente, a precisão médica da saída nem garante que o paciente compreendeu efetivamente o conteúdo. Um texto pode apresentar bom índice de legibilidade e, ainda assim, alterar uma informação clínica essencial; também pode ser linguisticamente simples, mas ambíguo ou inadequado. Por isso, neste trabalho, o Flesch-PT deve ser entendido como parte de uma avaliação complementar: ele ajuda a observar mudanças linguísticas, mas precisa ser combinado com a análise de preservação das informações médicas essenciais.
