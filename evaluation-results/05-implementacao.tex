@@ -53,13 +53,117 @@ No frontend, foram utilizados React 18 e Vite. O React foi adotado para constru�
 
 \begin{figure}[htbp]
   \centering
-  % INSERIR FIGURA AQUI: fluxo de simplificação implementado na SimplyHealth.
-  % \includegraphics[width=\textwidth]{figuras/implementacao/fluxo-simplificacao.png}
+  \resizebox{0.85\textwidth}{!}{
+  \begin{tikzpicture}[
+    node distance=1.35cm,
+    >=Latex,
+    every node/.style={font=\small},
+    startend/.style={
+      rounded rectangle,
+      rounded rectangle arc length=180,
+      draw,
+      align=center,
+      minimum width=5.2cm,
+      minimum height=1.0cm
+    },
+    process/.style={
+      rectangle,
+      draw,
+      align=center,
+      minimum width=4.8cm,
+      minimum height=1.0cm
+    },
+    decision/.style={
+      diamond,
+      draw,
+      align=center,
+      aspect=2,
+      inner sep=1pt,
+      minimum width=4.2cm,
+      minimum height=1.4cm
+    },
+    arrow/.style={->, thick}
+  ]
+
+    % Nós principais
+    \node[startend] (entrada) {
+      \textbf{Entrada}\\
+      \textit{texto ou PDF/TXT, perfil e parâmetros}
+    };
+
+    \node[decision, below=of entrada] (pdf) {
+      \textbf{Arquivo PDF?}
+    };
+
+    \node[process, right=2.8cm of pdf] (extracao) {
+      \textbf{Extração de texto}\\
+      \textit{conversão do PDF em texto}
+    };
+
+    \node[process, below=of pdf] (prompt) {
+      \textbf{Construção do prompt}\\
+      \textit{conteúdo, perfil e regras de preservação}
+    };
+
+    \node[process, below=of prompt] (geracao) {
+      \textbf{Geração pela LLM}\\
+      \textit{texto simplificado e glossário}
+    };
+
+    \node[process, below=of geracao] (guardrails) {
+      \textbf{Guardrails}\\
+      \textit{verificação determinística e avaliação por LLM}
+    };
+
+    \node[decision, below=of guardrails] (aprovada) {
+      \textbf{Resposta aprovada?}
+    };
+
+    \node[process, below=of aprovada] (flesch) {
+      \textbf{Cálculo do Flesch-PT}\\
+      \textit{texto original e simplificado}
+    };
+
+    \node[startend, below=of flesch] (saida) {
+      \textbf{Saída ao frontend}\\
+      \textit{texto simplificado, glossário e Flesch-PT}
+    };
+
+    \node[decision, right=3.4cm of aprovada] (tentativa) {
+      \textbf{Nova tentativa possível?}
+    };
+
+    \node[process, below=of tentativa] (fallback) {
+      \textbf{Fallback}\\
+      \textit{mensagem segura}
+    };
+
+    % Fluxo principal
+    \draw[arrow] (entrada) -- (pdf);
+    \draw[arrow] (pdf) -- node[above] {Sim} (extracao);
+    \draw[arrow] (extracao.south) |- (prompt.east);
+    \draw[arrow] (pdf) -- node[left] {Não} (prompt);
+    \draw[arrow] (prompt) -- (geracao);
+    \draw[arrow] (geracao) -- (guardrails);
+    \draw[arrow] (guardrails) -- (aprovada);
+    \draw[arrow] (aprovada) -- node[left] {Sim} (flesch);
+    \draw[arrow] (flesch) -- (saida);
+
+    % Fluxo de rejeição
+    \draw[arrow] (aprovada) -- node[above] {Não} (tentativa);
+    \draw[arrow] (tentativa) -- node[right] {Não} (fallback);
+    \draw[arrow] (fallback.south) |- (saida.east);
+
+    % Nova tentativa com feedback
+    \draw[arrow] (tentativa.north) |- node[pos=0.25, right] {Sim, com feedback} (geracao.east);
+
+  \end{tikzpicture}
+  }
   \caption{Fluxo de simplificação implementado na SimplyHealth.}
   \label{fig:fluxo-simplificacao}
 \end{figure}
 
-O fluxo de simplificação é o núcleo da implementação. Ele transforma o conteúdo técnico de entrada em uma versão simplificada e adaptada comunicacionalmente ao perfil selecionado. Esse processo não consiste apenas em enviar um texto diretamente a uma LLM. A simplificação é organizada como uma sequência de etapas que envolvem preparação da entrada, contextualização pelo perfil, geração controlada, avaliação da resposta e apresentação estruturada dos resultados.
+O fluxo de simplificação é o núcleo da implementação. Ele transforma o conteúdo técnico de entrada em uma versão simplificada e adaptada comunicacionalmente ao perfil selecionado. Esse processo não consiste apenas em enviar um texto diretamente a uma LLM. A simplificação é organizada como uma sequência de etapas que envolvem preparação da entrada, contextualização pelo perfil, geração controlada, avaliação da resposta e apresentação estruturada dos resultados, conforme ilustra a Figura~\ref{fig:fluxo-simplificacao}.
 
 A aplicação permite que o conteúdo de entrada seja fornecido de duas formas: por texto livre ou por arquivo. No primeiro caso, o usuário insere diretamente o texto técnico de saúde na interface. No segundo, envia um arquivo em formato PDF ou TXT, a partir do qual o backend extrai o conteúdo textual.
 
