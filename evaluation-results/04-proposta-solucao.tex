@@ -9,9 +9,10 @@ O sistema desenvolvido atua sobre conteúdos previamente definidos ou aprovados 
 
 O funcionamento geral da solução é apresentado na Figura~\ref{fig:fluxo-conceitual-solucao}. O fluxo parte do conteúdo do plano de cuidado, do perfil comunicacional do paciente e de parâmetros definidos no momento do processamento. O conteúdo do plano de cuidado pode ser fornecido à aplicação por meio de um arquivo PDF ou pela inserção direta de um texto livre contendo orientações de saúde. Já o perfil comunicacional reúne informações utilizadas para orientar a adaptação da linguagem, como idade, grupo de condição e formação educacional do paciente. Além disso, a solução considera parâmetros definidos no momento do processamento, como o nível de detalhamento desejado e a inclusão de imagens extraídas do PDF, quando aplicável.
 
+\def\escalaFigConceitual{0.85}
 \begin{figure}[htbp]
   \centering
-  \resizebox{\textwidth}{!}{
+  \resizebox{\escalaFigConceitual\textwidth}{!}{
   \begin{tikzpicture}[
     >=Latex,
     every node/.style={font=\small},
@@ -93,8 +94,10 @@ O funcionamento geral da solução é apresentado na Figura~\ref{fig:fluxo-conce
       \textbf{Geração de perguntas e respostas}
     };
 
-    \draw[arrow] (instrucao.south) |- (geracaoTexto.north);
-    \draw[arrow] (instrucao.south) |- (geracaoFAQ.north);
+    \coordinate (midBranch) at (7.0,-4.9);
+    \draw[thick] (instrucao.south) -- (midBranch);
+    \draw[arrow] (midBranch) -| (geracaoTexto.north);
+    \draw[arrow] (midBranch) -| (geracaoFAQ.north);
 
     % Guardrails
     \node[guardrail] (guardTexto) at (3.4,-8.9) {
