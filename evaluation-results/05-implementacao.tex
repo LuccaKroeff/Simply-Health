@@ -21,7 +21,7 @@ De forma geral, o frontend atua como camada de interação com o usuário, enqua
 \section{Tecnologias utilizadas}
 \label{sec:tecnologias-utilizadas}
 
-A implementação utilizou tecnologias voltadas ao desenvolvimento web moderno, com separação entre frontend e backend. No backend, foram utilizados TypeScript e NestJS. O TypeScript contribui para a organização do código por meio de tipagem estática, enquanto o NestJS oferece uma estrutura modular baseada em controllers, provedor, injeção de dependência e services.
+A implementação utilizou tecnologias voltadas ao desenvolvimento web moderno, com separação entre frontend e backend. No backend, foram utilizados TypeScript e NestJS. O TypeScript contribui para a organização do código por meio de tipagem estática, enquanto o NestJS oferece uma estrutura modular baseada em controllers, providers, injeção de dependência e services.
 
 O backend também utiliza recursos para recebimento de arquivos, especialmente no fluxo de upload de PDFs e arquivos TXT. Para a comunicação com modelos de linguagem, a aplicação foi organizada a partir de uma abstração de provedores de LLM. O provedor principal utilizado é o Gemini, da Google. A implementação também prevê suporte ao Claude, da Anthropic, e a um provedor mockado, usado em desenvolvimento e testes para simular respostas sem depender de chamadas externas. Todos os testes e a avaliação descritos neste trabalho foram realizados exclusivamente com o Gemini.
 
@@ -53,7 +53,7 @@ No frontend, foram utilizados React 18 e Vite. O React foi adotado para constru�
 
 \begin{figure}[htbp]
   \centering
-  \resizebox{0.85\textwidth}{!}{
+  \resizebox{0.65\textwidth}{!}{
   \begin{tikzpicture}[
     node distance=1.35cm,
     >=Latex,
@@ -126,7 +126,7 @@ No frontend, foram utilizados React 18 e Vite. O React foi adotado para constru�
 
     \node[startend, below=of flesch] (saida) {
       \textbf{Saída ao frontend}\\
-      \textit{texto simplificado, glossário e Flesch-PT}
+      \textit{texto simplificado, glossário, Flesch-PT e recursos auxiliares}
     };
 
     \node[decision, right=3.4cm of aprovada] (tentativa) {
@@ -169,7 +169,7 @@ A aplicação permite que o conteúdo de entrada seja fornecido de duas formas: 
 
 O fluxo começa quando o frontend envia ao backend o conteúdo informado, os perfis selecionados e os parâmetros de processamento. O controller responsável recebe a requisição, verifica se os campos necessários foram enviados e encaminha o processamento para o use case correspondente. Essa organização permite que o controller permaneça simples, enquanto o use case concentra a orquestração da lógica da aplicação.
 
-Quando o conteúdo é enviado como TXT, o texto pode ser lido diretamente. Quando o conteúdo é enviado como PDF, o backend realiza uma etapa prévia de extração textual, buscando recuperar o conteúdo das páginas do documento antes da construção do prompt. A partir desse texto extraído, o material passa a ser tratado como fonte de informação para a simplificação pela LLM.
+Quando o conteúdo é enviado como PDF, o backend realiza uma etapa prévia de extração textual, buscando recuperar o conteúdo das páginas do documento antes da construção do prompt. A partir desse texto extraído, o material passa a ser tratado como fonte de informação para a simplificação pela LLM.
 
 Após a obtenção do texto original, o backend constrói o prompt de simplificação. Esse prompt combina o conteúdo de origem, o perfil comunicacional do paciente, o nível de detalhamento solicitado e regras de preservação do conteúdo clínico. A LLM então gera uma versão simplificada do texto. Antes de ser enviada ao frontend, a resposta passa por verificações determinísticas e, em seguida, por uma avaliação de fidelidade realizada por LLM avaliadora, buscando identificar alterações indevidas em relação ao material original.
 
@@ -182,28 +182,23 @@ Esse fluxo evidencia que a SimplyHealth foi implementada como uma aplicação fu
 
 Os perfis de paciente utilizados na implementação são simulados e não correspondem a dados reais. Essa escolha delimita o escopo acadêmico da solução e evita o uso de informações sensíveis de pacientes durante o desenvolvimento. Os perfis servem para demonstrar como diferentes características comunicacionais podem influenciar a forma de apresentação do mesmo conteúdo.
 
-Na implementação, cada perfil pode conter campos como identificador, nome, idade, escolaridade, área de formação e, quando aplicável, grupo de condição ou comorbidades. Esses campos são utilizados para orientar o nível de linguagem, o vocabulário, o tom e o grau de explicação. Por exemplo, um perfil com menor escolaridade pode receber uma explicação com frases mais curtas, menos termos técnicos e maior explicitação de conceitos. Já um perfil com maior familiaridade com linguagem técnica pode receber uma versão menos simplificada e com maior densidade informacional.
-
-A idade, a escolaridade e a área de formação são usadas como sinais comunicacionais. Elas ajudam a ajustar a forma do texto, mas não autorizam o sistema a criar condutas médicas. O grupo de condição ou comorbidades, quando presente, também deve ser interpretado com cautela. Ele pode orientar a ênfase em informações já presentes no material original, mas não pode servir como base para inferir novos riscos, contraindicações, tratamentos ou recomendações.
-
-Essa distinção é central para a implementação: a adaptação realizada pela SimplyHealth é comunicacional, não clínica. O perfil do paciente orienta ajustes de linguagem, vocabulário, tom e nível de detalhamento, mas não é utilizado para definir condutas, recomendações ou decisões de tratamento. Dessa forma, a aplicação atua sobre a forma de apresentação do conteúdo fornecido, sem modificar sua orientação clínica.
+Na implementação, cada perfil contém campos como identificador, nome, idade, escolaridade e área de formação. Esses campos são utilizados como sinais comunicacionais para orientar a adaptação do texto, influenciando aspectos como vocabulário, tom, extensão das frases e nível de detalhamento. Por exemplo, um perfil com menor escolaridade pode receber explicações com frases mais curtas e menor uso de termos técnicos, enquanto um perfil com maior familiaridade com linguagem acadêmica ou da área da saúde pode receber uma versão menos simplificada. Assim, o perfil atua sobre a forma de apresentação do conteúdo, sem modificar sua orientação clínica.
 
 A seleção de múltiplos perfis na interface reforça essa proposta. O mesmo conteúdo pode ser processado para diferentes perfis em paralelo, permitindo comparar como a linguagem é adaptada em cada caso. Essa comparação é útil tanto para demonstrar a funcionalidade quanto para apoiar a avaliação da solução.
+
 
 \section{Construção dos prompts e integração com LLMs}
 \label{sec:construcao-prompts-integracao-llms}
 
-A construção dos prompts foi isolada em funções específicas, evitando que as instruções enviadas à LLM fiquem espalhadas pelo código. Essa decisão melhora a manutenção da aplicação e facilita a revisão dos guardrails, pois as regras de geração ficam concentradas em uma camada própria.
+A construção dos prompts foi isolada em funções específicas, concentrando em uma camada própria as instruções enviadas à LLM. O prompt de simplificação define o modelo como uma ferramenta de apoio comunicacional em saúde, apresenta o texto original como fonte principal, descreve o perfil comunicacional do paciente, estabelece regras de simplificação e delimita o formato esperado da resposta. O perfil do paciente é convertido em instruções textuais, orientando aspectos como vocabulário, tom, extensão das frases e nível de detalhamento, sem ser utilizado como base para decisões clínicas.
 
-O prompt de simplificação define a LLM como uma ferramenta de apoio comunicacional em saúde. Ele apresenta o texto original como fonte principal, descreve o perfil comunicacional do paciente, estabelece regras de simplificação e delimita o formato esperado da resposta. O perfil do paciente é convertido em instruções textuais, orientando aspectos como vocabulário, tom, extensão das frases e nível de detalhamento, sem ser utilizado como base para decisões clínicas.
+Além de orientar a forma da resposta, o prompt também estabelece restrições explícitas para preservar o conteúdo original. Entre elas estão não utilizar conhecimento externo, não alterar dose, frequência, duração ou modo de uso, não suavizar riscos e não criar recomendações médicas novas. Dessa forma, o prompt atua tanto na adaptação comunicacional quanto na delimitação do comportamento esperado da LLM.
 
-Além de orientar a forma da resposta, o prompt também estabelece restrições explícitas para preservar o conteúdo original. Entre elas estão não utilizar conhecimento externo, não adicionar informações ausentes, não alterar dose, frequência, duração ou modo de uso, não suavizar riscos, não remover alertas importantes, não criar recomendações médicas novas e não transformar uma orientação condicional em uma orientação geral. Dessa forma, o prompt atua tanto na adaptação comunicacional quanto na delimitação do comportamento esperado da LLM.
-
-Além da simplificação, o prompt pode solicitar a geração de glossário. Nesse caso, a LLM deve identificar termos técnicos presentes no conteúdo e explicá-los em linguagem simples, sem acrescentar informações que não possam ser derivadas do texto original. A resposta é estruturada para permitir que o backend separe o texto simplificado do glossário e dos demais elementos exibidos na interface.
+Além da simplificação, o prompt solicita a geração de glossário. Nesse caso, a LLM deve identificar termos técnicos presentes no conteúdo e explicá-los em linguagem simples, sem acrescentar informações que não possam ser derivadas do texto original. A resposta é estruturada para permitir que o backend separe o texto simplificado do glossário e dos demais elementos exibidos na interface.
 
 A integração com os modelos de linguagem foi implementada por meio de uma interface de provedor. Com isso, o fluxo principal da aplicação não depende diretamente de uma API específica: o use case de simplificação solicita a geração de texto a partir de um contrato comum, enquanto implementações concretas ficam responsáveis pela comunicação com provedores como Gemini ou outros modelos configurados. Essa abstração reduz o acoplamento e permite trocar ou ajustar o provedor de LLM sem alterar a lógica principal da aplicação.
 
-A implementação também separa conceitualmente o provedor gerador do provedor avaliador. O primeiro é responsável por gerar a simplificação, enquanto o segundo pode ser usado nos processos de avaliação de fidelidade e guardrail. Mesmo que ambos apontem para o mesmo provedor em determinada configuração, essa separação permite evoluir a arquitetura para usar modelos distintos em cada etapa.
+A implementação também separa conceitualmente o provedor gerador do provedor avaliador. O primeiro é responsável por gerar a simplificação, enquanto o segundo pode ser usado nos processos de avaliação de fidelidade e guardrail. Mesmo que ambos apontem para o mesmo provedor em determinada configuração, essa separação permite usar modelos distintos em cada etapa.
 
 A construção dos prompts e a integração com LLMs, portanto, desempenham papel central na implementação. Elas traduzem os objetivos conceituais da proposta - simplificar, adaptar e preservar o significado - em instruções operacionais e chamadas controladas ao modelo.
 
@@ -212,7 +207,7 @@ A construção dos prompts e a integração com LLMs, portanto, desempenham pape
 
 Os guardrails são uma das partes mais importantes da implementação. Eles foram organizados como mecanismos de mitigação de riscos associados ao uso de LLMs em textos de saúde. A solução não assume que esses mecanismos garantem correção médica absoluta. Em vez disso, eles funcionam como camadas de controle para reduzir a chance de alterações indevidas, omissões relevantes ou geração de conteúdo fora de escopo.
 
-Essa abordagem está alinhada à discussão de guardrails como componentes que devem ser projetados sistematicamente em aplicações baseadas em LLMs ([VERIFICAR\_CITACAO: DONG et al., 2024]). No domínio da saúde, esse cuidado é especialmente relevante, pois uma resposta fluente, mas incorreta, pode modificar o sentido de uma orientação ou gerar confiança indevida no usuário ([VERIFICAR\_CITACAO: GANGAVARAPU, 2024]).
+Essa abordagem está alinhada à discussão de guardrails como componentes que devem ser projetados sistematicamente em aplicações baseadas em LLMs \cite{dong2024guardrails}. No domínio da saúde, esse cuidado é especialmente relevante, pois alucinações, desinformação ou imprecisões factuais podem comprometer a segurança do paciente e a confiança nos sistemas utilizados \cite{gangavarapu2024healthcare}. No contexto deste trabalho, esse risco se manifesta principalmente na possibilidade de uma resposta fluente, mas incorreta, modificar o sentido de uma orientação ou gerar confiança indevida no usuário.
 
 Na implementação, os guardrails aparecem em diferentes momentos do fluxo. O primeiro deles está nos próprios prompts enviados à LLM, conforme descrito na Seção~\ref{sec:construcao-prompts-integracao-llms}. Nessa etapa, as instruções delimitam o papel do modelo, definem o texto original como fonte de informação e estabelecem restrições para evitar complementações externas, recomendações médicas novas ou alterações em elementos sensíveis do conteúdo. Essa camada orienta a geração desde o início, mas não é suficiente isoladamente, pois modelos de linguagem podem descumprir regras mesmo quando elas são explicitamente declaradas.
 
@@ -231,29 +226,29 @@ A combinação desses mecanismos reforça que a segurança da solução não dep
 
 Além do texto simplificado, a aplicação gera recursos auxiliares para apoiar a compreensão do conteúdo. Esses recursos incluem glossário, perguntas frequentes e chat contextual. Eles complementam a simplificação principal, mas mantêm o mesmo princípio de funcionamento: explicar melhor o conteúdo existente, sem criar informação clínica nova.
 
-O glossário é opcional e pode ser solicitado durante a simplificação. Quando habilitado, a LLM identifica termos técnicos presentes no texto e produz explicações breves em linguagem simples. O glossário é derivado do conteúdo original e, na interface, é apresentado de forma recolhível, permitindo que o usuário consulte explicações quando necessário sem sobrecarregar a visualização principal.
+O glossário é requisitado durante o processo de simplificação, mas sua presença na resposta depende da identificação de termos técnicos relevantes no conteúdo processado. Quando gerado, ele apresenta explicações breves em linguagem simples, derivadas do texto original. Na interface, o glossário é exibido de forma recolhível, permitindo que o usuário consulte explicações quando necessário sem sobrecarregar a visualização principal.
 
 As perguntas frequentes são geradas a partir do conteúdo original e adaptadas ao perfil comunicacional do paciente. Elas procuram antecipar dúvidas prováveis sobre o material, mantendo-se restritas ao que foi fornecido. Na interface, essas perguntas aparecem como sugestões, ajudando o usuário a explorar pontos importantes do texto simplificado.
 
 O chat contextual permite que o usuário faça perguntas adicionais sobre o material carregado. Ele utiliza o texto original como referência e atua como recurso de apoio à compreensão textual. Quando a pergunta extrapola o conteúdo, solicita aconselhamento médico ou depende de informação ausente, o sistema retorna uma resposta segura. Assim, o chat não é apresentado como assistente clínico independente, mas como uma forma de esclarecer o conteúdo já fornecido.
 
-A interface do chat também aceita entrada por voz: o usuário pode gravar uma pergunta pelo microfone, que é transcrita automaticamente e inserida no campo de texto antes do envio. Complementarmente, o texto simplificado pode ser reproduzido em áudio por meio de síntese de fala, gerada via API com o modelo \textit{gemini-2.5-flash-preview-tts}. Esses dois recursos — transcrição de voz e síntese de fala — ampliam a acessibilidade da solução para perfis com menor familiaridade com interação por texto escrito, como pacientes idosos ou com baixo letramento digital. Ambos integram a implementação funcional, mas não fizeram parte do escopo de avaliação deste trabalho.
+A interface do chat também aceita entrada por voz: o usuário pode gravar uma pergunta pelo microfone, que é transcrita automaticamente e inserida no campo de texto antes do envio. Complementarmente, o texto simplificado pode ser reproduzido em áudio por meio de síntese de fala, gerada via API com o modelo \textit{gemini-2.5-flash-preview-tts}. Esses dois recursos - transcrição de voz e síntese de fala — ampliam a acessibilidade da solução para perfis com menor familiaridade com interação por texto escrito, como pacientes idosos ou com baixo letramento digital. Ambos integram a implementação funcional, mas não fizeram parte do escopo de avaliação deste trabalho.
 
 \section{Indicador de legibilidade}
 \label{sec:indicador-legibilidade}
 
-A implementação calcula o Flesch-PT para o texto original e para a versão simplificada gerada pela LLM. Esses valores são retornados pelo backend junto ao resultado da simplificação e exibidos na interface para apoiar a comparação entre as duas versões. O indicador é utilizado apenas como medida automática de legibilidade textual, não como avaliação de precisão médica, segurança clínica ou qualidade semântica da resposta.
+A implementação calcula o Flesch-PT para o texto original e para a versão simplificada gerada pela LLM. Como apresentado na Seção~\ref{sec:legibilidade-textual}, esse indicador considera o número médio de palavras por sentença e o número médio de sílabas por palavra, mas, na aplicação, esses valores são utilizados apenas como componentes internos do cálculo. O resultado final exibido e considerado na avaliação é o índice Flesch-PT.
 
-É importante delimitar o papel desse indicador. O Flesch-PT não mede precisão médica, segurança clínica ou qualidade semântica da resposta. Um texto pode apresentar melhor legibilidade e, ainda assim, conter erro de fidelidade caso altere o sentido de uma orientação.
+No backend, o cálculo é realizado a partir da divisão do texto em sentenças e palavras, seguida da estimativa do número de sílabas das palavras com apoio de uma biblioteca de separação silábica para o português. A partir desses valores, a aplicação calcula o índice Flesch-PT, limita o resultado ao intervalo de 0 a 100 e associa a pontuação obtida à respectiva classificação de legibilidade.
 
-A média de palavras por frase pode aparecer internamente como parte do cálculo ou da estrutura técnica necessária para estimar a legibilidade, mas não é tratada como métrica independente na avaliação final. O indicador automático principal adotado no TCC é o Flesch-PT.
+Os valores calculados para o texto original e para o texto simplificado são retornados pelo backend junto ao resultado da simplificação e exibidos na interface, permitindo comparar as duas versões. O indicador é utilizado apenas como medida automática de legibilidade textual, não como avaliação de precisão médica, segurança clínica ou qualidade semântica da resposta. Dessa forma, um aumento na pontuação do Flesch-PT indica sinais de maior facilidade de leitura, mas não garante, por si só, que a simplificação preservou corretamente o sentido do conteúdo original.
 
 \section{Interface da aplicação}
 \label{sec:interface-aplicacao}
 
 A interface da SimplyHealth foi construída para demonstrar o fluxo principal da solução e permitir a comparação entre versões geradas para diferentes perfis. Ela pode ser entendida em duas etapas principais: a tela inicial e a tela de resultados.
 
-Na tela inicial, ilustrada na Figura~\ref{fig:tela-inicial}, o usuário seleciona um ou mais perfis simulados de pacientes, insere texto livre ou envia um arquivo PDF/TXT e escolhe parâmetros de processamento, como nível de detalhamento e inclusão de glossário. Quando aplicável, também pode indicar se imagens presentes nos PDFs devem ser consideradas. Essa etapa concentra as decisões necessárias para iniciar o processamento.
+Na tela inicial, ilustrada na Figura~\ref{fig:tela-inicial}, o usuário seleciona um ou mais perfis simulados de pacientes, insere texto livre ou envia um arquivo PDF/TXT e escolhe parâmetros de processamento. Quando aplicável, também pode indicar se imagens presentes nos PDFs devem ser consideradas. Essa etapa concentra as decisões necessárias para iniciar o processamento.
 
 A possibilidade de selecionar múltiplos perfis é relevante para o objetivo do trabalho. Ela permite observar como o mesmo texto técnico pode ser adaptado de formas diferentes conforme o perfil comunicacional escolhido. Assim, a interface não apenas executa a simplificação, mas também torna visível a lógica de adaptação ao perfil.
 
@@ -285,4 +280,4 @@ Na tela de resultados, a aplicação apresenta os resultados em cartões por pac
 
 Essa organização favorece a avaliação da solução, pois permite observar simultaneamente o conteúdo original, o texto simplificado e os elementos de apoio à compreensão. Além disso, a presença de resultados separados por perfil facilita a análise das diferenças entre versões, aspecto importante para verificar se a adaptação comunicacional está ocorrendo de forma coerente.
 
-A implementação descrita neste capítulo materializa a proposta da SimplyHealth em uma aplicação funcional, composta por frontend, backend, integração com LLMs, mecanismos de guardrail, recursos de apoio à compreensão e indicador de legibilidade. A partir dessa implementação, torna-se possível avaliar a solução tanto em relação ao comportamento do sistema quanto à qualidade das simplificações geradas. A próxima seção apresenta a avaliação da solução desenvolvida.
+A implementação descrita neste capítulo materializa a proposta da SimplyHealth em uma aplicação funcional, composta por frontend, backend, integração com LLMs, mecanismos de guardrail, recursos de apoio à compreensão e indicador de legibilidade. A partir dessa implementação, torna-se possível avaliar a solução em relação ao funcionamento do fluxo proposto, à atuação dos guardrails e à qualidade das simplificações geradas. A próxima seção apresenta a avaliação da solução desenvolvida.
