@@ -44,7 +44,11 @@ A Tabela~\ref{tab:modelos-llm} apresenta os modelos Gemini utilizados em cada pa
     Guardrail de fidelidade (LLM avaliador) & gemini-2.5-flash \\
     \hline
   \end{tabular}
+
+  {\footnotesize Fonte: Elaboração própria.}
 \end{table}
+
+A escolha de modelos distintos para geração e avaliação foi intencional. O guardrail de fidelidade utiliza um modelo mais robusto do que o modelo responsável pela simplificação, pois sua função é comparar a saída gerada com o material original e identificar possíveis desvios de conteúdo. No contexto deste trabalho, essa escolha foi adotada como uma decisão de projeto para aumentar o rigor da etapa de verificação, buscando reduzir o risco de aprovação de simplificações que apresentem alterações sutis de sentido. Ainda assim, essa verificação não é tratada como garantia absoluta de correção, mas como um mecanismo adicional de controle dentro do fluxo proposto.
 
 No frontend, foram utilizados React 18 e Vite. O React foi adotado para construção da interface em componentes, enquanto o Vite foi utilizado como ferramenta de desenvolvimento e build. A interface se comunica com o backend por chamadas HTTP e não conhece diretamente os detalhes dos provedores de LLM, dos prompts ou dos guardrails. Essa separação reforça o papel do backend como camada responsável pela lógica da solução.
 
@@ -161,6 +165,8 @@ No frontend, foram utilizados React 18 e Vite. O React foi adotado para constru�
   }
   \caption{Fluxo de simplificação implementado na SimplyHealth.}
   \label{fig:fluxo-simplificacao}
+
+  {\small Fonte: Elaboração própria.}
 \end{figure}
 
 O fluxo de simplificação é o núcleo da implementação. Ele transforma o conteúdo técnico de entrada em uma versão simplificada e adaptada comunicacionalmente ao perfil selecionado. Esse processo não consiste apenas em enviar um texto diretamente a uma LLM. A simplificação é organizada como uma sequência de etapas que envolvem preparação da entrada, contextualização pelo perfil, geração controlada, avaliação da resposta e apresentação estruturada dos resultados, conforme ilustra a Figura~\ref{fig:fluxo-simplificacao}.
@@ -209,11 +215,13 @@ Os guardrails são uma das partes mais importantes da implementação. Eles fora
 
 Essa abordagem está alinhada à discussão de guardrails como componentes que devem ser projetados sistematicamente em aplicações baseadas em LLMs \cite{dong2024guardrails}. No domínio da saúde, esse cuidado é especialmente relevante, pois alucinações, desinformação ou imprecisões factuais podem comprometer a segurança do paciente e a confiança nos sistemas utilizados \cite{gangavarapu2024healthcare}. No contexto deste trabalho, esse risco se manifesta principalmente na possibilidade de uma resposta fluente, mas incorreta, modificar o sentido de uma orientação ou gerar confiança indevida no usuário.
 
-Na implementação, os guardrails aparecem em diferentes momentos do fluxo. O primeiro deles está nos próprios prompts enviados à LLM, conforme descrito na Seção~\ref{sec:construcao-prompts-integracao-llms}. Nessa etapa, as instruções delimitam o papel do modelo, definem o texto original como fonte de informação e estabelecem restrições para evitar complementações externas, recomendações médicas novas ou alterações em elementos sensíveis do conteúdo. Essa camada orienta a geração desde o início, mas não é suficiente isoladamente, pois modelos de linguagem podem descumprir regras mesmo quando elas são explicitamente declaradas.
+Na implementação, os guardrails foram organizados em três níveis complementares de controle, aplicados em diferentes momentos do fluxo.
 
-Após a geração do texto simplificado, a resposta passa inicialmente por verificações determinísticas. Essas verificações são aplicadas por regras de código e buscam identificar alterações objetivas em elementos sensíveis do texto. Em particular, a implementação verifica possíveis mudanças em doses, quando uma mesma unidade aparece com valores diferentes no texto original e no texto gerado, e possíveis inversões de negação em instruções associadas a verbos como tomar, usar, interromper, consumir, beber, ingerir, aplicar, exceder, combinar e misturar. Embora essas verificações não capturem todas as alterações semânticas possíveis, elas ajudam a detectar violações mais diretas das regras de preservação do conteúdo original antes da etapa de avaliação por LLM.
+O primeiro nível está nos próprios prompts enviados à LLM, conforme descrito na Seção~\ref{sec:construcao-prompts-integracao-llms}. Nessa etapa, as instruções delimitam o papel do modelo, definem o texto original como fonte de informação e estabelecem restrições para evitar complementações externas, recomendações médicas novas ou alterações em elementos sensíveis do conteúdo. Essa camada orienta a geração desde o início, mas não é suficiente isoladamente, pois modelos de linguagem podem descumprir regras mesmo quando elas são explicitamente declaradas.
 
-Em seguida, a resposta passa por uma avaliação de fidelidade em relação ao texto original, realizada por uma LLM avaliadora. Essa etapa compara o conteúdo de entrada com o texto simplificado e busca identificar problemas como inserção de informação clínica nova, alteração de sentido, mudança de dose ou frequência, criação de diagnóstico, sugestão de conduta, suavização de riscos ou produção de glossário com conteúdo não derivado do texto original. Assim, enquanto as verificações determinísticas cobrem casos objetivos e pontuais, a avaliação por LLM busca analisar a fidelidade da resposta de forma mais ampla.
+O segundo nível é ativado após a geração do texto simplificado. A resposta passa por verificações determinísticas. Essas verificações são aplicadas por regras de código e buscam identificar alterações objetivas em elementos sensíveis do texto. Em particular, a implementação verifica possíveis mudanças em doses, quando uma mesma unidade aparece com valores diferentes no texto original e no texto gerado, e possíveis inversões de negação em instruções associadas a verbos como tomar, usar, interromper, consumir, beber, ingerir, aplicar, exceder, combinar e misturar. Embora essas verificações não capturem todas as alterações semânticas possíveis, elas ajudam a detectar violações mais diretas das regras de preservação do conteúdo original antes da etapa de avaliação por LLM.
+
+O terceiro nível é a avaliação de fidelidade em relação ao texto original, realizada por uma LLM avaliadora. Essa etapa compara o conteúdo de entrada com o texto simplificado e busca identificar problemas como inserção de informação clínica nova, alteração de sentido, mudança de dose ou frequência, criação de diagnóstico, sugestão de conduta, suavização de riscos ou produção de glossário com conteúdo não derivado do texto original. Assim, enquanto as verificações determinísticas cobrem casos objetivos e pontuais, a avaliação por LLM busca analisar a fidelidade da resposta de forma mais ampla.
 
 Quando a resposta é rejeitada por alguma dessas etapas, o sistema pode realizar uma nova tentativa de geração, incorporando ao processo o feedback produzido pelos guardrails. A implementação prevê até cinco tentativas por execução; caso nenhuma saída seja aprovada, a aplicação retorna uma mensagem segura de fallback, evitando apresentar ao usuário uma resposta que não atendeu aos critérios mínimos de fidelidade.
 

@@ -75,6 +75,8 @@ A Tabela~\ref{tab:flesch-estomia} apresenta os resultados médios obtidos para o
     Maria  & 3 & 41,8 & 67,4 & +25,6 & Fácil \\
     \hline
   \end{tabular}
+
+  {\footnotesize Fonte: Elaboração própria.}
 \end{table}
 
 No material sobre estomia, todos os perfis apresentaram aumento médio no Flesch-PT após a simplificação. O menor ganho ocorreu no perfil de Ana, com aumento médio de +7,0 pontos, enquanto o maior ganho ocorreu no perfil de Maria, com aumento médio de +25,6 pontos. Carlos apresentou resultado intermediário, com ganho médio de +17,2 pontos. Esse padrão indica que a solução aplicou uma simplificação mais intensa para o perfil com menor escolaridade e menor familiaridade com linguagem técnica, mantendo uma adaptação mais moderada para o perfil com formação na área da saúde.
@@ -98,6 +100,8 @@ A Tabela~\ref{tab:flesch-diabetes} apresenta os resultados médios obtidos para 
     Maria  & 3 & 51,8 & 68,1 & +16,3  & Fácil \\
     \hline
   \end{tabular}
+
+  {\footnotesize Fonte: Elaboração própria.}
 \end{table}
 
 No material sobre diabetes, o mesmo gradiente entre perfis foi observado, embora com uma particularidade no perfil de Ana. Para esse perfil, a média das execuções apresentou variação negativa de -2,3 pontos. O texto original do material sobre diabetes foi classificado como ``Fácil'' pelo Flesch-PT, e as versões simplificadas para esse perfil resultaram em média ligeiramente abaixo desse valor, apresentando classificação ``Pouco difícil'' em duas das três execuções. Esse resultado não deve ser interpretado diretamente como falha da solução, pois Ana representa um perfil com ensino superior e familiaridade com a área da saúde. Assim, a manutenção de terminologia técnica e de uma estrutura textual mais próxima do original é coerente com a proposta de adaptação comunicacional ao perfil.
@@ -127,6 +131,8 @@ A Tabela~\ref{tab:sintese-legibilidade} sintetiza os principais indicadores gera
     Casos com mudança de classificação & 2/9 & 7/9 & 9/18 \\
     \bottomrule
   \end{tabularx}
+
+  {\footnotesize Fonte: Elaboração própria.}
 \end{table}
 
 Os resultados reforçam o gradiente observado nas tabelas anteriores: Ana apresentou os menores ganhos, Carlos ocupou uma posição intermediária e Maria apresentou os maiores ganhos. O caso D-Ana, com variações negativas nas três execuções, deve ser interpretado com cautela: o texto original do material sobre diabetes foi classificado como ``Fácil'', e as versões simplificadas resultaram em média ligeiramente abaixo desse valor. Esse comportamento pode decorrer da manutenção de linguagem técnica coerente com o perfil de formação na área da saúde, e evidencia os limites do Flesch-PT como único indicador de qualidade textual.
@@ -160,6 +166,8 @@ A Tabela~\ref{tab:preservacao-guardrails-saidas} apresenta uma síntese dos resu
     FAQ gerado & 18/18 \\
     \bottomrule
   \end{tabularx}
+
+  {\footnotesize Fonte: Elaboração própria.}
 \end{table}
 
 A ativação do guardrail foi um resultado relevante da avaliação. Diferentemente de uma situação em que todas as saídas passam diretamente pela verificação automática, os testes mostraram que o guardrail rejeitou simplificações em diferentes cenários, exigindo novas tentativas de geração. Das 18 execuções principais, 10 foram aprovadas na primeira tentativa, 6 foram aprovadas na segunda tentativa, 1 foi aprovada na terceira tentativa e 1 foi aprovada na quarta tentativa. Esse comportamento sugere que a camada de verificação não atuou apenas de forma simbólica, mas interferiu no fluxo de geração quando identificou possíveis alterações problemáticas.
@@ -184,6 +192,8 @@ A Tabela~\ref{tab:eventos-rejeicao-guardrails} apresenta a classificação dos e
     Contradição numérica & 1 & Guardrail LLM \\
     \bottomrule
   \end{tabularx}
+
+  {\footnotesize Fonte: Elaboração própria.}
 \end{table}
 
 Os eventos de rejeição mostram que os guardrails atuaram sobre diferentes tipos de problema. O guardrail baseado em LLM foi responsável por identificar alterações mais semânticas e contextuais, como troca de substâncias, modificação de instruções procedimentais, contradições numéricas e alterações de sentido. Já o checker determinístico atuou sobre padrões específicos considerados críticos, especialmente relacionados à preservação de negações.
