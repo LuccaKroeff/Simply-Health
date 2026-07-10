@@ -1,12 +1,9 @@
 \chapter{Implementação}
 \label{cap:implementacao}
 
-Este capítulo descreve a implementação funcional desenvolvida para materializar a solução proposta. Enquanto o capítulo anterior apresentou a solução em nível conceitual, esta seção explica como ela foi construída tecnicamente, abordando sua arquitetura, fluxo de simplificação, representação dos perfis de paciente, construção dos prompts, integração com modelos de linguagem, guardrails, recursos auxiliares, indicador de legibilidade e interface de usuário.
+Este capítulo descreve a implementação funcional desenvolvida para materializar a solução proposta. Enquanto o capítulo anterior apresentou a solução em nível conceitual, este capítulo explica como ela foi construída tecnicamente, abordando sua arquitetura, fluxo de simplificação, representação dos perfis de paciente, construção dos prompts, integração com modelos de linguagem, guardrails, recursos auxiliares, indicador de legibilidade e interface de usuário.
 
 A aplicação desenvolvida recebeu o nome de SimplyHealth. Seu objetivo é apoiar a simplificação e adaptação comunicacional de textos técnicos de saúde, considerando diferentes perfis de pacientes e preservando o conteúdo clínico essencial do material original. A solução não atua como sistema clínico autônomo, não gera diagnósticos, não prescreve tratamentos e não valida clinicamente o conteúdo recebido. Sua função é transformar linguisticamente textos previamente definidos ou validados por profissionais de saúde, tornando-os mais compreensíveis para usuários finais.
-
-\section{Arquitetura geral da aplicação}
-\label{sec:arquitetura-geral-aplicacao}
 
 A implementação foi organizada em dois módulos principais: um backend, desenvolvido em TypeScript com NestJS, e um frontend, desenvolvido com React 18 e Vite. Esses módulos se comunicam por meio de requisições HTTP em formato JSON, seguindo uma arquitetura baseada em API REST.
 
@@ -16,14 +13,20 @@ A organização interna do backend segue uma divisão em camadas, composta princ
 
 Essa separação evita que a lógica da solução fique concentrada diretamente nos endpoints da API, distribuindo as responsabilidades entre camadas específicas. Com isso, o backend mantém a orquestração do fluxo separada de funcionalidades como extração de texto, chamada à LLM, cálculo de legibilidade e aplicação de guardrails.
 
-De forma geral, o frontend atua como camada de interação com o usuário, enquanto o backend concentra a orquestração do processamento. A simplificação textual envolve etapas de validação da entrada, extração de conteúdo, construção do prompt, chamada à LLM, aplicação de guardrails, cálculo de legibilidade e retorno dos resultados à interface. Esse fluxo é detalhado na Seção~\ref{sec:fluxo-simplificacao}.
+De forma geral, o frontend atua como camada de interação com o usuário, enquanto o backend concentra a orquestração do processamento. A simplificação textual envolve etapas de validação da entrada, extração de conteúdo, construção do prompt, chamada à LLM, aplicação de guardrails, cálculo de legibilidade e retorno dos resultados à interface. Esse fluxo foi apresentado conceitualmente na Seção~\ref{sec:fluxo-simplificacao-llms}.
+
+As próximas seções detalham os principais elementos da implementação. Inicialmente, são apresentadas as tecnologias utilizadas no backend, no frontend e na integração com os modelos de linguagem. Em seguida, descreve-se a representação dos perfis simulados de pacientes e a forma como esses perfis orientam a adaptação comunicacional. Posteriormente, são discutidas a construção dos prompts, a integração com LLMs, o cálculo do indicador de legibilidade e, por fim, a interface da aplicação desenvolvida.
 
 \section{Tecnologias utilizadas}
 \label{sec:tecnologias-utilizadas}
 
-A implementação utilizou tecnologias voltadas ao desenvolvimento web moderno, com separação entre frontend e backend. No backend, foram utilizados TypeScript e NestJS. O TypeScript contribui para a organização do código por meio de tipagem estática, enquanto o NestJS oferece uma estrutura modular baseada em controllers, providers, injeção de dependência e services.
+A implementação utilizou tecnologias voltadas ao desenvolvimento web moderno, com separação entre frontend e backend. No backend, foram utilizados TypeScript e NestJS. O TypeScript contribui para a organização do código por meio de tipagem estática, enquanto o NestJS oferece uma estrutura modular baseada em controllers, providers, injeção de dependência e services. Além dessas características técnicas, a escolha também foi influenciada pela experiência prévia do autor com essa stack, o que reduziu o risco de implementação e permitiu concentrar o esforço do trabalho na lógica de simplificação, nos guardrails e na integração com LLMs.
 
-O backend também utiliza recursos para recebimento de arquivos, especialmente no fluxo de upload de PDFs e arquivos TXT. Para a comunicação com modelos de linguagem, a aplicação foi organizada a partir de uma abstração de provedores de LLM. O provedor principal utilizado é o Gemini, da Google. A implementação também prevê suporte ao Claude, da Anthropic, e a um provedor mockado, usado em desenvolvimento e testes para simular respostas sem depender de chamadas externas. Todos os testes e a avaliação descritos neste trabalho foram realizados exclusivamente com o Gemini.
+O backend também utiliza recursos para recebimento de arquivos, especialmente no fluxo de upload de PDFs e arquivos TXT. Para a comunicação com modelos de linguagem, a aplicação foi organizada a partir de uma abstração de provedores de LLM. O provedor principal utilizado é o Gemini, da Google. A implementação também prevê suporte ao Claude, da Anthropic, e a um provedor mockado, usado em desenvolvimento e testes para simular respostas sem depender de chamadas externas. Todos os testes e a avaliação descritos neste trabalho foram realizados exclusivamente com o Gemini. 
+
+A escolha do Gemini foi motivada pela facilidade de integração via API, pela disponibilidade de modelos adequados às tarefas de geração e avaliação textual e pelo custo compatível com o escopo de uma implementação acadêmica. Como o objetivo deste trabalho não é treinar ou comparar modelos de linguagem, mas investigar seu uso em um fluxo de simplificação com guardrails, a adoção de um provedor externo permitiu concentrar a implementação na aplicação proposta.
+
+As chamadas à API do Gemini foram configuradas com valores de temperatura distintos conforme o papel. Para a simplificação textual, foi configurada temperatura 0,3. A escolha por um valor reduzido, mas não mínimo, busca equilibrar consistência e fluência: temperaturas muito próximas de zero tendem a produzir textos repetitivos e pouco naturais, enquanto valores altos aumentam a variabilidade de forma indesejada para um contexto clínico. Para os guardrails, foi adotada temperatura 0,1, próxima do determinístico, adequada a tarefas de classificação e avaliação estruturada em que respostas divergentes entre execuções seriam indesejáveis. Os demais parâmetros de geração não foram configurados explicitamente, mantendo os valores padrão da API.
 
 A Tabela~\ref{tab:modelos-llm} apresenta os modelos Gemini utilizados em cada papel da aplicação durante a avaliação.
 
@@ -50,138 +53,7 @@ A Tabela~\ref{tab:modelos-llm} apresenta os modelos Gemini utilizados em cada pa
 
 A escolha de modelos distintos para geração e avaliação foi intencional. O guardrail de fidelidade utiliza um modelo mais robusto do que o modelo responsável pela simplificação, pois sua função é comparar a saída gerada com o material original e identificar possíveis desvios de conteúdo. No contexto deste trabalho, essa escolha foi adotada como uma decisão de projeto para aumentar o rigor da etapa de verificação, buscando reduzir o risco de aprovação de simplificações que apresentem alterações sutis de sentido. Ainda assim, essa verificação não é tratada como garantia absoluta de correção, mas como um mecanismo adicional de controle dentro do fluxo proposto.
 
-No frontend, foram utilizados React 18 e Vite. O React foi adotado para construção da interface em componentes, enquanto o Vite foi utilizado como ferramenta de desenvolvimento e build. A interface se comunica com o backend por chamadas HTTP e não conhece diretamente os detalhes dos provedores de LLM, dos prompts ou dos guardrails. Essa separação reforça o papel do backend como camada responsável pela lógica da solução.
-
-\section{Fluxo de simplificação}
-\label{sec:fluxo-simplificacao}
-
-\begin{figure}[htbp]
-  \centering
-  \resizebox{0.65\textwidth}{!}{
-  \begin{tikzpicture}[
-    node distance=1.35cm,
-    >=Latex,
-    every node/.style={font=\small},
-    startend/.style={
-      rounded rectangle,
-      rounded rectangle arc length=180,
-      draw,
-      align=center,
-      minimum width=5.2cm,
-      minimum height=1.0cm
-    },
-    process/.style={
-      rectangle,
-      draw,
-      align=center,
-      minimum width=4.8cm,
-      minimum height=1.0cm
-    },
-    decision/.style={
-      diamond,
-      draw,
-      align=center,
-      aspect=2,
-      inner sep=1pt,
-      minimum width=4.2cm,
-      minimum height=1.4cm
-    },
-    arrow/.style={->, thick}
-  ]
-
-    % Nós principais
-    \node[startend] (entrada) {
-      \textbf{Entrada}\\
-      \textit{texto ou PDF/TXT, perfil e parâmetros}
-    };
-
-    \node[decision, below=of entrada] (pdf) {
-      \textbf{Arquivo PDF?}
-    };
-
-    \node[process, right=2.8cm of pdf] (extracao) {
-      \textbf{Extração de texto}\\
-      \textit{conversão do PDF em texto}
-    };
-
-    \node[process, below=of pdf] (prompt) {
-      \textbf{Construção do prompt}\\
-      \textit{conteúdo, perfil e regras de preservação}
-    };
-
-    \node[process, below=of prompt] (geracao) {
-      \textbf{Geração pela LLM}\\
-      \textit{texto simplificado e glossário}
-    };
-
-    \node[process, below=of geracao] (guardrails) {
-      \textbf{Guardrails}\\
-      \textit{verificação determinística e avaliação por LLM}
-    };
-
-    \node[decision, below=of guardrails] (aprovada) {
-      \textbf{Resposta aprovada?}
-    };
-
-    \node[process, below=of aprovada] (flesch) {
-      \textbf{Cálculo do Flesch-PT}\\
-      \textit{texto original e simplificado}
-    };
-
-    \node[startend, below=of flesch] (saida) {
-      \textbf{Saída ao frontend}\\
-      \textit{texto simplificado, glossário, Flesch-PT e recursos auxiliares}
-    };
-
-    \node[decision, right=3.4cm of aprovada] (tentativa) {
-      \textbf{Nova tentativa possível?}
-    };
-
-    \node[process, below=of tentativa] (fallback) {
-      \textbf{Fallback}\\
-      \textit{mensagem segura}
-    };
-
-    % Fluxo principal
-    \draw[arrow] (entrada) -- (pdf);
-    \draw[arrow] (pdf) -- node[above] {Sim} (extracao);
-    \draw[arrow] (extracao.south) |- (prompt.east);
-    \draw[arrow] (pdf) -- node[left] {Não} (prompt);
-    \draw[arrow] (prompt) -- (geracao);
-    \draw[arrow] (geracao) -- (guardrails);
-    \draw[arrow] (guardrails) -- (aprovada);
-    \draw[arrow] (aprovada) -- node[left] {Sim} (flesch);
-    \draw[arrow] (flesch) -- (saida);
-
-    % Fluxo de rejeição
-    \draw[arrow] (aprovada) -- node[above] {Não} (tentativa);
-    \draw[arrow] (tentativa) -- node[right] {Não} (fallback);
-    \draw[arrow] (fallback.south) |- (saida.east);
-
-    % Nova tentativa com feedback
-    \draw[arrow] (tentativa.north) |- node[pos=0.25, right] {Sim, com feedback} (geracao.east);
-
-  \end{tikzpicture}
-  }
-  \caption{Fluxo de simplificação implementado na SimplyHealth.}
-  \label{fig:fluxo-simplificacao}
-
-  {\small Fonte: Elaboração própria.}
-\end{figure}
-
-O fluxo de simplificação é o núcleo da implementação. Ele transforma o conteúdo técnico de entrada em uma versão simplificada e adaptada comunicacionalmente ao perfil selecionado. Esse processo não consiste apenas em enviar um texto diretamente a uma LLM. A simplificação é organizada como uma sequência de etapas que envolvem preparação da entrada, contextualização pelo perfil, geração controlada, avaliação da resposta e apresentação estruturada dos resultados, conforme ilustra a Figura~\ref{fig:fluxo-simplificacao}.
-
-A aplicação permite que o conteúdo de entrada seja fornecido de duas formas: por texto livre ou por arquivo. No primeiro caso, o usuário insere diretamente o texto técnico de saúde na interface. No segundo, envia um arquivo em formato PDF ou TXT, a partir do qual o backend extrai o conteúdo textual.
-
-O fluxo começa quando o frontend envia ao backend o conteúdo informado, os perfis selecionados e os parâmetros de processamento. O controller responsável recebe a requisição, verifica se os campos necessários foram enviados e encaminha o processamento para o use case correspondente. Essa organização permite que o controller permaneça simples, enquanto o use case concentra a orquestração da lógica da aplicação.
-
-Quando o conteúdo é enviado como PDF, o backend realiza uma etapa prévia de extração textual, buscando recuperar o conteúdo das páginas do documento antes da construção do prompt. A partir desse texto extraído, o material passa a ser tratado como fonte de informação para a simplificação pela LLM.
-
-Após a obtenção do texto original, o backend constrói o prompt de simplificação. Esse prompt combina o conteúdo de origem, o perfil comunicacional do paciente, o nível de detalhamento solicitado e regras de preservação do conteúdo clínico. A LLM então gera uma versão simplificada do texto. Antes de ser enviada ao frontend, a resposta passa por verificações determinísticas e, em seguida, por uma avaliação de fidelidade realizada por LLM avaliadora, buscando identificar alterações indevidas em relação ao material original.
-
-Quando a resposta é aprovada, o sistema calcula o indicador de legibilidade do texto original e do texto simplificado. Em seguida, a resposta estruturada é enviada ao frontend. Caso a resposta seja rejeitada pelos guardrails, o sistema pode realizar nova tentativa de geração com base no feedback recebido. Se nenhuma tentativa produzir uma saída adequada, a aplicação retorna uma mensagem segura de fallback.
-
-Esse fluxo evidencia que a SimplyHealth foi implementada como uma aplicação funcional com etapas explícitas de controle. A LLM é um componente central da solução, mas não opera de forma isolada: sua saída é condicionada por prompts, guardrails, validações e mecanismos de apresentação.
+No frontend, foram utilizados React 18 e Vite. O React foi adotado por favorecer a construção da interface em componentes reutilizáveis, o que se mostrou adequado para organizar elementos como seleção de perfis, entrada de conteúdo, visualização de resultados, glossário, perguntas frequentes e chat contextual. O Vite foi utilizado como ferramenta de desenvolvimento e build por oferecer configuração simples e ciclo de desenvolvimento rápido para aplicações React. A interface se comunica com o backend por chamadas HTTP e não conhece diretamente os detalhes dos provedores de LLM, dos prompts ou dos guardrails. Essa separação reforça o papel do backend como camada responsável pela lógica da solução.
 
 \section{Representação do perfil do paciente}
 \label{sec:representacao-perfil-paciente}
@@ -190,8 +62,9 @@ Os perfis de paciente utilizados na implementação são simulados e não corres
 
 Na implementação, cada perfil contém campos como identificador, nome, idade, escolaridade e área de formação. Esses campos são utilizados como sinais comunicacionais para orientar a adaptação do texto, influenciando aspectos como vocabulário, tom, extensão das frases e nível de detalhamento. Por exemplo, um perfil com menor escolaridade pode receber explicações com frases mais curtas e menor uso de termos técnicos, enquanto um perfil com maior familiaridade com linguagem acadêmica ou da área da saúde pode receber uma versão menos simplificada. Assim, o perfil atua sobre a forma de apresentação do conteúdo, sem modificar sua orientação clínica.
 
-A seleção de múltiplos perfis na interface reforça essa proposta. O mesmo conteúdo pode ser processado para diferentes perfis em paralelo, permitindo comparar como a linguagem é adaptada em cada caso. Essa comparação é útil tanto para demonstrar a funcionalidade quanto para apoiar a avaliação da solução.
+A implementação considera três perfis simulados: Ana, 30 anos, ensino superior e área da saúde; Carlos, 45 anos, ensino médio e área de negócios; e Maria, 68 anos, ensino fundamental e outra área de formação. Esses perfis foram definidos para representar diferentes níveis de familiaridade com linguagem técnica e diferentes necessidades de adaptação comunicacional. O perfil de Ana representa uma usuária com maior familiaridade com termos de saúde, o perfil de Carlos representa um usuário intermediário e o perfil de Maria representa uma usuária com maior necessidade de linguagem simples, direta e acessível.
 
+A seleção de múltiplos perfis na interface reforça essa proposta. O mesmo conteúdo pode ser processado para diferentes perfis em paralelo, permitindo comparar como a linguagem é adaptada em cada caso. Essa comparação é útil tanto para demonstrar a funcionalidade quanto para apoiar a avaliação da solução. Essa variação entre perfis também permite observar diferentes níveis de simplificação conforme o contexto comunicacional informado, sem que isso signifique personalização clínica da conduta.
 
 \section{Construção dos prompts e integração com LLMs}
 \label{sec:construcao-prompts-integracao-llms}
@@ -208,39 +81,13 @@ A implementação também separa conceitualmente o provedor gerador do provedor 
 
 A construção dos prompts e a integração com LLMs, portanto, desempenham papel central na implementação. Elas traduzem os objetivos conceituais da proposta - simplificar, adaptar e preservar o significado - em instruções operacionais e chamadas controladas ao modelo.
 
-\section{Guardrails implementados}
-\label{sec:guardrails-implementados}
+A Figura~\ref{fig:prompt-exemplo-simplificacao} apresenta um trecho representativo do prompt enviado à LLM simplificadora. O prompt completo inclui instruções adicionais de preservação, adaptação ao perfil, geração de glossário e formato de resposta. Por ser extenso, o exemplo foi reduzido para evidenciar apenas sua estrutura principal.
 
-Os guardrails são uma das partes mais importantes da implementação. Eles foram organizados como mecanismos de mitigação de riscos associados ao uso de LLMs em textos de saúde. A solução não assume que esses mecanismos garantem correção médica absoluta. Em vez disso, eles funcionam como camadas de controle para reduzir a chance de alterações indevidas, omissões relevantes ou geração de conteúdo fora de escopo.
+\input{figuras/implementacao/prompt-simplify-exemplo.tex}
 
-Essa abordagem está alinhada à discussão de guardrails como componentes que devem ser projetados sistematicamente em aplicações baseadas em LLMs \cite{dong2024guardrails}. No domínio da saúde, esse cuidado é especialmente relevante, pois alucinações, desinformação ou imprecisões factuais podem comprometer a segurança do paciente e a confiança nos sistemas utilizados \cite{gangavarapu2024healthcare}. No contexto deste trabalho, esse risco se manifesta principalmente na possibilidade de uma resposta fluente, mas incorreta, modificar o sentido de uma orientação ou gerar confiança indevida no usuário.
+Além do prompt de simplificação, a implementação utiliza um prompt específico para o guardrail de fidelidade. Esse prompt orienta uma LLM avaliadora a comparar o texto original com a versão simplificada, verificando se as informações incluídas permanecem apoiadas no material de origem. A Figura~\ref{fig:prompt-exemplo-guardrail} apresenta um trecho representativo desse prompt.
 
-Na implementação, os guardrails foram organizados em três níveis complementares de controle, aplicados em diferentes momentos do fluxo.
-
-O primeiro nível está nos próprios prompts enviados à LLM, conforme descrito na Seção~\ref{sec:construcao-prompts-integracao-llms}. Nessa etapa, as instruções delimitam o papel do modelo, definem o texto original como fonte de informação e estabelecem restrições para evitar complementações externas, recomendações médicas novas ou alterações em elementos sensíveis do conteúdo. Essa camada orienta a geração desde o início, mas não é suficiente isoladamente, pois modelos de linguagem podem descumprir regras mesmo quando elas são explicitamente declaradas.
-
-O segundo nível é ativado após a geração do texto simplificado. A resposta passa por verificações determinísticas. Essas verificações são aplicadas por regras de código e buscam identificar alterações objetivas em elementos sensíveis do texto. Em particular, a implementação verifica possíveis mudanças em doses, quando uma mesma unidade aparece com valores diferentes no texto original e no texto gerado, e possíveis inversões de negação em instruções associadas a verbos como tomar, usar, interromper, consumir, beber, ingerir, aplicar, exceder, combinar e misturar. Embora essas verificações não capturem todas as alterações semânticas possíveis, elas ajudam a detectar violações mais diretas das regras de preservação do conteúdo original antes da etapa de avaliação por LLM.
-
-O terceiro nível é a avaliação de fidelidade em relação ao texto original, realizada por uma LLM avaliadora. Essa etapa compara o conteúdo de entrada com o texto simplificado e busca identificar problemas como inserção de informação clínica nova, alteração de sentido, mudança de dose ou frequência, criação de diagnóstico, sugestão de conduta, suavização de riscos ou produção de glossário com conteúdo não derivado do texto original. Assim, enquanto as verificações determinísticas cobrem casos objetivos e pontuais, a avaliação por LLM busca analisar a fidelidade da resposta de forma mais ampla.
-
-Quando a resposta é rejeitada por alguma dessas etapas, o sistema pode realizar uma nova tentativa de geração, incorporando ao processo o feedback produzido pelos guardrails. A implementação prevê até cinco tentativas por execução; caso nenhuma saída seja aprovada, a aplicação retorna uma mensagem segura de fallback, evitando apresentar ao usuário uma resposta que não atendeu aos critérios mínimos de fidelidade.
-
-O mesmo princípio de controle é aplicado aos recursos interativos, como o chat contextual. Nesses casos, a aplicação utiliza um guardrail de entrada para verificar se a pergunta do usuário está dentro do escopo do material carregado, rejeitando interações que solicitem aconselhamento clínico ou dependam de informações externas ao texto fornecido. A resposta gerada também está sujeita às mesmas restrições de preservação do conteúdo. Esse mecanismo integra a implementação funcional, mas não fez parte do escopo de avaliação deste trabalho. Os detalhes funcionais do chat são apresentados na seção seguinte, junto aos demais recursos auxiliares da solução.
-
-A combinação desses mecanismos reforça que a segurança da solução não depende de uma única estratégia. Os prompts orientam a geração, as verificações determinísticas capturam alguns casos objetivos e a LLM avaliadora analisa a fidelidade da resposta de forma mais ampla. Ainda assim, esses mecanismos devem ser entendidos como formas de mitigação e controle, não como garantia absoluta de precisão médica.
-
-\section{Glossário, perguntas frequentes e chat contextual}
-\label{sec:glossario-perguntas-frequentes-chat-contextual}
-
-Além do texto simplificado, a aplicação gera recursos auxiliares para apoiar a compreensão do conteúdo. Esses recursos incluem glossário, perguntas frequentes e chat contextual. Eles complementam a simplificação principal, mas mantêm o mesmo princípio de funcionamento: explicar melhor o conteúdo existente, sem criar informação clínica nova.
-
-O glossário é requisitado durante o processo de simplificação, mas sua presença na resposta depende da identificação de termos técnicos relevantes no conteúdo processado. Quando gerado, ele apresenta explicações breves em linguagem simples, derivadas do texto original. Na interface, o glossário é exibido de forma recolhível, permitindo que o usuário consulte explicações quando necessário sem sobrecarregar a visualização principal.
-
-As perguntas frequentes são geradas a partir do conteúdo original e adaptadas ao perfil comunicacional do paciente. Elas procuram antecipar dúvidas prováveis sobre o material, mantendo-se restritas ao que foi fornecido. Na interface, essas perguntas aparecem como sugestões, ajudando o usuário a explorar pontos importantes do texto simplificado.
-
-O chat contextual permite que o usuário faça perguntas adicionais sobre o material carregado. Ele utiliza o texto original como referência e atua como recurso de apoio à compreensão textual. Quando a pergunta extrapola o conteúdo, solicita aconselhamento médico ou depende de informação ausente, o sistema retorna uma resposta segura. Assim, o chat não é apresentado como assistente clínico independente, mas como uma forma de esclarecer o conteúdo já fornecido.
-
-A interface do chat também aceita entrada por voz: o usuário pode gravar uma pergunta pelo microfone, que é transcrita automaticamente e inserida no campo de texto antes do envio. Complementarmente, o texto simplificado pode ser reproduzido em áudio por meio de síntese de fala, gerada via API com o modelo \textit{gemini-2.5-flash-preview-tts}. Esses dois recursos - transcrição de voz e síntese de fala — ampliam a acessibilidade da solução para perfis com menor familiaridade com interação por texto escrito, como pacientes idosos ou com baixo letramento digital. Ambos integram a implementação funcional, mas não fizeram parte do escopo de avaliação deste trabalho.
+\input{figuras/implementacao/prompt-guardrail-exemplo.tex}
 
 \section{Indicador de legibilidade}
 \label{sec:indicador-legibilidade}
@@ -288,4 +135,4 @@ Na tela de resultados, a aplicação apresenta os resultados em cartões por pac
 
 Essa organização favorece a avaliação da solução, pois permite observar simultaneamente o conteúdo original, o texto simplificado e os elementos de apoio à compreensão. Além disso, a presença de resultados separados por perfil facilita a análise das diferenças entre versões, aspecto importante para verificar se a adaptação comunicacional está ocorrendo de forma coerente.
 
-A implementação descrita neste capítulo materializa a proposta da SimplyHealth em uma aplicação funcional, composta por frontend, backend, integração com LLMs, mecanismos de guardrail, recursos de apoio à compreensão e indicador de legibilidade. A partir dessa implementação, torna-se possível avaliar a solução em relação ao funcionamento do fluxo proposto, à atuação dos guardrails e à qualidade das simplificações geradas. A próxima seção apresenta a avaliação da solução desenvolvida.
+A implementação descrita neste capítulo materializa a proposta da SimplyHealth em uma aplicação funcional, composta por frontend, backend, integração com LLMs, mecanismos de guardrail, recursos de apoio à compreensão e indicador de legibilidade. A partir dessa implementação, torna-se possível avaliar a solução em relação ao funcionamento do fluxo proposto, à atuação dos guardrails e à qualidade das simplificações geradas. O próximo capítulo apresenta a metodologia de avaliação da solução desenvolvida.

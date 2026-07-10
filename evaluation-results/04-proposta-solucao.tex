@@ -1,9 +1,7 @@
 \chapter{Proposta da Solução} 
 \label{cap:proposta} 
 
-\section{Visão geral da solução} 
-\label{sec:visao-geral-solucao} 
-A solução proposta neste trabalho consiste em uma implementação funcional baseada em Modelos de Linguagem de Grande Porte, voltada à simplificação e adaptação de textos técnicos de saúde para diferentes perfis de pacientes. A proposta parte do problema apresentado na Introdução: conteúdos de saúde podem ser corretos do ponto de vista técnico, mas ainda assim difíceis de compreender quando são escritos em linguagem especializada ou pouco adequada ao nível de letramento em saúde do usuário final.
+A solução proposta neste trabalho consiste em uma implementação funcional baseada em LLMs, voltada à simplificação e adaptação de textos técnicos de saúde para diferentes perfis de pacientes. A proposta parte do problema apresentado na Introdução: conteúdos de saúde podem ser corretos do ponto de vista técnico, mas ainda assim difíceis de compreender quando são escritos em linguagem especializada ou pouco adequada ao nível de letramento em saúde do usuário final.
 
 O sistema desenvolvido atua sobre conteúdos previamente definidos ou aprovados por profissionais ou equipes de saúde. Dessa forma, seu objetivo não é criar novas orientações clínicas, mas apoiar a transformação comunicacional de materiais já existentes. A solução busca adaptar a forma de apresentação desses conteúdos, tornando-os mais claros, diretos e acessíveis, sem alterar o significado do texto original. 
 
@@ -133,7 +131,7 @@ O funcionamento geral da solução é apresentado na Figura~\ref{fig:fluxo-conce
       \textit{texto simplificado e adaptado}\\
       \textit{perguntas e respostas}\\
       \textit{glossário de termos técnicos}\\
-      \textit{Flesch-PT}\\
+      \textit{indicador de legibilidade}\\
       \textit{chat contextual com guardrails}
     };
 
@@ -152,7 +150,9 @@ A partir dessas entradas, a solução constrói instruções direcionadas à LLM
 
 A LLM, nesse processo, é tratada como mecanismo de reescrita e adaptação linguística, e não como fonte autônoma de conhecimento médico. A preservação da precisão médica é entendida como a manutenção do significado do texto original durante a simplificação e a geração dos recursos auxiliares. Assim, a solução não tem como finalidade diagnosticar, prescrever, recomendar novas condutas, alterar orientações médicas ou validar clinicamente o material de entrada. 
 
-Como saída, a solução apresenta o texto simplificado e adaptado, recursos auxiliares de compreensão, como glossário e perguntas frequentes, chat contextual e um indicador automático de legibilidade textual. Neste trabalho, esse indicador é o Flesch-PT, utilizado para comparar o texto original e a versão simplificada do ponto de vista linguístico. Essa métrica apoia a avaliação da simplificação textual, mas não substitui a análise da preservação do conteúdo médico.
+Como saída, a solução apresenta o texto simplificado e adaptado, recursos auxiliares de compreensão, como glossário e perguntas frequentes, chat contextual e um indicador automático de legibilidade textual.
+
+As próximas seções detalham os principais elementos da proposta. Inicialmente, é apresentado o contexto de aplicação na Takere, utilizada como ambiente de referência para a solução. Em seguida, são descritas as entradas consideradas, o papel do perfil comunicacional do paciente e o fluxo de simplificação com LLMs. Posteriormente, são discutidos os guardrails adotados para preservar o significado do conteúdo original, as saídas geradas pela solução e, por fim, as delimitações que definem seu escopo de atuação.
 
 \section{Contexto de aplicação na Takere}
 \label{sec:contexto-aplicacao-takere}
@@ -174,22 +174,174 @@ A solução também considera parâmetros definidos no momento do processamento 
 
 A partir dessas entradas, a solução trata a simplificação textual como uma tarefa contextualizada. Em vez de produzir uma reescrita genérica, a aplicação considera o conteúdo original, o perfil comunicacional do destinatário e os parâmetros definidos para o processamento. Com isso, busca gerar uma versão mais adequada ao paciente, mantendo a geração restrita ao material fornecido e às regras de preservação do significado original. 
 
+\begin{exemplo}
+O trecho a seguir é extraído do \textit{Guia de Atenção à Saúde da Pessoa com Estomia}, um dos materiais utilizados na avaliação deste trabalho, e ilustra o tipo de conteúdo técnico de saúde recebido como entrada pela solução:
+
+\begin{quote}
+\textit{``A estomia é um procedimento cirúrgico realizado quando é preciso construir um novo trajeto para eliminar a urina e as fezes. O estoma é vermelho vivo, úmido e não dói ao ser tocado, mas pode ocorrer um pequeno sangramento, devido aos vasos sanguíneos.''}
+\end{quote}
+
+O texto contém termos técnicos e construções que podem apresentar dificuldades de compreensão para pacientes com menor familiaridade com o tema.
+\end{exemplo}
+
 \section{Perfil do paciente e adaptação comunicacional} 
 \label{sec:perfil-paciente-adaptacao-comunicacional} 
 O perfil do paciente é utilizado para orientar a forma como o conteúdo é apresentado, considerando que uma mesma orientação de saúde pode exigir diferentes níveis de explicação dependendo das características do usuário. Neste trabalho, o perfil comunicacional considera informações como idade, escolaridade e área de formação, que orientam escolhas de linguagem, como vocabulário, extensão das frases, explicação de termos técnicos e tom da comunicação. Assim, a solução pode utilizar frases mais curtas e vocabulário mais cotidiano para pacientes com menor familiaridade com o tema, ou manter alguns termos técnicos quando eles forem compreensíveis e relevantes ao contexto. 
 
 Dessa forma, a adaptação proposta é linguística e comunicacional, não clínica. A solução pode reorganizar, esclarecer ou enfatizar informações presentes no texto original, mas não deve alterar seu significado nem acrescentar orientações que não estejam no conteúdo de origem.
 
-\section{Processo de simplificação com LLMs} 
-\label{sec:processo-simplificacao-llms} 
+\begin{exemplo}
+O perfil simulado a seguir, utilizado na avaliação deste trabalho, ilustra como as informações comunicacionais do paciente são representadas pela solução:
 
-O processo de simplificação utiliza LLMs como componentes responsáveis por transformar o conteúdo original em saídas mais acessíveis ao paciente. A geração é orientada por instruções estruturadas que combinam o texto de entrada, o perfil comunicacional do paciente, os parâmetros de processamento, as regras de simplificação, os guardrails e o formato esperado para a resposta. 
+\textbf{Maria Silva} — 68 anos, ensino fundamental, outras áreas de formação
 
-A simplificação busca reduzir a complexidade linguística do texto, preservando seu significado. Entre as estratégias esperadas estão a substituição de jargões por palavras mais comuns, a explicação de termos técnicos, a redução de frases longas, a organização das informações em uma sequência mais direta e a manutenção de uma estrutura lógica clara. Quando necessário, termos técnicos importantes podem ser preservados, desde que acompanhados de explicações simples. Essa escolha está alinhada a estudos que investigam o uso de LLMs para tornar informações médicas mais acessíveis a pacientes, especialmente em contextos de educação em saúde, simplificação de conteúdos médicos e apoio ao letramento em saúde em aplicações mHealth \cite{jeblick2024chatgpt,aydin2024llms,loughran2024mhealth}.
+Esses campos — idade, escolaridade e área de formação — são utilizados como entradas para orientar a forma de apresentação do conteúdo, ajustando vocabulário, tom e nível de explicação ao perfil do destinatário.
+\end{exemplo}
 
-Na solução desenvolvida, o processamento ocorre em dois fluxos de geração. O primeiro é voltado à produção do texto simplificado e adaptado ao perfil do paciente. O segundo é voltado à geração de perguntas frequentes e respostas baseadas no conteúdo original. Esses fluxos podem ser executados de forma paralela, pois partem do mesmo material de entrada, mas produzem saídas com finalidades distintas: uma versão reescrita do conteúdo e um conjunto auxiliar de perguntas e respostas para apoiar a compreensão. Além desses fluxos iniciais, a solução disponibiliza um chat contextual, no qual perguntas feitas pelo usuário são respondidas pela LLM apenas quando podem ser tratadas com base no conteúdo fornecido. 
+\section{Fluxo de simplificação com LLMs}
+\label{sec:fluxo-simplificacao-llms}
 
-A LLM, nesse processo, não é utilizada como mecanismo de consulta aberta nem como fonte autônoma de conhecimento médico. O modelo recebe uma tarefa delimitada: reescrever um conteúdo fornecido em linguagem mais clara e adequada ao perfil comunicacional do paciente, permanecendo restrito ao material de origem. Essa delimitação é reforçada pelos guardrails descritos na próxima subseção.
+O fluxo de simplificação é o núcleo da solução proposta. Ele transforma o conteúdo técnico de entrada em uma versão simplificada e adaptada comunicacionalmente ao perfil selecionado. Esse processo não consiste apenas em enviar um texto diretamente a uma LLM, mas em organizar a geração como uma sequência de etapas que envolvem preparação da entrada, contextualização pelo perfil, geração controlada, verificação da resposta e apresentação estruturada dos resultados.
+
+A solução permite que o conteúdo de entrada seja fornecido por texto livre ou por arquivo PDF/TXT. Quando a entrada é um arquivo, o conteúdo textual precisa ser extraído ou lido antes da geração. A partir do texto obtido, a solução combina o material original, o perfil comunicacional do paciente, os parâmetros de processamento e as regras de preservação do conteúdo para construir a instrução enviada à LLM. A Figura~\ref{fig:fluxo-simplificacao-proposto} sintetiza esse fluxo, destacando as etapas de entrada, preparação do conteúdo, geração pela LLM, verificação por guardrails, possibilidade de nova tentativa e produção das saídas da solução.
+
+\begin{figure}[htbp]
+\centering
+\resizebox{0.65\textwidth}{!}{
+\begin{tikzpicture}[
+    node distance=1.35cm,
+    >=Latex,
+    every node/.style={font=\small},
+    startend/.style={
+    rounded rectangle,
+    rounded rectangle arc length=180,
+    draw,
+    align=center,
+    minimum width=5.2cm,
+    minimum height=1.0cm
+},
+process/.style={
+    rectangle,
+    draw,
+    align=center,
+    minimum width=4.8cm,
+    minimum height=1.0cm
+},
+decision/.style={
+    diamond,
+    draw,
+    align=center,
+    aspect=2,
+    inner sep=1pt,
+    minimum width=4.2cm,
+    minimum height=1.4cm
+    },
+    arrow/.style={->, thick}
+]
+
+\node[startend] (entrada) {
+  \textbf{Entrada}\\
+  \textit{texto livre ou PDF/TXT, perfil e parâmetros}
+};
+
+\node[decision, below=of entrada] (pdf) {
+  \textbf{Entrada por arquivo?}
+};
+
+\node[process, right=2.8cm of pdf] (extracao) {
+  \textbf{Extração ou leitura de texto}\\
+  \textit{obtenção do conteúdo textual}
+};
+
+\node[process, below=of pdf] (prompt) {
+  \textbf{Construção do prompt}\\
+  \textit{conteúdo, perfil e regras de preservação}
+};
+
+\node[process, below=of prompt] (geracao) {
+  \textbf{Geração pela LLM}\\
+  \textit{texto simplificado e glossário}
+};
+
+\node[process, below=of geracao] (guardrails) {
+  \textbf{Guardrails}\\
+  \textit{verificação determinística e avaliação por LLM}
+};
+
+\node[decision, below=of guardrails] (aprovada) {
+  \textbf{Resposta aprovada?}
+};
+
+\node[process, below=of aprovada] (flesch) {
+  \textbf{Indicador de legibilidade}\\
+  \textit{comparação entre versões}
+};
+
+\node[startend, below=of flesch] (saida) {
+  \textbf{Saídas da solução}\\
+  \textit{texto simplificado, glossário e recursos auxiliares}
+};
+
+\node[decision, right=3.4cm of aprovada] (tentativa) {
+  \textbf{Nova tentativa possível?}
+};
+
+\node[process, below=of tentativa] (fallback) {
+  \textbf{Fallback}\\
+  \textit{mensagem segura}
+};
+
+% Fluxo principal
+\draw[arrow] (entrada) -- (pdf);
+\draw[arrow] (pdf) -- node[above] {Sim} (extracao);
+\draw[arrow] (extracao.south) |- (prompt.east);
+\draw[arrow] (pdf) -- node[left] {Não} (prompt);
+\draw[arrow] (prompt) -- (geracao);
+\draw[arrow] (geracao) -- (guardrails);
+\draw[arrow] (guardrails) -- (aprovada);
+\draw[arrow] (aprovada) -- node[left] {Sim} (flesch);
+\draw[arrow] (flesch) -- (saida);
+
+% Fluxo de rejeição
+\draw[arrow] (aprovada) -- node[above] {Não} (tentativa);
+\draw[arrow] (tentativa) -- node[right] {Não} (fallback);
+\draw[arrow] (fallback.south) |- (saida.east);
+
+% Nova tentativa com feedback
+\draw[arrow] (tentativa.north) |- node[pos=0.25, right] {Sim, com feedback} (geracao.east);
+
+\end{tikzpicture}
+}
+\caption{Fluxo de simplificação proposto na SimplyHealth.}
+\label{fig:fluxo-simplificacao-proposto}
+
+{\small Fonte: Elaboração própria.}
+\end{figure}
+
+
+O uso de LLMs nesse processo é motivado pela capacidade desses modelos de processar e gerar linguagem natural, permitindo reescrever conteúdos, explicar termos técnicos e adaptar materiais educacionais a diferentes públicos. Essa escolha está alinhada a estudos que investigam o uso de LLMs na educação de pacientes e na comunicação em saúde. \citeonline{aydin2024llms}, por exemplo, identificam aplicações desses modelos na geração de materiais educativos, interpretação de informações médicas sob a perspectiva do paciente, tradução de conteúdos e apoio à comunicação entre pacientes e profissionais. De forma mais específica, \citeonline{loughran2024mhealth} discutem o uso de LLMs para enfrentar problemas de letramento em saúde em mHealth, avaliando seu potencial para reduzir a complexidade linguística de materiais educacionais em saúde.
+
+A simplificação busca reduzir a complexidade linguística do texto, preservando seu significado. Entre as estratégias esperadas estão a substituição de jargões por palavras mais comuns, a explicação de termos técnicos, a redução de frases longas, a organização das informações em uma sequência mais direta e a manutenção de uma estrutura lógica clara. Quando necessário, termos técnicos importantes podem ser preservados, desde que acompanhados de explicações simples.
+
+Após a geração, a resposta passa por mecanismos de guardrail antes de ser considerada uma saída válida. Esses mecanismos verificam se a versão gerada permanece fiel ao conteúdo original e se não foram criadas informações clínicas novas, removidas instruções relevantes ou alterados elementos sensíveis, como dosagens, frequências, contraindicações e orientações de segurança. Caso a resposta seja rejeitada, a solução pode realizar uma nova tentativa de geração com base no feedback recebido. Se nenhuma tentativa produzir uma saída adequada, a solução deve retornar uma mensagem segura de fallback.
+
+Além do texto simplificado, o fluxo também prevê a geração de recursos auxiliares, como glossário, perguntas frequentes e chat contextual. Esses recursos seguem a mesma lógica de restrição ao conteúdo original: devem apoiar a compreensão do material fornecido, sem atuar como fonte autônoma de conhecimento médico ou produzir recomendações clínicas novas. Dessa forma, a LLM é tratada como mecanismo de reescrita e apoio comunicacional, e não como sistema clínico autônomo.
+
+\begin{exemplo}
+O trecho a seguir mostra o resultado da simplificação do \textit{Guia de orientações para portadores de estomia} para o perfil de Maria Silva (68 anos, ensino fundamental):
+
+\textbf{Trecho original:}
+\begin{quote}
+\textit{``A estomia é um procedimento cirúrgico realizado quando é preciso construir um novo trajeto para eliminar a urina e as fezes. O estoma é vermelho vivo, úmido e não dói ao ser tocado.''}
+\end{quote}
+
+\textbf{Versão simplificada para Maria:}
+\begin{quote}
+\textit{``Estomia é o nome de uma cirurgia que cria um novo caminho para o xixi ou as fezes saírem do corpo. O lugar onde isso acontece se chama estoma. Ele é vermelho vivo, parece molhadinho e não dói quando você toca.''}
+\end{quote}
+
+As informações essenciais foram preservadas — definição do procedimento, aparência do estoma e a negação de dor ao toque — com vocabulário adaptado ao perfil: ``procedimento cirúrgico'' torna-se ``cirurgia'', ``úmido'' vira ``molhadinho'', e a linguagem passa a refletir o registro cotidiano do destinatário.
+\end{exemplo}
 
 \section{Guardrails para preservação da precisão médica} 
 \label{sec:guardrails-preservacao-precisao-medica} 
@@ -202,10 +354,26 @@ Os guardrails da solução incluem restrições como manter a geração vinculad
 
 Em aplicações de saúde, esse cuidado é particularmente relevante, pois a utilização de IA generativa exige atenção adicional à factualidade, à segurança e à confiabilidade das informações produzidas \cite{gangavarapu2024healthcare}. Nesse contexto, os guardrails funcionam como mecanismos de mitigação de risco, mas não como garantia absoluta de correção.
 
+\begin{exemplo}
+O exemplo a seguir mostra a detecção pelo guardrail da remoção de um atributo de segurança, na simplificação do \textit{Guia de orientações para portadores de estomia} para o perfil Carlos:
+
+\textbf{Trecho original:}
+\begin{quote}
+\textit{``O sistema é formado por uma bolsa que cola na pele através de um adesivo antialérgico.''}
+\end{quote}
+
+\textbf{Primeira tentativa — rejeitada pelo guardrail:}
+\begin{quote}
+\textit{``O sistema é formado por uma bolsa que cola na pele com um adesivo especial.''}
+\end{quote}
+
+O guardrail identificou que a propriedade ``antialérgico'' havia sido substituída por ``especial'' — uma generalização que remove uma informação relevante para o paciente sobre o material utilizado. A versão aprovada na segunda tentativa restaurou o atributo original.
+\end{exemplo}
+
 \section{Saídas da solução} 
 \label{sec:saidas-solucao} 
 
-A principal saída da solução é o texto simplificado e adaptado ao perfil comunicacional do paciente. Esse texto deve apresentar a mesma orientação de saúde do conteúdo original, mas em linguagem mais clara, direta e compatível com as características do usuário. A versão simplificada busca apoiar a compreensão do paciente sem introduzir instruções clínicas novas ou diferentes. 
+A principal saída da solução é o texto simplificado e adaptado ao perfil comunicacional do paciente. Esse texto deve apresentar a mesma orientação de saúde do conteúdo original, mas em linguagem mais clara, direta e compatível com as características do usuário. A versão simplificada busca apoiar a compreensão do paciente sem introduzir instruções clínicas novas ou diferentes.
 
 Além do texto simplificado, a solução gera recursos auxiliares de compreensão. Um desses recursos é o glossário de termos técnicos, que identifica termos presentes no texto original e apresenta definições em linguagem simples. Esse recurso permite manter termos importantes quando necessário, mas acompanhados de explicações mais acessíveis. 
 
@@ -213,18 +381,23 @@ A solução também gera perguntas frequentes e respostas baseadas no conteúdo 
 
 Além das perguntas frequentes geradas automaticamente, a solução oferece um recurso de chat contextual para que o usuário possa fazer perguntas sobre o conteúdo apresentado. Esse chat também é delimitado pelo material de origem: a LLM deve responder apenas quando a pergunta estiver relacionada ao texto carregado e houver informação suficiente para elaborar uma resposta com base nesse conteúdo. Caso a pergunta extrapole o escopo do material, a solução deve evitar responder com conhecimento externo e indicar que não há informações suficientes no texto fornecido. 
 
-Por fim, a solução calcula o Flesch-PT para o texto original e para o texto simplificado. Esse indicador permite comparar as duas versões do ponto de vista da legibilidade textual, oferecendo um apoio quantitativo à análise da simplificação produzida.
+Por fim, a solução calcula o indicador de legibilidade para o texto original e para o texto simplificado. Esse indicador permite comparar as duas versões do ponto de vista da legibilidade textual, oferecendo um apoio quantitativo à análise da simplificação produzida.
 
 A solução também disponibiliza dois recursos de acessibilidade voltados a ampliar o alcance da experiência para perfis com menor letramento digital ou dificuldade de interação por texto: síntese de fala do conteúdo simplificado, que permite ao usuário ouvir o material em vez de apenas lê-lo, e entrada por voz no chat contextual, que permite formular perguntas oralmente sem necessidade de digitação. Esses recursos não fazem parte do fluxo principal de simplificação e não foram avaliados neste trabalho, mas integram a implementação funcional como apoio à acessibilidade. 
 
-\section{Indicador de legibilidade textual} 
-\label{sec:indicador-legibilidade-textual} 
+\begin{exemplo}
+O exemplo a seguir mostra uma das perguntas frequentes geradas para Maria Silva a partir do mesmo material sobre estomia:
 
-A solução inclui um indicador automático de legibilidade para apoiar a avaliação da simplificação linguística. Neste TCC, é utilizado o Índice de Legibilidade de Flesch adaptado ao português brasileiro, denominado neste trabalho como Flesch-PT. A escolha desse indicador se justifica por se tratar de uma adaptação da fórmula de Flesch ao português brasileiro \cite{martins1996readability}, conforme discutido na Seção~\ref{sec:legibilidade-textual}, que estima a facilidade de leitura a partir de características linguísticas mensuráveis como extensão das frases e número de sílabas por palavra. Os valores resultantes são interpretados segundo a escala apresentada na Tabela~\ref{tab:classificacao-flesch-pt}. 
+\begin{quote}
+\textit{``O que é esse `estoma' que o médico falou? É alguma coisa que dói?''}
+\end{quote}
 
-No contexto da solução proposta, o Flesch-PT é calculado para o texto original e para a versão simplificada. Essa comparação permite observar se a adaptação produzida pela LLM resultou em uma versão com maior legibilidade estimada. Assim, o indicador funciona como um apoio quantitativo à análise da simplificação textual, permitindo comparar duas versões de um mesmo conteúdo de forma objetiva. 
+\begin{quote}
+\textit{R: ``O estoma é um buraquinho que fazem na barriga para o cocô ou a urina saírem. Ele é vermelhinho e molhadinho, e não dói quando a gente toca.''}
+\end{quote}
 
-Entretanto, o Flesch-PT deve ser interpretado com cautela. O índice avalia aspectos formais do texto, mas não mede diretamente a compreensão real do paciente nem garante que o conteúdo médico tenha sido preservado corretamente. Por isso, a análise da solução combina o indicador automático de legibilidade com critérios de aderência aos guardrails e preservação do significado do texto original.
+A pergunta é formulada em linguagem cotidiana, coerente com o perfil de Maria, e a resposta permanece restrita ao conteúdo do guia original — sem acrescentar informações clínicas externas.
+\end{exemplo}
 
 \section{Delimitações da solução}
 \label{sec:delimitacoes-solucao}
@@ -233,4 +406,4 @@ A solução proposta possui delimitações claras quanto ao seu escopo de atuaç
 
 Sua função é apoiar a comunicação em saúde por meio da transformação linguística de conteúdos previamente definidos ou validados. A solução atua sobre a forma de apresentação da informação, buscando torná-la mais clara e adequada ao perfil do paciente, sem modificar o significado clínico do material de origem. Dessa forma, deve ser compreendida como uma ferramenta de apoio à compreensão, e não como um sistema clínico autônomo.
 
-No escopo deste trabalho, a Takere é tratada como ambiente de referência para aplicação da abordagem, sem integração plena realizada. Além disso, a solução foi construída e demonstrada em ambiente controlado, com uso de perfis simulados e sem dados reais de pacientes. As limitações decorrentes dessas decisões são discutidas posteriormente no Capítulo~\ref{cap:limitacoes}.
+No escopo deste trabalho, a Takere é tratada como ambiente de referência para aplicação da abordagem, sem integração plena realizada. Além disso, a solução foi construída e demonstrada em ambiente controlado, com uso de perfis simulados e sem dados reais de pacientes. As limitações decorrentes dessas decisões são discutidas posteriormente no Capítulo~\ref{cap:ameacas-validade-implicacoes-praticas}.

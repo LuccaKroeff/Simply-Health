@@ -1,0 +1,45 @@
+\chapter{Metodologia de Avaliação}
+\label{cap:metodologia-avaliacao}
+
+A avaliação da solução teve como objetivo analisar seu comportamento a partir de dois aspectos principais: a capacidade de reduzir a complexidade linguística de textos técnicos de saúde e a capacidade de preservar as informações essenciais presentes no material original. Dessa forma, buscou-se verificar se a solução foi capaz de produzir versões textuais mais acessíveis, adaptadas a diferentes perfis comunicacionais, sem alterar o sentido geral das orientações utilizadas como entrada.
+
+A avaliação realizada possui caráter funcional e linguístico, não correspondendo a uma validação clínica dos textos gerados. Assim, os resultados foram analisados com base no Flesch-PT, utilizado como indicador automático de legibilidade, e em uma análise qualitativa preliminar da preservação das informações essenciais. O índice foi considerado apenas como medida de complexidade textual, não como evidência de precisão médica, compreensão real do paciente ou adequação clínica do conteúdo.
+
+As próximas seções descrevem a organização da avaliação. Inicialmente, são apresentados os materiais utilizados e os perfis considerados nas execuções. Em seguida, é descrito o procedimento adotado, incluindo o número de execuções, os modelos utilizados e o funcionamento das tentativas internas do pipeline. Por fim, são definidos os critérios de avaliação empregados, contemplando a análise de legibilidade textual e a verificação da preservação das informações essenciais.
+
+\section{Materiais utilizados}
+\label{sec:materiais-utlizados}
+
+Foram utilizados dois materiais contendo orientações de saúde: o Guia de Atenção à Saúde da Pessoa com Estomia e o Manual de cuidados com os pés para pessoas com diabetes. Esses documentos foram escolhidos por apresentarem linguagem técnica e orientações práticas voltadas ao cuidado em saúde, permitindo observar como a solução se comporta diante de conteúdos com diferentes temas, vocabulários e tipos de instrução. Além disso, a escolha desses materiais é coerente com o escopo da solução, uma vez que se tratam de documentos previamente aprovados por profissionais de saúde.
+
+A avaliação considerou os três perfis simulados definidos na Seção~\ref{sec:representacao-perfil-paciente}, permitindo executar a solução para diferentes contextos comunicacionais sem utilizar dados reais de pacientes. Dessa forma, foi possível observar como um mesmo conteúdo poderia ser adaptado para perfis com diferentes níveis de familiaridade com linguagem técnica, mantendo a adaptação restrita à dimensão comunicacional.
+
+\section{Procedimento de avaliação}
+\label{sec:procedimento-avaliacao}
+
+A avaliação foi planejada considerando três execuções para cada combinação entre material e perfil, resultando em 18 execuções principais: dois materiais, três perfis simulados e três execuções independentes para cada combinação. Cada execução correspondeu ao processamento de um material para um perfil específico, podendo envolver uma ou mais tentativas internas de geração quando a saída era rejeitada pelos guardrails. A simplificação textual utilizou o modelo \texttt{gemini-2.5-flash-lite}, enquanto o guardrail de fidelidade utilizou o modelo \texttt{gemini-2.5-flash}, conforme a configuração descrita na Tabela~\ref{tab:modelos-llm}.
+
+Cada execução produziu um conjunto de saídas composto por texto simplificado, valor de Flesch-PT do texto original e do texto simplificado, glossário quando gerado e perguntas frequentes. Quando uma tentativa era rejeitada pelo guardrail, a solução podia realizar uma nova tentativa de geração dentro da mesma execução. Essas tentativas internas não foram contabilizadas como novas execuções principais, mas como parte do funcionamento do pipeline.
+
+\section{Critérios de avaliação}
+\label{sec:criterios-avaliacao}
+
+A avaliação foi organizada em dois grupos de critérios: legibilidade textual e preservação das informações essenciais.
+
+\subsection{Legibilidade textual}
+\label{subsec:legibilidade-textual-avaliacao}
+
+A legibilidade textual foi avaliada por meio do Flesch-PT, conforme definido na Seção~\ref{sec:legibilidade-textual}, utilizado como métrica principal e única de legibilidade nesta avaliação. Os resultados foram interpretados segundo a escala de classificação apresentada na Tabela~\ref{tab:classificacao-flesch-pt}. Para cada caso aprovado, comparou-se o valor obtido no texto original com o valor obtido na versão simplificada, observando se houve aumento do índice após o processamento pela solução.
+
+Nesta avaliação, valores maiores de Flesch-PT foram interpretados como indício de menor complexidade linguística. No entanto, o índice foi analisado com cautela, pois não mede compreensão efetiva, qualidade comunicacional completa, precisão médica ou segurança clínica. Assim, um aumento no Flesch-PT foi considerado apenas como evidência de redução de complexidade textual, devendo ser analisado em conjunto com os exemplos qualitativos e com a preservação das informações essenciais.
+
+\subsection{Preservação das informações essenciais}
+\label{subsec:preservacao-informacoes-essenciais-avaliacao}
+
+A preservação das informações essenciais foi analisada a partir de duas camadas complementares: leitura manual preliminar dos textos gerados e verificação automática realizada pelos guardrails da solução. A leitura manual buscou identificar possíveis omissões críticas, adições indevidas, alterações de sentido, mudanças em instruções de segurança e alterações de dose ou frequência, quando aplicável.
+
+Os guardrails, por sua vez, atuaram como uma camada automatizada de verificação da fidelidade entre o texto original e a versão simplificada, operando em duas etapas sequenciais. A primeira é o checker determinístico, implementado por meio de expressões regulares aplicadas diretamente no código, sem chamada a LLM. Ele verifica padrões considerados críticos: possíveis contradições em valores numéricos, como doses que aparecem com magnitudes distintas no original e no texto gerado, e possíveis inversões de negação em instruções associadas a verbos como \textit{tomar}, \textit{usar}, \textit{interromper} e similares, buscando garantir que construções como ``não use'' não sejam simplificadas de forma a perder a negação. A segunda etapa é o guardrail baseado em LLM, que recebe o texto original e a versão simplificada e avalia a fidelidade de forma mais ampla, buscando identificar alterações semânticas, troca de substâncias, modificação de instruções procedimentais e criação de informações não presentes no material original. Quando uma tentativa era rejeitada por qualquer uma dessas etapas, a solução incorporava o feedback ao prompt e realizava uma nova tentativa de geração.
+
+Essa análise não substitui validação clínica por especialistas. Seu objetivo foi verificar indícios de preservação das informações essenciais dentro do escopo funcional da solução e identificar situações em que o guardrail contribuiu para bloquear ou corrigir saídas inadequadas.
+
+A partir desse procedimento, o capítulo seguinte apresenta os resultados obtidos na avaliação da solução.

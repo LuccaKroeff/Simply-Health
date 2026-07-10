@@ -1,20 +1,22 @@
 \chapter{Referencial Teórico}
 \label{cap:referencial}
 
-\section{mHealth e aplicações móveis em saúde}
+Este capítulo apresenta os conceitos teóricos que fundamentam a solução proposta neste trabalho. Inicialmente, são discutidos mHealth, planos de cuidado, plataformas no-code e letramento em saúde, de modo a situar o contexto de aplicação da pesquisa. Em seguida, são abordados os LLMs, seus usos em saúde, o papel dos guardrails, a linguagem simples, a simplificação textual e a adaptação ao perfil do paciente. Por fim, o capítulo discute os riscos da simplificação textual com LLMs em saúde e apresenta o conceito de legibilidade textual, incluindo o índice Flesch-PT, utilizado posteriormente como indicador automático na avaliação da solução.
+
+\section{mHealth e saúde digital}
 \label{sec:mhealth-aplicacoes-moveis-saude}
 
 O termo mHealth, ou saúde móvel, refere-se ao uso de tecnologias móveis no apoio a serviços, práticas e informações relacionadas à saúde. De forma geral, esse conceito abrange práticas médicas e de saúde pública apoiadas por dispositivos móveis, como smartphones, sensores, dispositivos de monitoramento de pacientes e outros recursos móveis \cite{who2011mhealth}. Em aplicações voltadas ao acompanhamento de pacientes, esses recursos podem apoiar atividades como monitoramento, comunicação, educação em saúde, registro de informações, lembretes e acompanhamento de orientações. No contexto deste trabalho, o interesse principal está nas aplicações móveis voltadas ao apoio de pacientes fora do ambiente clínico presencial, especialmente quando essas aplicações apresentam orientações de saúde, atividades de cuidado e textos técnicos associados a planos de cuidado.
 
 Aplicações mHealth podem atuar como uma extensão digital do acompanhamento em saúde, oferecendo recursos que ajudam o paciente a acessar informações relevantes em momentos do cotidiano. Isso é particularmente importante em tratamentos de média e longa duração, nos quais o paciente precisa compreender orientações, lembrar atividades, registrar comportamentos e acompanhar sua evolução ao longo do tempo. Nesse sentido, aplicações móveis não substituem a atuação de profissionais da saúde, mas podem apoiar a continuidade do cuidado ao disponibilizar informações e tarefas de forma organizada e acessível.
 
-A literatura sobre mHealth também indica que ampliar o acesso à tecnologia não garante, por si só, que a informação seja compreendida e utilizada adequadamente. A revisão de escopo de Emerson et al. \cite{emerson2022mhealth} sobre letramento em saúde em mHealth aponta que a entrega de informações por dispositivos móveis amplia o acesso, mas também cria desafios relacionados à adequação dessas informações a diferentes necessidades de letramento. Assim, uma aplicação mHealth precisa considerar não apenas funcionalidades técnicas, mas também a forma como as informações são apresentadas ao usuário.
+A literatura sobre mHealth também indica que ampliar o acesso à tecnologia não garante, por si só, que a informação seja compreendida e utilizada adequadamente. A revisão de escopo de \citeonline{emerson2022mhealth} sobre letramento em saúde em mHealth aponta que a entrega de informações por dispositivos móveis amplia o acesso, mas também cria desafios relacionados à adequação dessas informações a diferentes necessidades de letramento. Assim, uma aplicação mHealth precisa considerar não apenas funcionalidades técnicas, mas também a forma como as informações são apresentadas ao usuário.
 
 No domínio da saúde digital, a clareza da comunicação é um aspecto central. Textos excessivamente técnicos, instruções longas ou uso frequente de jargões podem dificultar a compreensão de usuários com diferentes níveis de escolaridade, familiaridade com tecnologia ou conhecimento prévio sobre saúde. Portanto, a qualidade linguística e comunicacional dos textos apresentados em aplicações mHealth é parte importante da experiência do usuário e da utilidade prática dessas soluções.
 
-Neste trabalho, mHealth é tratado como o contexto de aplicação da solução proposta. O foco não está em desenvolver uma nova categoria de aplicação móvel em saúde, mas em investigar como Modelos de Linguagem de Grande Porte podem apoiar a simplificação e adaptação linguística de textos técnicos de saúde que poderiam ser apresentados em uma aplicação mHealth.
+Neste trabalho, mHealth é tratado como o contexto de aplicação da solução proposta. O foco não está em desenvolver uma nova categoria de aplicação móvel em saúde, mas em investigar como LLMs podem apoiar a simplificação e adaptação linguística de textos técnicos de saúde que poderiam ser apresentados em uma aplicação mHealth.
 
-\section{Planos de cuidado e plataformas no-code em mHealth}
+\subsection{Planos de cuidado e plataformas no-code em mHealth}
 \label{sec:planos-cuidado-plataformas-nocode-mhealth}
 
 Planos de cuidado podem ser entendidos como estruturas que organizam orientações, atividades, metas ou acompanhamentos relacionados ao cuidado de um paciente. Em contextos de saúde, esses planos ajudam a transformar uma conduta definida por profissionais em um conjunto de ações compreensíveis e acompanháveis ao longo do tempo. Um plano de cuidado pode envolver, por exemplo, orientações gerais, lembretes, atividades periódicas, registros de sintomas, informações educativas e instruções de segurança.
@@ -23,51 +25,64 @@ Em aplicações mHealth, planos de cuidado podem ser representados de forma digi
 
 Plataformas no-code surgem como uma alternativa para reduzir a dependência de programação tradicional na criação de aplicações. Em vez de exigir que cada aplicação seja implementada manualmente por uma equipe técnica, plataformas no-code oferecem componentes configuráveis, fluxos visuais, modelos de dados e mecanismos de geração ou instanciação de aplicações. No contexto de mHealth, isso pode permitir que profissionais ou equipes de saúde configurem aplicações baseadas em planos de cuidado sem necessariamente escrever código.
 
-A Takere é um exemplo de plataforma no-code voltada à criação de aplicações mHealth baseadas em planos de cuidado. O trabalho de Niemiec \cite{niemiec2022takere}, desenvolvido na UFRGS, propõe uma plataforma que permite a profissionais de saúde instanciar aplicações móveis para pacientes com base em informações de planos de cuidado. A proposta da Takere envolve a representação desses planos em fluxos, a disponibilização de recursos ao paciente e o acompanhamento do progresso do tratamento, com componentes como quadro, agenda e visualização de evolução.
+A Takere é um exemplo de plataforma no-code voltada à criação de aplicações mHealth baseadas em planos de cuidado. O trabalho de \citeonline{niemiec2022takere} propõe uma plataforma que permite a profissionais de saúde instanciar aplicações móveis para pacientes com base em informações de planos de cuidado. A proposta da Takere envolve a representação desses planos em fluxos, a disponibilização de recursos ao paciente e o acompanhamento do progresso do tratamento, com componentes como quadro, agenda e visualização de evolução.
 
 No escopo deste TCC, a Takere é relevante como ambiente prático de aplicação, pois representa um contexto em que textos técnicos de saúde podem precisar ser apresentados a usuários finais. Entretanto, o tema central do trabalho não é a arquitetura da Takere, nem a criação de uma plataforma no-code. O foco está no uso de LLMs para simplificar e adaptar textos técnicos de saúde, considerando o perfil do paciente e preservando informações médicas essenciais.
 
-\section{Letramento em saúde}
+\subsection{Letramento em saúde}
 \label{sec:letramento-saude}
 
 Letramento em saúde refere-se à capacidade de uma pessoa encontrar, compreender e utilizar informações e serviços de saúde para tomar decisões relacionadas ao próprio cuidado. Esse conceito não se limita à capacidade individual de ler ou entender informações, pois também envolve a responsabilidade das organizações em tornar essas informações encontráveis, compreensíveis e utilizáveis. Além disso, pode ser compreendido como um conjunto de conhecimentos e competências desenvolvidos ao longo da vida, mediados por condições sociais, estruturas organizacionais e disponibilidade de recursos de informação \cite{cdc2024healthliteracy,who2025healthliteracy}. 
 
 Em aplicações mHealth, o letramento em saúde é especialmente relevante porque o paciente frequentemente interage com a informação sem mediação imediata de um profissional. Ao abrir uma orientação, receber um lembrete ou consultar uma instrução, o usuário precisa compreender o conteúdo de forma suficiente para saber o que significa e qual ação deve ser realizada. Usuários com diferentes níveis de escolaridade, familiaridade com tecnologia e conhecimento prévio sobre saúde podem interpretar o mesmo texto de formas distintas, o que torna necessário considerar o letramento em saúde no desenvolvimento e na avaliação de aplicações mHealth \cite{emerson2022mhealth}.
 
-A relação entre letramento em saúde e adesão ao tratamento é discutida na literatura, mas deve ser compreendida como multifatorial. Miller \cite{miller2016healthliteracy} identificou associação positiva entre letramento em saúde e adesão em condições crônicas e agudas. Hyvert et al. \cite{hyvert2023healthliteracy} também discutem essa relação no contexto da adesão medicamentosa em doenças crônicas, destacando que ela é influenciada por múltiplos elementos relacionados ao paciente, ao tratamento e ao contexto de cuidado.
+A relação entre letramento em saúde e adesão ao tratamento é discutida na literatura, mas deve ser compreendida como multifatorial. \citeonline{miller2016healthliteracy} identificou associação positiva entre letramento em saúde e adesão em condições crônicas e agudas. \citeonline{hyvert2023healthliteracy} também discutem essa relação no contexto da adesão medicamentosa em doenças crônicas, destacando que ela é influenciada por múltiplos elementos relacionados ao paciente, ao tratamento e ao contexto de cuidado.
 
 Nesse sentido, a adaptação da linguagem de textos técnicos de saúde pode ser compreendida como uma estratégia para reduzir barreiras comunicacionais e apoiar a compreensão das orientações apresentadas ao paciente. Essa contribuição é especialmente relevante em aplicações mHealth, nas quais o usuário frequentemente acessa informações fora do ambiente clínico presencial. Ao mesmo tempo, a simplificação textual deve ser entendida como apoio à comunicação em saúde, e não como substituto para acompanhamento profissional, avaliação clínica ou demais fatores envolvidos no cuidado.
-
-\section{Linguagem simples e comunicação em saúde}
-\label{sec:linguagem-simples-comunicacao-saude}
-
-Linguagem simples é uma abordagem de comunicação voltada a tornar informações mais fáceis de encontrar, compreender e utilizar. No contexto da saúde, essa abordagem é especialmente relevante porque materiais informativos frequentemente apresentam terminologia técnica, conceitos clínicos complexos e instruções que podem dificultar a compreensão do paciente. Segundo o CDC, a linguagem simples facilita o uso de informações de saúde ao orientar a organização do conteúdo de acordo com as necessidades do público, a escolha de palavras conhecidas, o uso de frases curtas, a preferência por voz ativa, a divisão do texto em blocos lógicos, o uso de títulos e listas quando apropriado e a apresentação das informações mais importantes em primeiro lugar \cite{cdc2025plainlanguage}.
-
-Na comunicação em saúde, simplificar um texto não significa empobrecer a informação ou retirar elementos clinicamente importantes. Pelo contrário, a simplificação deve buscar tornar o conteúdo mais compreensível sem alterar seu significado. Assim, alertas, restrições, contraindicações, dosagens, frequências e instruções de segurança devem ser preservados quando estiverem presentes no texto original, pois sua remoção ou modificação poderia comprometer a precisão da orientação apresentada ao paciente.
-
-Essa distinção é central para o presente trabalho. A simplificação textual apoiada por LLMs é tratada como uma adaptação comunicacional, não como uma forma de recomendação clínica. O objetivo é reescrever textos técnicos de saúde em linguagem mais clara e adequada ao perfil do paciente, reduzindo a complexidade linguística, explicando termos e melhorando a organização do conteúdo, sem criar novas informações clínicas nem modificar instruções relevantes do material original.
 
 \section{Modelos de Linguagem de Grande Porte}
 \label{sec:modelos-linguagem-grande-porte}
 
 Modelos de Linguagem de Grande Porte, ou Large Language Models (LLMs), são modelos computacionais treinados em grandes volumes de texto para processar e gerar linguagem natural. Esses modelos capturam padrões linguísticos a partir de dados textuais e podem ser utilizados em tarefas como completar frases, responder perguntas, resumir documentos, traduzir textos, reescrever conteúdos e adaptar o estilo de uma mensagem \cite{zhao2023survey,naveed2023overview}.
 
-A evolução recente dos LLMs está associada à arquitetura Transformer, proposta por Vaswani et al. \cite{vaswani2017attention}. Essa arquitetura utiliza mecanismos de atenção para modelar relações entre elementos de uma sequência textual, permitindo que o modelo considere diferentes partes do contexto ao processar ou gerar linguagem. Modelos posteriores demonstraram que o aumento de escala e o treinamento em grandes volumes de dados podem melhorar o desempenho em diferentes tarefas de linguagem natural, inclusive em cenários nos quais o modelo recebe apenas instruções ou poucos exemplos no próprio prompt \cite{brown2020language}.
+A evolução recente dos LLMs está associada à arquitetura Transformer, proposta por \citeonline{vaswani2017attention}. Essa arquitetura utiliza mecanismos de atenção para modelar relações entre elementos de uma sequência textual, permitindo que o modelo considere diferentes partes do contexto ao processar ou gerar linguagem. Modelos posteriores demonstraram que o aumento de escala e o treinamento em grandes volumes de dados podem melhorar o desempenho em diferentes tarefas de linguagem natural, inclusive em cenários nos quais o modelo recebe apenas instruções ou poucos exemplos no próprio prompt \cite{brown2020language}.
 
 Em termos práticos, LLMs são relevantes para este trabalho porque possuem capacidade de reescrever textos preservando, em muitos casos, estrutura semântica e intenção comunicativa. Um mesmo conteúdo pode ser transformado em versões mais curtas, mais explicativas, mais formais, mais acessíveis ou adaptadas a diferentes públicos. Essa flexibilidade torna os LLMs candidatos naturais para tarefas de simplificação textual.
 
 Entretanto, a geração de linguagem por LLMs é probabilística. O modelo não ``compreende'' o texto da mesma forma que um profissional humano compreende, nem possui garantia intrínseca de factualidade. A resposta gerada depende do treinamento, do prompt, do contexto fornecido, dos parâmetros de geração e de eventuais mecanismos de controle utilizados. Por isso, ao aplicar LLMs em contextos de saúde, é necessário considerar tanto suas capacidades quanto suas limitações.
 
-\section{LLMs em saúde, educação de pacientes e comunicação médica}
+\subsection{Guardrails}
+\label{sec:guardrails-llms}
+
+Guardrails podem ser definidos como mecanismos de controle, restrição ou validação aplicados ao uso de LLMs. Seu objetivo é reduzir a probabilidade de comportamentos indesejados, como respostas fora do escopo e geração de informações incorretas. \citeonline{dong2024guardrails} descrevem guardrails como tecnologias de salvaguarda que podem atuar sobre entradas e saídas de LLMs, considerando os riscos e requisitos específicos de cada aplicação.
+
+Esses mecanismos podem ser aplicados em diferentes momentos do fluxo de uso de um LLM. Na entrada, podem auxiliar na identificação de solicitações fora do escopo esperado. No prompt, podem estabelecer instruções explícitas sobre o comportamento do modelo, o tipo de resposta desejado e os limites da tarefa. Na saída, podem apoiar a verificação do conteúdo gerado, buscando identificar informações adicionadas indevidamente ou alterações de sentido. Assim, guardrails não se limitam a uma técnica específica, mas representam um conjunto de estratégias para tornar o uso de LLMs mais controlado e alinhado ao contexto da aplicação.
+
+No domínio da saúde, guardrails assumem importância particular devido à sensibilidade das informações envolvidas. Em tarefas de simplificação textual, por exemplo, o modelo deve preservar o significado essencial do texto original e evitar modificações que possam alterar a interpretação de uma orientação. Isso inclui cuidados como não introduzir recomendações clínicas novas, não modificar dosagens e não apresentar respostas que extrapolem o conteúdo fornecido.
+
+No contexto deste trabalho, os guardrails são compreendidos como mecanismos de mitigação de risco aplicados à simplificação e adaptação linguística de textos técnicos de saúde. Eles contribuem para delimitar o papel do LLM como ferramenta de apoio comunicacional, e não como fonte autônoma de conhecimento médico ou sistema de decisão clínica.
+
+Apesar de sua importância, os guardrails não devem ser tratados como garantia absoluta de segurança ou correção. Eles reduzem riscos, mas não eliminam completamente problemas como alucinações. Por isso, seu uso deve ser combinado com critérios de avaliação, delimitação clara de escopo e, quando necessário, revisão humana. A seção seguinte apresenta o uso de indicadores automáticos de legibilidade como apoio à avaliação linguística da simplificação, embora esses indicadores não substituam a verificação da precisão médica do conteúdo gerado.
+
+\subsection{LLMs em saúde, educação de pacientes e comunicação médica}
 \label{sec:llms-saude-educacao-pacientes-comunicacao-medica}
 
-Os LLMs vêm sendo estudados em diferentes contextos de saúde, incluindo educação de pacientes, comunicação médica e produção de conteúdos informativos mais acessíveis. Aydin et al. \cite{aydin2024llms}, em uma revisão de escopo sobre LLMs na educação de pacientes, identificam aplicações relacionadas à geração de materiais educativos, à interpretação de informações médicas e ao apoio à comunicação entre pacientes e profissionais de saúde. Esses usos indicam que modelos de linguagem podem atuar como ferramentas de apoio à produção e adaptação comunicacional de conteúdos voltados à saúde, desde que submetidos a revisão e cuidados quanto à qualidade das informações geradas.
+Os LLMs vêm sendo estudados em diferentes contextos de saúde, incluindo educação de pacientes, comunicação médica e produção de conteúdos informativos mais acessíveis. \citeonline{aydin2024llms}, em uma revisão de escopo sobre LLMs na educação de pacientes, identificam aplicações relacionadas à geração de materiais educativos, à interpretação de informações médicas e ao apoio à comunicação entre pacientes e profissionais de saúde. Esses usos indicam que modelos de linguagem podem atuar como ferramentas de apoio à produção e adaptação comunicacional de conteúdos voltados à saúde, desde que submetidos a revisão e cuidados quanto à qualidade das informações geradas.
 
-No contexto de mHealth, LLMs também podem ser discutidos como recursos para adequar informações de saúde a diferentes níveis de letramento. Essa aproximação é relevante porque aplicações móveis frequentemente apresentam orientações ao paciente fora do ambiente clínico presencial, exigindo que o conteúdo seja compreensível, direto e adequado ao perfil do usuário. Loughran et al. \cite{loughran2024mhealth} exploram essa interseção ao avaliar o uso de LLMs para reduzir a complexidade linguística de materiais educacionais em saúde no contexto de mHealth.
+No contexto de mHealth, LLMs também podem ser discutidos como recursos para adequar informações de saúde a diferentes níveis de letramento. Essa aproximação é relevante porque aplicações móveis frequentemente apresentam orientações ao paciente fora do ambiente clínico presencial, exigindo que o conteúdo seja compreensível, direto e adequado ao perfil do usuário. \citeonline{loughran2024mhealth} exploram essa interseção ao avaliar o uso de LLMs para reduzir a complexidade linguística de materiais educacionais em saúde no contexto de mHealth.
 
 A aplicação de LLMs à comunicação com pacientes pode envolver diferentes tipos de tarefas. Um modelo pode, por exemplo, transformar um texto técnico em uma explicação mais acessível, produzir um glossário de termos presentes no material original, gerar perguntas frequentes baseadas no conteúdo fornecido ou reorganizar uma orientação em passos mais claros. Em todos esses casos, o valor do LLM está em sua capacidade de manipular a linguagem natural de forma flexível, permitindo adaptar a apresentação do conteúdo sem necessariamente alterar a informação de origem.
 
-\section{Simplificação textual e adaptação ao perfil do paciente}
+\subsection{Linguagem simples e comunicação em saúde}
+\label{sec:linguagem-simples-comunicacao-saude}
+
+Linguagem simples é uma abordagem de comunicação voltada a tornar informações mais fáceis de encontrar, compreender e utilizar. No contexto da saúde, essa abordagem é especialmente relevante porque materiais informativos frequentemente apresentam terminologia técnica, conceitos clínicos complexos e instruções que podem dificultar a compreensão do paciente. Segundo o Centers for Disease Control and Prevention (CDC), a linguagem simples facilita o uso de informações de saúde ao orientar a organização do conteúdo de acordo com as necessidades do público, a escolha de palavras conhecidas, o uso de frases curtas, a preferência por voz ativa, a divisão do texto em blocos lógicos, o uso de títulos e listas quando apropriado e a apresentação das informações mais importantes em primeiro lugar \cite{cdc2025plainlanguage}.
+
+Na comunicação em saúde, simplificar um texto não significa empobrecer a informação ou retirar elementos clinicamente importantes. Pelo contrário, a simplificação deve buscar tornar o conteúdo mais compreensível sem alterar seu significado. Assim, alertas, restrições, contraindicações, dosagens, frequências e instruções de segurança devem ser preservados quando estiverem presentes no texto original, pois sua remoção ou modificação poderia comprometer a precisão da orientação apresentada ao paciente.
+
+Essa distinção é central para o presente trabalho. A simplificação textual apoiada por LLMs é tratada como uma adaptação comunicacional, não como uma forma de recomendação clínica. O objetivo é reescrever textos técnicos de saúde em linguagem mais clara e adequada ao perfil do paciente, reduzindo a complexidade linguística, explicando termos e melhorando a organização do conteúdo, sem criar novas informações clínicas nem modificar instruções relevantes do material original.
+
+\subsection{Simplificação textual e adaptação ao perfil do paciente}
 \label{sec:simplificacao-textual-adaptacao-perfil-paciente}
 
 Simplificação textual é o processo de tornar um texto mais claro, direto e acessível, preservando seu significado essencial. No contexto deste trabalho, essa simplificação é aplicada a textos técnicos de saúde, com o objetivo de reduzir barreiras linguísticas e tornar as orientações mais adequadas à leitura em aplicações móveis. Assim, a simplificação não deve ser entendida apenas como redução do texto, mas como uma transformação comunicacional orientada à compreensão.
@@ -76,7 +91,7 @@ A adaptação ao perfil do paciente amplia essa proposta ao considerar caracter�
 
 É importante distinguir adaptação comunicacional de personalização clínica. Adaptar a comunicação significa alterar a forma de apresentação do conteúdo, enquanto personalizar condutas clínicas envolveria modificar tratamentos, dosagens, frequências, recomendações ou decisões terapêuticas com base em características do paciente. Neste trabalho, a adaptação ao perfil do paciente é estritamente linguística e comunicacional: a solução pode ajustar a linguagem dos textos técnicos de saúde, mas não deve modificar o conteúdo clínico original nem deslocar a responsabilidade profissional sobre essas orientações.
 
-\section{Riscos da simplificação textual com LLMs em saúde}
+\subsection{Riscos da simplificação textual com LLMs em saúde}
 \label{sec:riscos-simplificacao-textual-llms-saude}
 
 Apesar do potencial dos LLMs para apoiar a comunicação em saúde, seu uso em tarefas de simplificação textual envolve riscos específicos. O primeiro deles é a alucinação, isto é, a geração de informações incorretas, inexistentes ou não sustentadas pelo texto de entrada. Em uma tarefa de simplificação, esse risco ocorre quando o modelo acrescenta explicações, recomendações, justificativas ou detalhes que não estavam presentes no conteúdo original.
@@ -86,19 +101,6 @@ Outro risco relevante é a alteração semântica. Nesse caso, o modelo mantém 
 Além disso, LLMs tendem a produzir respostas fluentes e bem estruturadas, mesmo quando contêm erros. Essa fluência pode levar usuários, avaliadores ou desenvolvedores a superestimar a confiabilidade da saída. Em saúde, esse efeito é particularmente sensível porque um texto claro e convincente pode parecer correto mesmo quando alterou, acrescentou ou reduziu indevidamente alguma informação.
 
 Estudos sobre LLMs em saúde apontam que alucinações e problemas de confiabilidade podem ser especialmente relevantes em contextos médicos \cite{aydin2024llms,gangavarapu2024healthcare}. No escopo deste trabalho, esses riscos são considerados principalmente em relação à preservação do significado clínico do texto original durante a simplificação. Por isso, o uso de LLMs nessa tarefa requer mecanismos de controle e validação, discutidos na seção seguinte a partir do conceito de guardrails.
-
-\section{Guardrails para LLMs}
-\label{sec:guardrails-llms}
-
-Guardrails podem ser definidos como mecanismos de controle, restrição ou validação aplicados ao uso de Modelos de Linguagem de Grande Porte. Seu objetivo é reduzir a probabilidade de comportamentos indesejados, como respostas fora do escopo e geração de informações incorretas. Dong et al. \cite{dong2024guardrails} descrevem guardrails como tecnologias de salvaguarda que podem atuar sobre entradas e saídas de LLMs, considerando os riscos e requisitos específicos de cada aplicação.
-
-Esses mecanismos podem ser aplicados em diferentes momentos do fluxo de uso de um LLM. Na entrada, podem auxiliar na identificação de solicitações fora do escopo esperado. No prompt, podem estabelecer instruções explícitas sobre o comportamento do modelo, o tipo de resposta desejado e os limites da tarefa. Na saída, podem apoiar a verificação do conteúdo gerado, buscando identificar informações adicionadas indevidamente ou alterações de sentido. Assim, guardrails não se limitam a uma técnica específica, mas representam um conjunto de estratégias para tornar o uso de LLMs mais controlado e alinhado ao contexto da aplicação.
-
-No domínio da saúde, guardrails assumem importância particular devido à sensibilidade das informações envolvidas. Em tarefas de simplificação textual, por exemplo, o modelo deve preservar o significado essencial do texto original e evitar modificações que possam alterar a interpretação de uma orientação. Isso inclui cuidados como não introduzir recomendações clínicas novas, não modificar dosagens e não apresentar respostas que extrapolem o conteúdo fornecido.
-
-No contexto deste trabalho, os guardrails são compreendidos como mecanismos de mitigação de risco aplicados à simplificação e adaptação linguística de textos técnicos de saúde. Eles contribuem para delimitar o papel do LLM como ferramenta de apoio comunicacional, e não como fonte autônoma de conhecimento médico ou sistema de decisão clínica.
-
-Apesar de sua importância, os guardrails não devem ser tratados como garantia absoluta de segurança ou correção. Eles reduzem riscos, mas não eliminam completamente problemas como alucinações. Por isso, seu uso deve ser combinado com critérios de avaliação, delimitação clara de escopo e, quando necessário, revisão humana. A seção seguinte apresenta o uso de indicadores automáticos de legibilidade como apoio à avaliação linguística da simplificação, embora esses indicadores não substituam a verificação da precisão médica do conteúdo gerado.
 
 \section{Legibilidade textual}
 \label{sec:legibilidade-textual}
@@ -111,7 +113,7 @@ A avaliação da simplificação textual pode ser apoiada por indicadores autom�
 
 onde $\overline{\text{CP}}$ é o número médio de palavras por sentença e $\overline{\text{SP}}$ é o número médio de sílabas por palavra. Valores mais altos indicam menor complexidade linguística.
 
-A constante 206,835 foi calibrada empiricamente para o inglês. Martins et al. \cite{martins1996readability} observaram que o português brasileiro apresenta, em média, maior número de sílabas por palavra do que o inglês, em decorrência de sua morfologia mais rica e de palavras tipicamente mais longas. Aplicada diretamente a textos em português, a fórmula original produziria pontuações sistematicamente inferiores às de textos ingleses de complexidade equivalente, tornando as faixas de classificação originais inadequadas. Para corrigir esse viés, os autores propõem acrescentar 42 pontos à constante da fórmula, obtendo a adaptação para o português brasileiro:
+A constante 206,835 foi calibrada empiricamente para o inglês. \citeonline{martins1996readability} observaram que o português brasileiro apresenta, em média, maior número de sílabas por palavra do que o inglês, em decorrência de sua morfologia mais rica e de palavras tipicamente mais longas. Aplicada diretamente a textos em português, a fórmula original produziria pontuações sistematicamente inferiores às de textos ingleses de complexidade equivalente, tornando as faixas de classificação originais inadequadas. Para corrigir esse viés, os autores propõem acrescentar 42 pontos à constante da fórmula, obtendo a adaptação para o português brasileiro:
 
 \[
   \text{Flesch-PT} = 248{,}835 - 1{,}015 \times \overline{\text{CP}} - 84{,}6 \times \overline{\text{SP}}
@@ -136,7 +138,7 @@ Com esse ajuste, textos em português com nível de complexidade equivalente ao 
     \hline
   \end{tabular}
 
-  {\footnotesize Fonte: \cite{martins1996readability}.}
+  {\footnotesize Fonte: \citeonline{martins1996readability}.}
 \end{table}
 
 No contexto deste trabalho, o Flesch-PT auxilia na comparação entre o texto original e o texto simplificado, indicando se a versão gerada apresenta sinais de maior legibilidade.
