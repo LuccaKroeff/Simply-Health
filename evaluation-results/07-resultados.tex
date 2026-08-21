@@ -6,7 +6,7 @@ Este capítulo apresenta os resultados obtidos a partir da avaliação da Simply
 \section{Resultados de legibilidade textual}
 \label{sec:resultados-legibilidade-textual}
 
-A avaliação de legibilidade foi realizada a partir da comparação entre o Flesch-PT dos textos originais e o Flesch-PT das versões simplificadas aprovadas para cada perfil. Os resultados consideram as 18 execuções principais da avaliação, todas com texto final aprovado e Flesch-PT computado. As tentativas internas rejeitadas pelos guardrails não foram consideradas no cálculo de legibilidade, pois não correspondem às versões finais apresentadas pela solução.
+A avaliação de legibilidade foi realizada a partir da comparação entre o Flesch-PT dos textos originais e o Flesch-PT das versões simplificadas aprovadas para cada perfil. O índice foi calculado exclusivamente sobre o texto simplificado, excluindo o glossário e as perguntas frequentes, que são gerados como saídas complementares separadas. Os resultados consideram as 18 execuções principais da avaliação, todas com texto final aprovado e Flesch-PT computado. As tentativas internas rejeitadas pelos guardrails não foram consideradas no cálculo de legibilidade, pois não correspondem às versões finais apresentadas pela solução.
 
 A Tabela~\ref{tab:flesch-estomia} apresenta os resultados médios obtidos para o material Guia de Atenção à Saúde da Pessoa com Estomia.
 
@@ -78,7 +78,8 @@ A Tabela~\ref{tab:sintese-legibilidade} sintetiza os principais indicadores gera
     Menor ganho observado & -3,8 & +5,4 & -3,8 \\
     Casos com ganho positivo & 6/9 & 9/9 & 15/18 \\
     Casos com ganho nulo ou negativo & 3/9 & 0/9 & 3/18 \\
-    Casos com mudança de classificação & 2/9 & 7/9 & 9/18 \\
+    Casos com melhora de classificação & 0/9 & 7/9 & 7/18 \\
+    Casos com regressão de classificação & 2/9 & 0/9 & 2/18 \\
     \bottomrule
   \end{tabularx}
 
@@ -242,7 +243,7 @@ Esse caso é relevante porque mostra que a simplificação não consistiu apenas
 \subsection{Perguntas frequentes adaptadas ao perfil}
 \label{subsec:perguntas-frequentes-adaptadas-perfil}
 
-Além do texto simplificado, a solução também gerou perguntas frequentes baseadas no material original. A análise qualitativa dessas perguntas mostrou que a adaptação ao perfil ocorreu também nas saídas complementares.
+Além do texto simplificado, a solução também gerou perguntas frequentes baseadas no material original. Essas saídas passam pelo mesmo guardrail de fidelidade utilizado na simplificação, mas os eventos de rejeição correspondentes não foram contabilizados separadamente na avaliação. O índice de legibilidade também não é calculado para as perguntas frequentes. Portanto, os resultados quantitativos das seções anteriores referem-se exclusivamente ao texto simplificado. A análise a seguir é qualitativa e busca observar se a adaptação ao perfil ocorreu também nessas saídas.
 
 Para o perfil de Ana, a pergunta apresentou formulação mais técnica e analítica:
 

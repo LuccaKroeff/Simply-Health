@@ -174,29 +174,64 @@ A solução também considera parâmetros definidos no momento do processamento 
 
 A partir dessas entradas, a solução trata a simplificação textual como uma tarefa contextualizada. Em vez de produzir uma reescrita genérica, a aplicação considera o conteúdo original, o perfil comunicacional do destinatário e os parâmetros definidos para o processamento. Com isso, busca gerar uma versão mais adequada ao paciente, mantendo a geração restrita ao material fornecido e às regras de preservação do significado original. 
 
-\begin{exemplo}
-O trecho a seguir é extraído do \textit{Guia de Atenção à Saúde da Pessoa com Estomia}, um dos materiais utilizados na avaliação deste trabalho, e ilustra o tipo de conteúdo técnico de saúde recebido como entrada pela solução:
+O trecho a seguir, extraído do \textit{Guia de Atenção à Saúde da Pessoa com Estomia}, um dos materiais utilizados na avaliação deste trabalho, ilustra o tipo de conteúdo técnico de saúde recebido como entrada pela solução.
 
-\begin{quote}
-\textit{``A estomia é um procedimento cirúrgico realizado quando é preciso construir um novo trajeto para eliminar a urina e as fezes. O estoma é vermelho vivo, úmido e não dói ao ser tocado, mas pode ocorrer um pequeno sangramento, devido aos vasos sanguíneos.''}
-\end{quote}
+\begin{quadro}[htbp]
+  \centering
+  \caption{Exemplo de conteúdo técnico recebido como entrada.}
+  \label{qua:entrada-conteudo-estomia}
+  \small
+  \renewcommand{\arraystretch}{1.2}
+
+  \begin{tabularx}{0.92\textwidth}{X}
+    \toprule
+    \textit{``A estomia é um procedimento cirúrgico realizado quando é preciso construir um novo trajeto para eliminar a urina e as fezes. O estoma é vermelho vivo, úmido e não dói ao ser tocado, mas pode ocorrer um pequeno sangramento, devido aos vasos sanguíneos.''} \\
+    \bottomrule
+  \end{tabularx}
+
+  \vspace{0.3em}
+  {\small Fonte: elaboração própria.}
+\end{quadro}
 
 O texto contém termos técnicos e construções que podem apresentar dificuldades de compreensão para pacientes com menor familiaridade com o tema.
-\end{exemplo}
 
 \section{Perfil do paciente e adaptação comunicacional} 
 \label{sec:perfil-paciente-adaptacao-comunicacional} 
-O perfil do paciente é utilizado para orientar a forma como o conteúdo é apresentado, considerando que uma mesma orientação de saúde pode exigir diferentes níveis de explicação dependendo das características do usuário. Neste trabalho, o perfil comunicacional considera informações como idade, escolaridade e área de formação, que orientam escolhas de linguagem, como vocabulário, extensão das frases, explicação de termos técnicos e tom da comunicação. Assim, a solução pode utilizar frases mais curtas e vocabulário mais cotidiano para pacientes com menor familiaridade com o tema, ou manter alguns termos técnicos quando eles forem compreensíveis e relevantes ao contexto. 
+O perfil do paciente é utilizado para orientar a forma como o conteúdo é apresentado, considerando que uma mesma orientação de saúde pode exigir diferentes estratégias de comunicação conforme o público destinatário. Neste trabalho, o perfil comunicacional considera idade, escolaridade e área de formação. Esses atributos são convertidos em instruções para a LLM, orientando escolhas de tom, vocabulário, grau de formalidade e uso de termos técnicos.
 
-Dessa forma, a adaptação proposta é linguística e comunicacional, não clínica. A solução pode reorganizar, esclarecer ou enfatizar informações presentes no texto original, mas não deve alterar seu significado nem acrescentar orientações que não estejam no conteúdo de origem.
+A escolha desses atributos foi motivada por critérios comunicacionais e pragmáticos, apoiados por recomendações de linguagem simples e comunicação em saúde. Recomendações de linguagem clara destacam a importância de considerar o público destinatário, utilizar palavras familiares, evitar jargões desnecessários e organizar as informações de forma objetiva \cite{cdc2025plainlanguage}. Além disso, estudos sobre comunicação médica indicam que termos e expressões comuns no contexto clínico podem ser mal compreendidos por pacientes, reforçando a necessidade de atenção ao uso de vocabulário técnico \cite{gotlieb2022medicaljargon}.
 
-\begin{exemplo}
-O perfil simulado a seguir, utilizado na avaliação deste trabalho, ilustra como as informações comunicacionais do paciente são representadas pela solução:
+Nesse sentido, a idade é considerada como elemento de contextualização do tom da comunicação, permitindo ajustar a forma de tratamento, o grau de acolhimento e a escolha de expressões mais compatíveis com o perfil informado. A escolaridade é utilizada como indicativo aproximado de familiaridade com determinados registros de linguagem, como textos mais formais, acadêmicos ou técnicos. Já a área de formação funciona como indicativo de familiaridade prévia com determinados vocabulários, especialmente termos técnicos da área da saúde.
 
-\textbf{Maria Silva} — 68 anos, ensino fundamental, outras áreas de formação
+Além desses atributos, a implementação também prevê o uso opcional de comorbidades informadas no perfil. Esse dado não é utilizado para inferir riscos, criar recomendações ou adaptar condutas clínicas. Sua função é apenas orientar a ênfase comunicacional: caso o texto original já contenha alertas, cuidados ou recomendações explicitamente relacionados à condição informada, a reescrita pode destacá-los com maior clareza. Quando essa informação não está presente no material de origem, a solução não deve acrescentar orientações novas.
 
-Esses campos — idade, escolaridade e área de formação — são utilizados como entradas para orientar a forma de apresentação do conteúdo, ajustando vocabulário, tom e nível de explicação ao perfil do destinatário.
-\end{exemplo}
+Esses atributos são tratados de forma conjunta e não determinística. Eles funcionam apenas como parâmetros simples para apoiar a adaptação linguística do texto. A solução pode reorganizar, esclarecer ou enfatizar informações presentes no material original, mas não deve alterar seu significado, acrescentar orientações clínicas novas, modificar condutas ou usar o perfil para inferir riscos adicionais.
+
+Dessa forma, a adaptação proposta é comunicacional, não clínica. O perfil simulado apresentado no Quadro~\ref{qua:perfil-comunicacional-maria}, utilizado na avaliação deste trabalho, ilustra como as informações comunicacionais do paciente são representadas pela solução.
+
+\begin{quadro}[htbp]
+  \centering
+  \caption{Exemplo de perfil comunicacional utilizado pela solução.}
+  \label{qua:perfil-comunicacional-maria}
+  \small
+  \renewcommand{\arraystretch}{1.2}
+
+  \begin{tabularx}{0.82\textwidth}{p{0.35\textwidth} X}
+    \toprule
+    \textbf{Campo} & \textbf{Valor} \\
+    \midrule
+    Nome & Maria Silva \\
+    Idade & 68 anos \\
+    Escolaridade & Ensino fundamental \\
+    Área de formação & Outra \\
+    \bottomrule
+  \end{tabularx}
+
+  \vspace{0.3em}
+  {\small Fonte: elaboração própria.}
+\end{quadro}
+
+No exemplo apresentado, os campos do perfil são utilizados para orientar a forma de apresentação do conteúdo, ajustando vocabulário, tom e nível de explicação ao perfil destinatário.
 
 \section{Fluxo de simplificação com LLMs}
 \label{sec:fluxo-simplificacao-llms}
@@ -327,21 +362,32 @@ Após a geração, a resposta passa por mecanismos de guardrail antes de ser con
 
 Além do texto simplificado, o fluxo também prevê a geração de recursos auxiliares, como glossário, perguntas frequentes e chat contextual. Esses recursos seguem a mesma lógica de restrição ao conteúdo original: devem apoiar a compreensão do material fornecido, sem atuar como fonte autônoma de conhecimento médico ou produzir recomendações clínicas novas. Dessa forma, a LLM é tratada como mecanismo de reescrita e apoio comunicacional, e não como sistema clínico autônomo.
 
-\begin{exemplo}
-O trecho a seguir mostra o resultado da simplificação do \textit{Guia de orientações para portadores de estomia} para o perfil de Maria Silva (68 anos, ensino fundamental):
+O Quadro~\ref{qua:simplificacao-maria-estomia} mostra um exemplo de simplificação do \textit{Guia de orientações para portadores de estomia} para o perfil de Maria Silva, de 68 anos e com ensino fundamental.
 
-\textbf{Trecho original:}
-\begin{quote}
-\textit{``A estomia é um procedimento cirúrgico realizado quando é preciso construir um novo trajeto para eliminar a urina e as fezes. O estoma é vermelho vivo, úmido e não dói ao ser tocado.''}
-\end{quote}
+\begin{quadro}[htbp]
+  \centering
+  \caption{Exemplo de simplificação adaptada ao perfil Maria.}
+  \label{qua:simplificacao-maria-estomia}
+  \small
+  \renewcommand{\arraystretch}{1.2}
 
-\textbf{Versão simplificada para Maria:}
-\begin{quote}
-\textit{``Estomia é o nome de uma cirurgia que cria um novo caminho para o xixi ou as fezes saírem do corpo. O lugar onde isso acontece se chama estoma. Ele é vermelho vivo, parece molhadinho e não dói quando você toca.''}
-\end{quote}
+  \begin{tabularx}{\textwidth}{p{0.47\textwidth} X}
+    \toprule
+    \textbf{Trecho original} & \textbf{Versão simplificada} \\
+    \midrule
 
-As informações essenciais foram preservadas — definição do procedimento, aparência do estoma e a negação de dor ao toque — com vocabulário adaptado ao perfil: ``procedimento cirúrgico'' torna-se ``cirurgia'', ``úmido'' vira ``molhadinho'', e a linguagem passa a refletir o registro cotidiano do destinatário.
-\end{exemplo}
+    \textit{``A estomia é um procedimento cirúrgico realizado quando é preciso construir um novo trajeto para eliminar a urina e as fezes. O estoma é vermelho vivo, úmido e não dói ao ser tocado.''}
+    &
+    \textit{``Estomia é o nome de uma cirurgia que cria um novo caminho para o xixi ou as fezes saírem do corpo. O lugar onde isso acontece se chama estoma. Ele é vermelho vivo, parece molhadinho e não dói quando você toca.''} \\
+
+    \bottomrule
+  \end{tabularx}
+
+  \vspace{0.3em}
+  {\small Fonte: elaboração própria.}
+\end{quadro}
+
+As informações essenciais foram preservadas, incluindo a definição do procedimento, a aparência do estoma e a indicação de que ele não dói ao toque. Ao mesmo tempo, o vocabulário foi adaptado ao perfil: ``procedimento cirúrgico'' torna-se ``cirurgia'', ``úmido'' vira ``molhadinho'', e a linguagem passa a refletir um registro mais cotidiano.
 
 \section{Guardrails para preservação da precisão médica} 
 \label{sec:guardrails-preservacao-precisao-medica} 
@@ -354,21 +400,32 @@ Os guardrails da solução incluem restrições como manter a geração vinculad
 
 Em aplicações de saúde, esse cuidado é particularmente relevante, pois a utilização de IA generativa exige atenção adicional à factualidade, à segurança e à confiabilidade das informações produzidas \cite{gangavarapu2024healthcare}. Nesse contexto, os guardrails funcionam como mecanismos de mitigação de risco, mas não como garantia absoluta de correção.
 
-\begin{exemplo}
-O exemplo a seguir mostra a detecção pelo guardrail da remoção de um atributo de segurança, na simplificação do \textit{Guia de orientações para portadores de estomia} para o perfil Carlos:
+O Quadro~\ref{qua:guardrail-antialergico} apresenta um exemplo de rejeição pelo guardrail, ocorrido durante a simplificação do \textit{Guia de orientações para portadores de estomia} para o perfil Carlos.
 
-\textbf{Trecho original:}
-\begin{quote}
-\textit{``O sistema é formado por uma bolsa que cola na pele através de um adesivo antialérgico.''}
-\end{quote}
+\begin{quadro}[htbp]
+  \centering
+  \caption{Exemplo de rejeição por guardrail.}
+  \label{qua:guardrail-antialergico}
+  \small
+  \renewcommand{\arraystretch}{1.2}
 
-\textbf{Primeira tentativa — rejeitada pelo guardrail:}
-\begin{quote}
-\textit{``O sistema é formado por uma bolsa que cola na pele com um adesivo especial.''}
-\end{quote}
+  \begin{tabularx}{\textwidth}{p{0.47\textwidth} X}
+    \toprule
+    \textbf{Trecho original} & \textbf{Tentativa rejeitada} \\
+    \midrule
 
-O guardrail identificou que a propriedade ``antialérgico'' havia sido substituída por ``especial'' — uma generalização que remove uma informação relevante para o paciente sobre o material utilizado. A versão aprovada na segunda tentativa restaurou o atributo original.
-\end{exemplo}
+    \textit{``O sistema é formado por uma bolsa que cola na pele através de um adesivo antialérgico.''}
+    &
+    \textit{``O sistema é formado por uma bolsa que cola na pele com um adesivo especial.''} \\
+
+    \bottomrule
+  \end{tabularx}
+
+  \vspace{0.3em}
+  {\small Fonte: elaboração própria.}
+\end{quadro}
+
+O guardrail identificou que a propriedade ``antialérgico'' havia sido substituída por ``especial'', uma generalização que remove uma informação relevante para o paciente sobre o material utilizado. A versão aprovada na segunda tentativa restaurou o atributo original.
 
 \section{Saídas da solução} 
 \label{sec:saidas-solucao} 
@@ -385,19 +442,30 @@ Por fim, a solução calcula o indicador de legibilidade para o texto original e
 
 A solução também disponibiliza dois recursos de acessibilidade voltados a ampliar o alcance da experiência para perfis com menor letramento digital ou dificuldade de interação por texto: síntese de fala do conteúdo simplificado, que permite ao usuário ouvir o material em vez de apenas lê-lo, e entrada por voz no chat contextual, que permite formular perguntas oralmente sem necessidade de digitação. Esses recursos não fazem parte do fluxo principal de simplificação e não foram avaliados neste trabalho, mas integram a implementação funcional como apoio à acessibilidade. 
 
-\begin{exemplo}
-O exemplo a seguir mostra uma das perguntas frequentes geradas para Maria Silva a partir do mesmo material sobre estomia:
+O Quadro~\ref{qua:faq-maria-estomia} mostra uma das perguntas frequentes geradas para Maria Silva a partir do material sobre estomia.
 
-\begin{quote}
-\textit{``O que é esse `estoma' que o médico falou? É alguma coisa que dói?''}
-\end{quote}
+\begin{quadro}[htbp]
+  \centering
+  \caption{Exemplo de pergunta frequente gerada pela solução.}
+  \label{qua:faq-maria-estomia}
+  \small
+  \renewcommand{\arraystretch}{1.2}
 
-\begin{quote}
-\textit{R: ``O estoma é um buraquinho que fazem na barriga para o cocô ou a urina saírem. Ele é vermelhinho e molhadinho, e não dói quando a gente toca.''}
-\end{quote}
+  \begin{tabularx}{0.92\textwidth}{p{0.22\textwidth} X}
+    \toprule
+    \textbf{Pergunta} &
+    \textit{``O que é esse `estoma' que o médico falou? É alguma coisa que dói?''} \\
+    \midrule
+    \textbf{Resposta} &
+    \textit{``O estoma é um buraquinho que fazem na barriga para o cocô ou a urina saírem. Ele é vermelhinho e molhadinho, e não dói quando a gente toca.''} \\
+    \bottomrule
+  \end{tabularx}
 
-A pergunta é formulada em linguagem cotidiana, coerente com o perfil de Maria, e a resposta permanece restrita ao conteúdo do guia original — sem acrescentar informações clínicas externas.
-\end{exemplo}
+  \vspace{0.3em}
+  {\small Fonte: elaboração própria.}
+\end{quadro}
+
+A pergunta é formulada em linguagem cotidiana, coerente com o perfil de Maria, e a resposta permanece restrita ao conteúdo do guia original, sem acrescentar informações clínicas externas.
 
 \section{Delimitações da solução}
 \label{sec:delimitacoes-solucao}
